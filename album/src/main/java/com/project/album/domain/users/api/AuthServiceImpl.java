@@ -1,11 +1,11 @@
-package com.project.album.common.domain.users.api;
+package com.project.album.domain.users.api;
 
-import com.project.album.common.domain.users.api.interfaces.AuthService;
-import com.project.album.common.domain.users.api.interfaces.TokenService;
-import com.project.album.common.domain.users.dto.TokenDTO;
-import com.project.album.common.domain.users.dto.UserDTO;
-import com.project.album.common.domain.users.entity.Users;
-import com.project.album.common.domain.users.repository.UserRepository;
+import com.project.album.domain.users.api.interfaces.TokenService;
+import com.project.album.domain.users.dto.UserDTO;
+import com.project.album.domain.users.api.interfaces.AuthService;
+import com.project.album.domain.users.dto.TokenDTO;
+import com.project.album.domain.users.entity.Users;
+import com.project.album.domain.users.repository.UserRepository;
 import com.project.album.common.message.Message;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

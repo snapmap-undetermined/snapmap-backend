@@ -1,9 +1,9 @@
 package com.project.album.common.handler;
 
 import com.project.album.common.annotation.AuthUser;
-import com.project.album.common.domain.users.api.interfaces.TokenService;
-import com.project.album.common.domain.users.entity.Users;
-import com.project.album.common.domain.users.repository.UserRepository;
+import com.project.album.domain.users.api.interfaces.TokenService;
+import com.project.album.domain.users.entity.Users;
+import com.project.album.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;

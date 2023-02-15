@@ -1,12 +1,12 @@
-package com.project.album.common.domain.users.api;
+package com.project.album.domain.users.api;
 
 import com.project.album.auth.JwtConfigurer;
-import com.project.album.common.domain.users.api.interfaces.TokenService;
-import com.project.album.common.domain.users.dto.TokenDTO;
-import com.project.album.common.domain.users.entity.RefreshToken;
-import com.project.album.common.domain.users.entity.Users;
-import com.project.album.common.domain.users.repository.RefreshTokenRepository;
-import com.project.album.common.domain.users.repository.UserRepository;
+import com.project.album.domain.users.api.interfaces.TokenService;
+import com.project.album.domain.users.dto.TokenDTO;
+import com.project.album.domain.users.entity.RefreshToken;
+import com.project.album.domain.users.entity.Users;
+import com.project.album.domain.users.repository.RefreshTokenRepository;
+import com.project.album.domain.users.repository.UserRepository;
 import com.project.album.common.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

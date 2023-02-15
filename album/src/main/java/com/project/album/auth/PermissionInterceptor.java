@@ -1,7 +1,7 @@
 package com.project.album.auth;
 
 import com.project.album.common.annotation.Permission;
-import com.project.album.common.domain.users.api.interfaces.TokenService;
+import com.project.album.domain.users.api.interfaces.TokenService;
 import com.project.album.common.entity.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

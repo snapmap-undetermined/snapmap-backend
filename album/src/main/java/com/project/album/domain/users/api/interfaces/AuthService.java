@@ -1,6 +1,6 @@
-package com.project.album.common.domain.users.api.interfaces;
+package com.project.album.domain.users.api.interfaces;
 
-import com.project.album.common.domain.users.dto.UserDTO;
+import com.project.album.domain.users.dto.UserDTO;
 
 public interface AuthService {
 

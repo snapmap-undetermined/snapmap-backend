@@ -1,4 +1,4 @@
-package com.project.album.common.domain.users.entity;
+package com.project.album.domain.users.entity;
 
 import com.project.album.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;

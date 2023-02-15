@@ -1,7 +1,7 @@
-package com.project.album.common.domain.users.api.interfaces;
+package com.project.album.domain.users.api.interfaces;
 
-import com.project.album.common.domain.users.dto.TokenDTO;
-import com.project.album.common.domain.users.entity.Users;
+import com.project.album.domain.users.dto.TokenDTO;
+import com.project.album.domain.users.entity.Users;
 import com.project.album.common.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

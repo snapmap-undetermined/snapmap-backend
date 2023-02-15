@@ -1,4 +1,4 @@
-package com.project.album.common.domain.users.dto;
+package com.project.album.domain.users.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,7 @@
-package com.project.album.common.domain.users;
+package com.project.album.domain.users;
 
-import com.project.album.common.domain.users.api.interfaces.AuthService;
-import com.project.album.common.domain.users.api.interfaces.UserService;
-import com.project.album.common.domain.users.dto.UserDTO;
-import com.project.album.common.domain.users.repository.UserRepository;
+import com.project.album.domain.users.dto.UserDTO;
+import com.project.album.domain.users.api.interfaces.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

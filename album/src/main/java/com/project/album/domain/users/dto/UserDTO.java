@@ -1,6 +1,6 @@
-package com.project.album.common.domain.users.dto;
+package com.project.album.domain.users.dto;
 
-import com.project.album.common.domain.users.entity.Users;
+import com.project.album.domain.users.entity.Users;
 import com.project.album.common.entity.Role;
 import com.project.album.common.message.Message;
 import jakarta.validation.constraints.NotBlank;
