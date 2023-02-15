@@ -1,8 +1,12 @@
 package com.project.album.domain.users.entity;
 
+import com.project.album.common.entity.BaseTimeEntity;
 import com.project.album.common.entity.Role;
+import com.project.album.domain.friend.entity.Friend;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -10,15 +14,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class Users {
+public class Users extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "user_id")
     private Long id;
-
-    @Column(name="couple_id")
-    private Long coupleId;
 
     @Column(name = "email")
     private String email;
@@ -37,6 +38,15 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Group> groupList;
+//
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Story> storyList;
+
+    @OneToMany(mappedBy = "me", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> friendList;
 
     @OneToOne
     @JoinColumn(name = "refresh_token_id")

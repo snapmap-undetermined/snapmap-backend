@@ -1,4 +1,4 @@
-package com.project.album.domain.users;
+package com.project.album.domain.users.controller;
 
 import com.project.album.domain.users.dto.UserDTO;
 import com.project.album.domain.users.api.interfaces.AuthService;

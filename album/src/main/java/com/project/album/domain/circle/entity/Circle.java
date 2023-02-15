@@ -1,22 +1,22 @@
-package com.project.album.domain.users.entity;
+package com.project.album.domain.circle.entity;
 
 import com.project.album.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "refresh_token")
+@Table(name = "circle")
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class RefreshToken extends BaseTimeEntity {
+public class Circle extends BaseTimeEntity {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "refresh_token_id")
+    @Column(name = "circle_id")
     private Long id;
 
-    @Column
-    private String token;
+    private String name;
 
 }
