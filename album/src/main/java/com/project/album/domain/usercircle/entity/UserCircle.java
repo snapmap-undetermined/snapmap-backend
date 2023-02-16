@@ -1,4 +1,4 @@
-package com.project.album.domain.usergroup.entity;
+package com.project.album.domain.usercircle.entity;
 
 import com.project.album.common.entity.BaseTimeEntity;
 import com.project.album.domain.circle.entity.Circle;
@@ -12,11 +12,11 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class UserGroup extends BaseTimeEntity {
+public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "user_group_id")
+    @Column(name = "user_circle_id")
     private Long id;
 
     @ManyToOne
@@ -24,6 +24,6 @@ public class UserGroup extends BaseTimeEntity {
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Circle group;
+    @JoinColumn(name = "circle_id")
+    private Circle cicle;
 }
