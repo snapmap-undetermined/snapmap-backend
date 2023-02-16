@@ -1,4 +1,4 @@
 package com.project.album.domain.usercircle.repository;
 
-public interface UserGroupRepositoryCustom {
+public interface UserCircleRepositoryCustom {
 }
