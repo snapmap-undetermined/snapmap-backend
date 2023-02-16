@@ -25,4 +25,5 @@ public class Friend extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(referencedColumnName = "user_id")
     private Users friend;
+
 }
