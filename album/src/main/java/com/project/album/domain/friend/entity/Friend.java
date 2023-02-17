@@ -25,4 +25,19 @@ public class Friend extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(referencedColumnName = "user_id")
     private Users friend;
+
+    @Column(name = "friend_name")
+    private String friendName;
+
+    public void setFriendName(String friendName) {
+        this.friendName = friendName;
+    }
+
+    public void setFriendUser(Users friend) {
+        this.friend = friend;
+    }
+
+    public void setMeUser(Users me) {
+        this.me = me;
+    }
 }
