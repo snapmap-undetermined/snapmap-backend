@@ -29,11 +29,14 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public FriendDTO.FriendSimpleInfoResponse createFriend(Long userId, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception {
+    public FriendDTO.FriendSimpleInfoResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception {
 
         Friend friend = createFriendRequest.toEntity();
         Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow();
+
         friend.setFriendUser(friendUser);
+        friend.setMeUser(user);
+
         friendRepository.save(friend);
 
         return new FriendDTO.FriendSimpleInfoResponse(friend);
