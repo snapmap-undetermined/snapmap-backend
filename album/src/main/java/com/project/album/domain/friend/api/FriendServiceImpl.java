@@ -41,4 +41,13 @@ public class FriendServiceImpl implements FriendService{
         friendRepository.delete(friend);
 
     }
+
+    @Override
+    public FriendDTO.UpdateFriendNameResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+        Friend friend = friendRepository.findById(friendId).orElseThrow();
+        String updateFriendName = updateFriendNameRequest.getFriendName();
+        friend.setFriendName(updateFriendName);
+
+        return new FriendDTO.UpdateFriendNameResponse(friend);
+    }
 }

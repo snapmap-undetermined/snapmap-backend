@@ -8,8 +8,10 @@ public interface FriendService {
 
     List<FriendDTO.GetFriendListResponse> getFriendListByUser(Long userId) throws Exception;
 
-    FriendDTO.FriendDetailResponse createFriend(Long userId, FriendDTO.CreateFriendRequest createFriendRequestRequest) throws Exception;
+    FriendDTO.FriendDetailResponse createFriend(Long userId, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception;
 
     void deleteFriend(Long friendId) throws Exception;
+
+    FriendDTO.UpdateFriendNameResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception;
 
 }

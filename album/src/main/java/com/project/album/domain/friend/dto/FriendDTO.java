@@ -23,14 +23,32 @@ public class FriendDTO {
     // FriendDetailResponse 공통 responseDTO
     @Data
     public static class FriendDetailResponse {
-        private Long id;
-        private Long userId;
         private Long friendId;
+        private Long userId;
+        private Long friendUserId;
 
         public FriendDetailResponse(Friend friend) {
-            this.id = friend.getId();
+            this.friendId = friend.getId();
             this.userId = friend.getMe().getId();
-            this.friendId = friend.getFriend().getId();
+            this.friendUserId = friend.getFriend().getId();
+        }
+    }
+
+    @Data
+    public static class UpdateFriendNameRequest{
+        private String friendName;
+    }
+
+    @Data
+    public static class UpdateFriendNameResponse {
+        private Long friendId;
+        private Long friendUserId;
+        private String friendName;
+
+        public UpdateFriendNameResponse(Friend friend) {
+            this.friendId = friend.getId();
+            this.friendUserId = friend.getFriend().getId();
+            this.friendName = friend.getFriendName();
         }
     }
 
@@ -38,11 +56,13 @@ public class FriendDTO {
     public static class CreateFriendRequest{
         private Users user;
         private Users friend;
+        private String friendName;
 
         public Friend toEntity() {
             return Friend.builder()
                     .me(user)
                     .friend(friend)
+                    .friendName(friend.getNickname())
                     .build();
         }
     }
