@@ -3,6 +3,8 @@ package com.project.album.domain.friend.api;
 import com.project.album.domain.friend.dto.FriendDTO;
 import com.project.album.domain.friend.entity.Friend;
 import com.project.album.domain.friend.repository.FriendRepository;
+import com.project.album.domain.users.entity.Users;
+import com.project.album.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,23 +17,26 @@ import java.util.stream.Collectors;
 public class FriendServiceImpl implements FriendService{
 
     private final FriendRepository friendRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public List<FriendDTO.GetFriendListResponse> getFriendListByUser(Long userId) throws Exception {
+    public List<FriendDTO.FriendSimpleInfoResponse> getFriendListByUser(Long userId) throws Exception {
 
         List<Friend> friendList = friendRepository.findByUserId(userId);
 
-        return friendList.stream().map(FriendDTO.GetFriendListResponse::new).collect(Collectors.toList());
+        return friendList.stream().map(FriendDTO.FriendSimpleInfoResponse::new).collect(Collectors.toList());
 
     }
 
     @Override
-    public FriendDTO.FriendDetailResponse createFriend(Long userId, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception {
+    public FriendDTO.FriendSimpleInfoResponse createFriend(Long userId, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception {
 
         Friend friend = createFriendRequest.toEntity();
+        Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow();
+        friend.setFriendUser(friendUser);
         friendRepository.save(friend);
 
-        return new FriendDTO.FriendDetailResponse(friend);
+        return new FriendDTO.FriendSimpleInfoResponse(friend);
     }
 
     @Override

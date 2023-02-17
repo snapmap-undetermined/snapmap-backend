@@ -32,4 +32,8 @@ public class Friend extends BaseTimeEntity {
     public void setFriendName(String friendName) {
         this.friendName = friendName;
     }
+
+    public void setFriendUser(Users friend) {
+        this.friend = friend;
+    }
 }
