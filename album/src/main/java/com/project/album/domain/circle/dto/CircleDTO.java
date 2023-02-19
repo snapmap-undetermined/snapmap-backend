@@ -1,7 +1,6 @@
 package com.project.album.domain.circle.dto;
 
 import com.project.album.domain.circle.entity.Circle;
-import com.project.album.domain.usercircle.entity.UserCircle;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,6 @@ public class CircleDTO {
 
     @Data
     public static class CreateCircleRequest {
-
         private String circleName;
 
         public Circle toEntity() {

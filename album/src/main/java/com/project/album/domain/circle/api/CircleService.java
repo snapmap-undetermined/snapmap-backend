@@ -18,9 +18,7 @@ public interface CircleService {
 
     int exitedUser(Long userId, Long circleId) throws Exception;
 
-    UserCircleDTO.UserCircleSimpleInfoResponse joinCircleFromLink(Users user, UserCircleDTO.JoinUserCircleFromLinkRequest request) throws Exception;
-
-    UserCircleDTO.UserCircleSimpleInfoResponse joinCircleInApp(Users user, UserCircleDTO.JoinUserCircleInAppRequest request) throws Exception;
+    UserCircleDTO.UserCircleSimpleInfoResponse joinCircle(Users user, UserCircleDTO.JoinUserCircleRequest request) throws Exception;
 
     CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request) throws Exception;
 

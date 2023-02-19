@@ -20,13 +20,6 @@ public class Circle extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "circle_key")
-    private String circleKey;
-
-    public void setCircleKey(String circleKey){
-        this.circleKey = circleKey;
-    }
-
     public void setName(String circleName) {
         this.name = circleName;
     }

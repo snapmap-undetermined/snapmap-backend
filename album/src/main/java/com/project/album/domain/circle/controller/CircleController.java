@@ -37,8 +37,8 @@ public class CircleController {
     }
 
     //유저가 그룹을 선택해서 그룹원들을 조회한다.
-    @GetMapping("/users")
-    private ResponseEntity<List<UserDTO.UserSimpleInfoResponse>> getUserListByCircle(@AuthUser Users user, Long circleId) throws Exception {
+    @GetMapping("/{circleId}/users")
+    private ResponseEntity<List<UserDTO.UserSimpleInfoResponse>> getUserListByCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
         List<UserDTO.UserSimpleInfoResponse> response = circleService.getUserListByCircle(user.getId(), circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -50,18 +50,10 @@ public class CircleController {
         return circleService.exitedUser(user.getId(), circleId);
     }
 
-    // 유저가 외부링크를 타고 그룹에 조인한다.
-    @PostMapping("/join-link")
-    private ResponseEntity<UserCircleDTO.UserCircleSimpleInfoResponse> joinCircleFromLink(@AuthUser Users user, @RequestBody UserCircleDTO.JoinUserCircleFromLinkRequest request) throws Exception {
-        UserCircleDTO.UserCircleSimpleInfoResponse response = circleService.joinCircleFromLink(user, request);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    // 유저가 앱 내부에서 초대해서 그룹에 조인한다.
-    @PostMapping("/join-app")
-    private ResponseEntity<UserCircleDTO.UserCircleSimpleInfoResponse> joinCircleInApp(@AuthUser Users user, @RequestBody UserCircleDTO.JoinUserCircleInAppRequest request) throws Exception {
-        UserCircleDTO.UserCircleSimpleInfoResponse response = circleService.joinCircleInApp(user, request);
+    // 유저가 그룹에 조인한다.
+    @PostMapping("/join")
+    private ResponseEntity<UserCircleDTO.UserCircleSimpleInfoResponse> joinCircle(@AuthUser Users user, @RequestBody UserCircleDTO.JoinUserCircleRequest request) throws Exception {
+        UserCircleDTO.UserCircleSimpleInfoResponse response = circleService.joinCircle(user, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -73,6 +65,8 @@ public class CircleController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    // 유저가 초대를 해야한다.
 
 
 }

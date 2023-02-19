@@ -6,22 +6,11 @@ import lombok.Data;
 public class UserCircleDTO {
 
     @Data
-    public static class JoinUserCircleFromLinkRequest {
-
-        private String circleKey;
-
-        public UserCircle toEntity() {
-            return UserCircle.builder()
-                    .build();
-        }
-    }
-
-    @Data
-    public static class JoinUserCircleInAppRequest {
+    public static class JoinUserCircleRequest {
 
         private Long circleId;
 
-        public JoinUserCircleInAppRequest(UserCircle userCircle) {
+        public JoinUserCircleRequest(UserCircle userCircle) {
             this.circleId = userCircle.getCircle().getId();
         }
 
