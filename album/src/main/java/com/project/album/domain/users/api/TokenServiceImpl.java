@@ -13,10 +13,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import javax.naming.AuthenticationException;
 import java.util.Date;
 
 @Service
@@ -87,6 +90,10 @@ public class TokenServiceImpl implements TokenService {
     public Jws<Claims> parse(String authToken) {
         final SecretKey signingKey = Keys.hmacShaKeyFor(jwtConfigurer.getSecret().getBytes());
         String token = authToken.replace(jwtConfigurer.getPrefix(), "").trim();
-        return Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
+        try {
+            return Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
+        } catch (SignatureException e) {
+            throw new AccessDeniedException(e.getMessage());
+        }
     }
 }
