@@ -23,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest) {
+    public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest){
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()){
             throw new InvalidValueException("이미 가입된 이메일입니다.", ErrorCode.EMAIL_DUPLICATION);
         }

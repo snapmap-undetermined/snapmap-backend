@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", "요청값의 타입을 확인해주세요."),
     HANDLE_ACCESS_DENIED(403, "C006", "접근 권한이 없습니다."),
 
+    HANDLE_PICTURE_UPLOAD(500, "C007", "사진을 업로드하는 데 실패했습니다."),
 
     // Member
     EMAIL_DUPLICATION(400, "M001", "이미 가입된 이메일입니다."),

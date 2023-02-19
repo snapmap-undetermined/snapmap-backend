@@ -18,7 +18,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signUp")
-    private ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception {
+    private ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception{
         UserDTO.SignUpResponse response = authService.signUp(signUpRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
