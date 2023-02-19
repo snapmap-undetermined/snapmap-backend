@@ -18,12 +18,16 @@ public class Picture extends BaseTimeEntity {
     @Column(name = "picture_id")
     private Long id;
 
+    @Column(name = "original_name")
+    private String originalName;
+
+    @Column(name = "url")
+    private String url;
+
     @ManyToOne
     @JoinColumn(name = "story_id")
     private Story story;
 
-    @Column(name="uri")
-    private String uri;
 
     public void setStory(Story story) {
         this.story = story;

@@ -1,5 +1,6 @@
 package com.project.album.domain.circle.dto;
 
+
 import com.project.album.domain.circle.entity.Circle;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,4 @@ public class CircleDTO {
     public static class UpdateCircleRequest {
         private String circleName;
     }
-
 }

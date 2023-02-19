@@ -45,6 +45,12 @@ dependencies {
 	// S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	// Point. Hibernate 버전과 동기화해야 한다.
+	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '6.1.6.Final'
+
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 

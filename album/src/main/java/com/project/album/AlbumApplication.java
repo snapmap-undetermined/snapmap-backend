@@ -10,6 +10,6 @@ public class AlbumApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AlbumApplication.class, args);
-	}
 
+	}
 }
