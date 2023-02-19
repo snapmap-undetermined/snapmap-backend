@@ -4,6 +4,7 @@ import com.project.album.domain.usercircle.entity.UserCircle;
 import com.project.album.domain.users.entity.Users;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 
@@ -22,12 +23,13 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     @Override
     public List<Users> findUserListByCircleId(Long userId, Long circleId) {
         return em.createQuery("select u From Users u join fetch UserCircle as uc where uc.circle.id = :circleId and uc.user.id = :userId", Users.class)
-                .setParameter("userid", userId)
+                .setParameter("userId", userId)
                 .setParameter("circleId", circleId)
                 .getResultList();
     }
 
     @Override
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     public int exitedUserFromGroup(Long userId, Long circleId) {
         return em.createQuery("delete from UserCircle where user.id = :userId and circle.id = :circleId")
                 .setParameter("userId", userId)
