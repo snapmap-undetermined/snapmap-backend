@@ -46,6 +46,9 @@ public class StoryServiceImpl implements StoryService {
             Circle circle = circleRepository.findById(circleId).orElseThrow(
                     () -> new EntityNotFoundException("존재하지 않는 써클입니다."));
 
+            story.setUser(user);
+            storyRepository.save(story);
+
             for (MultipartFile picture : pictures) {
                 // S3에 사진 업로드
                 Map<String, String> result = s3Uploader.upload(picture, "static");
@@ -63,8 +66,6 @@ public class StoryServiceImpl implements StoryService {
                 circleStoryRepository.save(CircleStory.builder().circle(circle).story(story).build());
             }
 
-            story.setUser(user);
-            storyRepository.save(story);
             return new StoryDTO.StoryDetailResponse(story);
         } catch (ParseException e) {
             throw new InvalidValueException("스토리를 생성하는 데 실패했습니다.", ErrorCode.INVALID_INPUT_VALUE);
