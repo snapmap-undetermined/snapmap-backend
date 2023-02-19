@@ -1,7 +1,6 @@
 package com.project.album.domain.friend.dto;
 
 import com.project.album.domain.friend.entity.Friend;
-import com.project.album.domain.users.entity.Users;
 import lombok.Data;
 
 public class FriendDTO {
@@ -12,7 +11,8 @@ public class FriendDTO {
         private Long friendId;
         private Long friendUserId;
         private String friendUserNickName;
-//        private String friendProfileImage;
+
+        //        private String friendProfileImage;
         public FriendSimpleInfoResponse(Friend friend) {
             this.friendId = friend.getId();
             this.friendUserId = friend.getFriend().getId();
@@ -21,7 +21,7 @@ public class FriendDTO {
     }
 
     @Data
-    public static class UpdateFriendNameRequest{
+    public static class UpdateFriendNameRequest {
         private String friendName;
     }
 
@@ -39,7 +39,7 @@ public class FriendDTO {
     }
 
     @Data
-    public static class CreateFriendRequest{
+    public static class CreateFriendRequest {
         private Long friendUserId;
         private String friendName;
 

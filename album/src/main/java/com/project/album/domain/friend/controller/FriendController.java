@@ -24,6 +24,7 @@ public class FriendController {
         List<FriendDTO.FriendSimpleInfoResponse> response = friendService.getFriendListByUser(user.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     // 검색해서 (파라미터로) 친구목록에 생성
     @PostMapping("")
     private ResponseEntity<FriendDTO.FriendSimpleInfoResponse> createFriend(@AuthUser Users user, @RequestBody FriendDTO.CreateFriendRequest request) throws Exception {
