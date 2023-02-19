@@ -3,9 +3,11 @@ package com.project.album.domain.users.entity;
 import com.project.album.common.entity.BaseTimeEntity;
 import com.project.album.common.entity.Role;
 import com.project.album.domain.friend.entity.Friend;
+import com.project.album.domain.story.entity.Story;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,14 +41,16 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Group> groupList;
 //
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Story> storyList;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Story> storyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "me", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friend> friendList;
+    @Builder.Default
+    private List<Friend> friendList = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "refresh_token_id")
