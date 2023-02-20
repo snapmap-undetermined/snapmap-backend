@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface CircleService {
 
-    CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) throws Exception;
+    CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest);
 
-    List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId) throws Exception;
+    List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId);
 
     CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId) throws Exception;
 

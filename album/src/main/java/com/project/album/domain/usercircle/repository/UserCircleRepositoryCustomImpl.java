@@ -21,7 +21,7 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     }
 
     @Override
-    public List<Users> findAllByCircleId(Long userId, Long circleId) {
+    public List<Users> findAllUserByCircleId(Long userId, Long circleId) {
         return em.createQuery("select u From Users u join fetch UserCircle as uc where uc.circle.id = :circleId and uc.user.id = :userId", Users.class)
                 .setParameter("userId", userId)
                 .setParameter("circleId", circleId)

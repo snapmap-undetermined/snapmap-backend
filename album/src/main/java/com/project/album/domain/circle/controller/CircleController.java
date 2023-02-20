@@ -7,6 +7,7 @@ import com.project.album.domain.circle.dto.CircleDTO;
 import com.project.album.domain.usercircle.dto.UserCircleDTO;
 import com.project.album.domain.users.dto.UserDTO;
 import com.project.album.domain.users.entity.Users;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CircleController {
     //그룹을 생성한다.
     @PostMapping("")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> createCircle(@AuthUser Users user, @RequestBody CircleDTO.CreateCircleRequest createCircleRequest) throws Exception {
+    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> createCircle(@AuthUser Users user, @Valid @RequestBody CircleDTO.CreateCircleRequest createCircleRequest) throws Exception {
         CircleDTO.CircleSimpleInfoResponse response = circleService.createCircle(user, createCircleRequest);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -58,7 +59,7 @@ public class CircleController {
     // 유저가 그룹에 조인한다.
     @PostMapping("/join")
     @Permission
-    private ResponseEntity<CircleDTO.JoinCircleResponse> joinCircle(@AuthUser Users user, @RequestBody CircleDTO.JoinCircleRequest request) throws Exception {
+    private ResponseEntity<CircleDTO.JoinCircleResponse> joinCircle(@AuthUser Users user, @RequestBody @Valid CircleDTO.JoinCircleRequest request) throws Exception {
         CircleDTO.JoinCircleResponse response = circleService.joinCircle(user, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -67,7 +68,7 @@ public class CircleController {
     // 유저가 그룹이름을 수정한다.
     @PatchMapping("/{circleId}")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircleName(@PathVariable Long circleId, @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
+    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircleName(@PathVariable Long circleId, @Valid @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
         CircleDTO.CircleSimpleInfoResponse response = circleService.updateCircleName(circleId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

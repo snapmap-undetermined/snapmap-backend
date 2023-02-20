@@ -5,6 +5,7 @@ import com.project.album.domain.circle.entity.Circle;
 import com.project.album.domain.usercircle.entity.UserCircle;
 import com.project.album.domain.users.dto.UserDTO;
 import com.project.album.domain.users.entity.Users;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +33,8 @@ public class CircleDTO {
 
     @Data
     public static class CreateCircleRequest {
+
+        @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
 
         public Circle toEntity() {
@@ -43,6 +46,8 @@ public class CircleDTO {
 
     @Data
     public static class UpdateCircleRequest {
+
+        @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
     }
 
@@ -60,6 +65,7 @@ public class CircleDTO {
     @Data
     public static class JoinCircleRequest {
 
+        @NotBlank(message = "circleId를 입력해주세요.")
         private Long circleId;
 
         public JoinCircleRequest(UserCircle userCircle) {

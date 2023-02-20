@@ -22,6 +22,9 @@ public enum ErrorCode {
     EMAIL_DUPLICATION(400, "M001", "이미 가입된 이메일입니다."),
     NICKNAME_DUPLICATION(400, "M002", "이미 존재하는 닉네임입니다."),
     LOGIN_INPUT_INVALID(400, "M003", "이메일 혹은 비밀번호를 확인해주세요."),
+
+    // Circle
+    CIRCLENAME_DUPLICATION(400, "CI001", "존재하지 않는 그룹입니다."),
     ;
     private final String code;
     private final String message;
