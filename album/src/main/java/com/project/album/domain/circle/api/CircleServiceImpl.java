@@ -33,7 +33,6 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
-        try {
             Circle circle = createCircleRequest.toEntity();
             circleRepository.save(circle);
 
@@ -42,10 +41,7 @@ public class CircleServiceImpl implements CircleService {
             userCircleRepository.save(userCircle);
 
             return new CircleDTO.CircleSimpleInfoResponse(circle);
-        }catch(BusinessLogicException e){
-            log.error("Create circle failed. userId= {}, circleName={}", user.getId(), createCircleRequest.getCircleName());
-            throw new BusinessLogicException("Create circle failed", ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @Override
@@ -54,6 +50,7 @@ public class CircleServiceImpl implements CircleService {
             log.error("Get circle list by user failed. userId={}",userId);
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         }
+
         List<UserCircle> userCircleList = userCircleRepository.findByUserId(userId);
 
         return userCircleList.stream().map((uc) -> new CircleDTO.CircleSimpleInfoResponse(uc.getCircle())).collect(Collectors.toList());
@@ -61,11 +58,12 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId) throws Exception {
+    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId){
 
-        List<Users> userList = userCircleRepository.findAllUserByCircleId(userId, circleId);
+            List<Users> userList = userCircleRepository.findAllUserByCircleId(userId, circleId);
 
-        return new CircleDTO.CircleWithJoinUserResponse(userList);
+            return new CircleDTO.CircleWithJoinUserResponse(userList);
+
     }
 
     @Override
