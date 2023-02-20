@@ -14,13 +14,13 @@ public interface CircleService {
 
     List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId) throws Exception;
 
-    List<UserDTO.UserSimpleInfoResponse> getUserListByCircle(Long userId, Long circleId) throws Exception;
+    CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId) throws Exception;
 
-    int exitedUser(Long userId, Long circleId) throws Exception;
+    int leaveCircle(Long userId, Long circleId) throws Exception;
 
-    UserCircleDTO.UserCircleSimpleInfoResponse joinCircle(Users user, UserCircleDTO.JoinUserCircleRequest request) throws Exception;
+    CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request);
 
-    CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request) throws Exception;
+    CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request);
 
 
 }

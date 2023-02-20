@@ -21,7 +21,7 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     }
 
     @Override
-    public List<Users> findUserListByCircleId(Long userId, Long circleId) {
+    public List<Users> findAllByCircleId(Long userId, Long circleId) {
         return em.createQuery("select u From Users u join fetch UserCircle as uc where uc.circle.id = :circleId and uc.user.id = :userId", Users.class)
                 .setParameter("userId", userId)
                 .setParameter("circleId", circleId)
@@ -30,7 +30,7 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
 
     @Override
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    public int exitedUserFromGroup(Long userId, Long circleId) {
+    public int deleteByUserIdAndCircleId(Long userId, Long circleId) {
         return em.createQuery("delete from UserCircle where user.id = :userId and circle.id = :circleId")
                 .setParameter("userId", userId)
                 .setParameter("circleId", circleId)

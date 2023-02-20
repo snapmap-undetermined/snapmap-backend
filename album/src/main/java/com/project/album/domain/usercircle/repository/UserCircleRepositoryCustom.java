@@ -8,8 +8,8 @@ import java.util.List;
 public interface UserCircleRepositoryCustom {
     List<UserCircle> findByUserId(Long userId);
 
-    List<Users> findUserListByCircleId(Long userId, Long circleId);
+    List<Users> findAllByCircleId(Long userId, Long circleId);
 
-    int exitedUserFromGroup(Long userId, Long circleId);
+    int deleteByUserIdAndCircleId(Long userId, Long circleId);
 
 }
