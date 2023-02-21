@@ -24,6 +24,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
+    
+    @Value("${cloud.aws.snapmap-cloud-front-domain}")
+    private String cloudFrontDomain;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -44,13 +48,13 @@ public class S3Uploader {
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         result.put("originalName", uploadFile.getName());
-        result.put("uploadUrl", uploadImageUrl);
+        result.put("uploadUrl", "https://"+cloudFrontDomain+"/"+ uploadImageUrl);
         return result;
     }
 
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        return fileName;
     }
 
     private void removeNewFile(File targetFile) {
