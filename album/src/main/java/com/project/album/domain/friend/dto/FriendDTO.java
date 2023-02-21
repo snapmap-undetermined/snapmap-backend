@@ -26,19 +26,6 @@ public class FriendDTO {
     }
 
     @Data
-    public static class UpdateFriendNameResponse {
-        private Long friendId;
-        private Long friendUserId;
-        private String friendName;
-
-        public UpdateFriendNameResponse(Friend friend) {
-            this.friendId = friend.getId();
-            this.friendUserId = friend.getFriend().getId();
-            this.friendName = friend.getFriendName();
-        }
-    }
-
-    @Data
     public static class CreateFriendRequest {
         private Long friendUserId;
         private String friendName;

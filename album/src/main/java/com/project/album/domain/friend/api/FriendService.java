@@ -13,6 +13,6 @@ public interface FriendService {
 
     void deleteFriend(Long friendId) throws Exception;
 
-    FriendDTO.UpdateFriendNameResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception;
+    FriendDTO.FriendSimpleInfoResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception;
 
 }
