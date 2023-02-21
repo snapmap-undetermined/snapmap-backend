@@ -73,4 +73,18 @@ public class UserDTO {
             this.refreshToken = refreshToken;
         }
     }
+
+    @Data
+    public static class UserSimpleInfoResponse {
+        private Long userId;
+        private String userNickname;
+        private String userProfileImage;
+
+        public UserSimpleInfoResponse(Users user) {
+            this.userId = user.getId();
+            this.userNickname = user.getNickname();
+            this.userProfileImage = user.getProfileImage();
+        }
+    }
+
 }

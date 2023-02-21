@@ -17,6 +17,11 @@ public class Circle extends BaseTimeEntity {
     @Column(name = "circle_id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
+
+    public void setName(String circleName) {
+        this.name = circleName;
+    }
 
 }

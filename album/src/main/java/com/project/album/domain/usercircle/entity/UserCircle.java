@@ -25,5 +25,13 @@ public class UserCircle extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "circle_id")
-    private Circle cicle;
+    private Circle circle;
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public void setCircle(Circle circle) {
+        this.circle = circle;
+    }
 }
