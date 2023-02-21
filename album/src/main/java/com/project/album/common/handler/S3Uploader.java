@@ -25,7 +25,8 @@ import java.util.Optional;
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
     
-    public static final String CLOUD_FRONT_DOMAIN_NAME = "d3b7b3nw9cqnmc.cloudfront.net";
+    @Value("snapmap-cloud-front-domain")
+    private String cloudFrontDomain;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
