@@ -51,11 +51,11 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO.UpdateFriendNameResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+    public FriendDTO.FriendSimpleInfoResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
         Friend friend = friendRepository.findById(friendId).orElseThrow();
         String updateFriendName = updateFriendNameRequest.getFriendName();
         friend.setFriendName(updateFriendName);
 
-        return new FriendDTO.UpdateFriendNameResponse(friend);
+        return new FriendDTO.FriendSimpleInfoResponse(friend);
     }
 }

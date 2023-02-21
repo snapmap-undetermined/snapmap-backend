@@ -1,10 +1,13 @@
 package com.project.album.domain.friend.repository;
 
 import com.project.album.domain.friend.entity.Friend;
+import com.project.album.domain.friend.entity.QFriend;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
@@ -13,8 +16,14 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
 
     @Override
     public List<Friend> findByUserId(Long userId) {
-        return em.createQuery("select f from Friend f where f.me.id = :userId", Friend.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QFriend f = new QFriend("f");
+
+        return queryFactory
+                .select(f)
+                .from(f)
+                .where(f.me.id.eq(userId))
+                .stream().toList();
     }
+
 }

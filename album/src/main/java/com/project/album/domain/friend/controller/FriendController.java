@@ -41,8 +41,8 @@ public class FriendController {
 
     // 친구이름 수정
     @PatchMapping("/{friendId}")
-    private ResponseEntity<FriendDTO.UpdateFriendNameResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
-        FriendDTO.UpdateFriendNameResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
+    private ResponseEntity<FriendDTO.FriendSimpleInfoResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+        FriendDTO.FriendSimpleInfoResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
