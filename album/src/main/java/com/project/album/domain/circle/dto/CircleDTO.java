@@ -54,10 +54,16 @@ public class CircleDTO {
     @Data
     public static class CircleWithJoinUserResponse {
 
+        private Long circleId;
+        private String circleName;
+
         private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
 
-        public CircleWithJoinUserResponse(List<Users> userList) {
+        public CircleWithJoinUserResponse(List<Users> userList,Circle circle) {
             this.joinedUserList = userList.stream().map(UserDTO.UserSimpleInfoResponse::new).collect(Collectors.toList());
+            this.circleId = circle.getId();
+            this.circleName = circle.getName();
+
         }
 
     }

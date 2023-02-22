@@ -33,21 +33,21 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
-            Circle circle = createCircleRequest.toEntity();
-            circleRepository.save(circle);
+        Circle circle = createCircleRequest.toEntity();
+        circleRepository.save(circle);
 
-            // userCircle에도 반영이 되어야 한다.
-            UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
-            userCircleRepository.save(userCircle);
+        // userCircle에도 반영이 되어야 한다.
+        UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
+        userCircleRepository.save(userCircle);
 
-            return new CircleDTO.CircleSimpleInfoResponse(circle);
+        return new CircleDTO.CircleSimpleInfoResponse(circle);
 
     }
 
     @Override
-    public List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId){
-        if (userRepository.findById(userId).isEmpty()){
-            log.error("Get circle list by user failed. userId={}",userId);
+    public List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            log.error("Get circle list by user failed. userId={}", userId);
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         }
 
@@ -58,12 +58,14 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId){
+    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) {
 
-            List<Users> userList = userCircleRepository.findAllUserByCircleId(circleId);
-
-            return new CircleDTO.CircleWithJoinUserResponse(userList);
-
+        List<Users> userList = userCircleRepository.findAllUserByCircleId(circleId);
+        Circle circle = circleRepository.findById(circleId).orElseThrow(()->{
+            log.error("Get circle failed. circleId={}", circleId);
+            throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
+        });
+        return new CircleDTO.CircleWithJoinUserResponse(userList, circle);
     }
 
     @Override
