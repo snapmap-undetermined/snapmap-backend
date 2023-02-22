@@ -14,9 +14,9 @@ public interface CircleService {
 
     List<CircleDTO.CircleSimpleInfoResponse> getCircleListByUser(Long userId);
 
-    CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId) throws Exception;
+    CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) throws Exception;
 
-    int leaveCircle(Long userId, Long circleId) throws Exception;
+    Long leaveCircle(Long userId, Long circleId) throws Exception;
 
     CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request);
 

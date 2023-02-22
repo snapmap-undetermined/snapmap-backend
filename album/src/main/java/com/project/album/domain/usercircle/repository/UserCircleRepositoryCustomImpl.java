@@ -1,7 +1,10 @@
 package com.project.album.domain.usercircle.repository;
 
+import com.project.album.domain.usercircle.entity.QUserCircle;
 import com.project.album.domain.usercircle.entity.UserCircle;
+import com.project.album.domain.users.entity.QUsers;
 import com.project.album.domain.users.entity.Users;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,30 +14,44 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCustom {
 
+    private final JPAQueryFactory query;
     private final EntityManager em;
 
     @Override
     public List<UserCircle> findByUserId(Long userId) {
-        return em.createQuery("select uc From UserCircle uc where uc.user.id = :userId", UserCircle.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        QUserCircle uc = new QUserCircle("uc");
+
+        return query
+                .select(uc)
+                .from(uc)
+                .where(uc.user.id.eq(userId))
+                .stream().toList();
     }
 
     @Override
-    public List<Users> findAllUserByCircleId(Long userId, Long circleId) {
-        return em.createQuery("select distinct u From Users u join fetch UserCircle as uc where uc.circle.id = :circleId and uc.user.id = :userId", Users.class)
-                .setParameter("userId", userId)
-                .setParameter("circleId", circleId)
-                .getResultList();
-    }
+    public List<Users> findAllUserByCircleId(Long circleId) {
+        QUsers u = new QUsers("u");
+        QUserCircle uc = new QUserCircle("uc");
 
+        return query
+                .select(uc.user)
+                .from(uc)
+                .where(uc.circle.id.eq(circleId))
+                .join(uc.user, u)
+                .fetch()
+                .stream().distinct().toList();
+
+    }
     @Override
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    public int deleteByUserIdAndCircleId(Long userId, Long circleId) {
-        return em.createQuery("delete from UserCircle where user.id = :userId and circle.id = :circleId")
-                .setParameter("userId", userId)
-                .setParameter("circleId", circleId)
-                .executeUpdate();
+    public Long deleteByUserIdAndCircleId(Long userId, Long circleId) {
+        QUserCircle uc = new QUserCircle("uc");
+
+        return query
+                .delete(uc)
+                .where(uc.user.id.eq(userId))
+                .where(uc.circle.id.eq(circleId))
+                .execute();
     }
 
 }

@@ -58,16 +58,16 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long userId, Long circleId){
+    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId){
 
-            List<Users> userList = userCircleRepository.findAllUserByCircleId(userId, circleId);
+            List<Users> userList = userCircleRepository.findAllUserByCircleId(circleId);
 
             return new CircleDTO.CircleWithJoinUserResponse(userList);
 
     }
 
     @Override
-    public int leaveCircle(Long userId, Long circleId) {
+    public Long leaveCircle(Long userId, Long circleId) {
 
         return userCircleRepository.deleteByUserIdAndCircleId(userId, circleId);
     }

@@ -43,8 +43,8 @@ public class CircleController {
     //유저가 그룹을 선택해서 그룹원들을 조회한다.
     @GetMapping("/{circleId}/users")
     @Permission
-    private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
-        CircleDTO.CircleWithJoinUserResponse response = circleService.getUserListByCircle(user.getId(), circleId);
+    private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(@PathVariable Long circleId) throws Exception {
+        CircleDTO.CircleWithJoinUserResponse response = circleService.getUserListByCircle(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class CircleController {
     //유저가 그룹에서 나온다.
     @DeleteMapping("/{circleId}")
     @Permission
-    private int leaveCircle(@AuthUser Users user, Long circleId) throws Exception {
+    private Long leaveCircle(@AuthUser Users user, Long circleId) throws Exception {
         return circleService.leaveCircle(user.getId(), circleId);
     }
 
