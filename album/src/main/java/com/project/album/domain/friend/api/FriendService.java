@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FriendService {
 
-    List<FriendDTO.FriendSimpleInfoResponse> getFriendListByUser(Long userId) throws Exception;
+    List<FriendDTO.FriendSimpleInfoResponse> getAllFriends(Long userId) throws Exception;
 
     FriendDTO.FriendSimpleInfoResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception;
 

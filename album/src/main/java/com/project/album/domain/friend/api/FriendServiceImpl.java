@@ -20,7 +20,7 @@ public class FriendServiceImpl implements FriendService {
     private final UserRepository userRepository;
 
     @Override
-    public List<FriendDTO.FriendSimpleInfoResponse> getFriendListByUser(Long userId) throws Exception {
+    public List<FriendDTO.FriendSimpleInfoResponse> getAllFriends(Long userId) throws Exception {
 
         List<Friend> friendList = friendRepository.findByUserId(userId);
 
