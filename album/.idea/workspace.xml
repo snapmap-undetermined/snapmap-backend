@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0327eb5c-0eb4-44a4-b678-519c133cbbca" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/CODEOWNERS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/auto_assign.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/pull_request_template.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/AlbumApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/HealthChecker.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/auth/CustomCorsFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/auth/JwtConfigurer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/auth/PermissionInterceptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/annotation/AuthUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/annotation/Permission.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/entity/BaseTimeEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/entity/Role.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/BusinessLogicException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/EntityNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/ErrorCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/ErrorResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/ExceptionManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/exception/InvalidValueException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/handler/AuthUserResolver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/handler/S3Uploader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/message/Message.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/common/utils/TimeUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/config/QuerydslConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/config/S3Config.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/config/SwaggerConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/api/CircleService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/api/CircleServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/controller/CircleController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/dto/CircleDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/entity/Circle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/repository/CircleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/repository/CircleRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circle/repository/CircleRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circlestory/entity/CircleStory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circlestory/repository/CircleStoryRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circlestory/repository/CircleStoryRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/circlestory/repository/CircleStoryRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/comment/entity/Comment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/comment/repository/CommentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/comment/repository/CommentRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/comment/repository/CommentRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/api/FriendService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/api/FriendServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/controller/FriendController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/dto/FriendDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/entity/Friend.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/repository/FriendRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/repository/FriendRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/friend/repository/FriendRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/picture/dto/PictureDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/picture/entity/Picture.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/picture/repository/PictureRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/picture/repository/PictureRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/picture/repository/PictureRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/api/StoryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/api/StoryServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/controller/StoryController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/dto/StoryDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/entity/Story.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/repository/StoryRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/repository/StoryRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/story/repository/StoryRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/storypicture/entity/StoryPicture.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/storypicture/repository/StoryPictureRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/storypicture/repository/StoryPictureRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/storypicture/repository/StoryPictureRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/usercircle/dto/UserCircleDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/usercircle/entity/UserCircle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/usercircle/repository/UserCircleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/usercircle/repository/UserCircleRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/usercircle/repository/UserCircleRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/AuthServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/TokenServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/UserServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/interfaces/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/interfaces/TokenService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/api/interfaces/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/dto/TokenDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/dto/UserDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/entity/RefreshToken.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/entity/Users.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/repository/RefreshTokenRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/repository/UserRepositoryCustom.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/project/album/domain/users/repository/UserRepositoryCustomImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-local.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-real.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/project/album/AlbumApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/project/album/config/TestConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/project/album/domain/friend/api/FriendServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/project/album/domain/friend/controller/FriendControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/project/album/domain/friend/repository/FriendRepositoryTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/application.yml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="album" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="album" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="album" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="album" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/#1-friend-impl" />
+                    <option name="lastUsedInstant" value="1677041494" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/#4-circle-impl" />
+                    <option name="lastUsedInstant" value="1676992245" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1676992228" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/#18-cloudfront-impl" />
+                    <option name="lastUsedInstant" value="1676982496" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/#15-userinfo-impl" />
+                    <option name="lastUsedInstant" value="1676945805" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/.." />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Lkqh8V2RdZ4gIqrT9LScm6JxE7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.github" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="모듈" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.github" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.FriendServiceTest.getAllFriendsByUser">
+    <configuration name="FriendRepositoryTest.deleteFriend" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.project.album.domain.friend.repository.FriendRepositoryTest.deleteFriend&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="FriendRepositoryTest.friendSaveTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.project.album.domain.friend.repository.FriendRepositoryTest.friendSaveTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="FriendRepositoryTest.getFriendTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.project.album.domain.friend.repository.FriendRepositoryTest.getFriendTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="FriendRepositoryTest.updateFriendName" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.project.album.domain.friend.repository.FriendRepositoryTest.updateFriendName&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="FriendServiceTest.getAllFriendsByUser" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.project.album.domain.friend.api.FriendServiceTest.getAllFriendsByUser&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <option name="AUTO_RESTART" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="AlbumApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="album.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.project.album.AlbumApplication" />
+      <option name="ACTIVE_PROFILES" value="local" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.FriendServiceTest.getAllFriendsByUser" />
+        <item itemvalue="Gradle.FriendRepositoryTest.updateFriendName" />
+        <item itemvalue="Gradle.FriendRepositoryTest.deleteFriend" />
+        <item itemvalue="Gradle.FriendRepositoryTest.friendSaveTest" />
+        <item itemvalue="Gradle.FriendRepositoryTest.getFriendTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="0327eb5c-0eb4-44a4-b678-519c133cbbca" name="변경" comment="" />
+      <created>1676425544759</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1676425544759</updated>
+      <workItem from="1676425545991" duration="16619000" />
+      <workItem from="1676592890844" duration="18819000" />
+      <workItem from="1676771792127" duration="23990000" />
+      <workItem from="1676812207035" duration="47239000" />
+      <workItem from="1676980869007" duration="35590000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
