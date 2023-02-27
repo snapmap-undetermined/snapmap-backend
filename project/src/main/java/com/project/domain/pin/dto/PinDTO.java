@@ -50,6 +50,15 @@ public class PinDTO {
         }
     }
 
+    @Data
+    public static class PinDetailListResponse{
+        private List<PinDetailResponse> pinDetailListResponseList;
+
+        public PinDetailListResponse(List<PinDetailResponse> pinDetailListResponseList) {
+            this.pinDetailListResponseList = pinDetailListResponseList;
+        }
+    }
+
 
 
 

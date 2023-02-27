@@ -21,24 +21,22 @@ public class PinController {
 
     private final PinService pinService;
 
-
     @PostMapping("/{circleId}")
     @Permission
     public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @PathVariable Long circleId,
                                                               @RequestPart PinDTO.PinCreateRequest request,
                                                               @RequestPart List<MultipartFile> pictures) {
 
-        System.out.println("request = " + request);
-        System.out.println("pictures = " + pictures);
         PinDTO.PinDetailResponse pin = pinService.createPin(user, circleId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
     @GetMapping("/circle/{circleId}")
     @Permission
-    public ResponseEntity<List<PinDTO.PinDetailResponse>> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
         List<PinDTO.PinDetailResponse> pinList = pinService.getAllPinByCircle(circleId);
-        return new ResponseEntity<>(pinList, HttpStatus.OK);
+        PinDTO.PinDetailListResponse pinDetailListResponse = new PinDTO.PinDetailListResponse(pinList);
+        return new ResponseEntity<>(pinDetailListResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{pinId}")
@@ -50,9 +48,10 @@ public class PinController {
 
     @GetMapping("/me")
     @Permission
-    public ResponseEntity<List<PinDTO.PinDetailResponse>> getAllPinByMe(@AuthUser Users user) {
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByMe(@AuthUser Users user) {
         List<PinDTO.PinDetailResponse> pinList = pinService.getAllPinByMe(user);
-        return new ResponseEntity<>(pinList, HttpStatus.OK);
+        PinDTO.PinDetailListResponse pinDetailListResponse = new PinDTO.PinDetailListResponse(pinList);
+        return new ResponseEntity<>(pinDetailListResponse, HttpStatus.OK);
     }
 
     @PatchMapping("/")
