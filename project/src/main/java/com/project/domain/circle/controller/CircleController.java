@@ -32,8 +32,9 @@ public class CircleController {
     //유저별로 그룹을 조회한다.
     @GetMapping("")
     @Permission
-    private ResponseEntity<List<CircleDTO.CircleSimpleInfoResponse>> getCircleListByUser(@AuthUser Users user) throws Exception {
-        List<CircleDTO.CircleSimpleInfoResponse> response = circleService.getCircleListByUser(user.getId());
+    private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getCircleListByUser(@AuthUser Users user) throws Exception {
+        List<CircleDTO.CircleSimpleInfoResponse> circleList = circleService.getCircleListByUser(user.getId());
+        CircleDTO.CircleSimpleInfoListResponse response = new CircleDTO.CircleSimpleInfoListResponse(circleList);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
