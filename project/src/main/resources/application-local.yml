@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: application-oauth.yml
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     urL: jdbc:mysql://database-couple.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com:3306/snapmap
@@ -28,6 +31,8 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+
+
 
 cloud:
   aws:

@@ -4,11 +4,15 @@ package com.project.config;
 import com.project.auth.CustomCorsFilter;
 import com.project.auth.PermissionInterceptor;
 import com.project.common.handler.AuthUserResolver;
+import com.project.domain.users.api.CustomOAuth2ServiceImpl;
+import com.project.domain.users.api.interfaces.CustomOAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,8 +30,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     private final CustomCorsFilter customCorsFilter;
     private final PermissionInterceptor permissionInterceptor;
-
     private final AuthUserResolver authUserResolver;
+    private final CustomOAuth2Service customOAuth2Service;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -41,15 +45,18 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
-        return httpSecurity
+        httpSecurity
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((request) ->
                         request.requestMatchers("/**").permitAll()
                 )
-                .build();
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(customOAuth2Service);
+
+        return httpSecurity.build();
     }
 
     @Override

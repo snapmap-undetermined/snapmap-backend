@@ -55,4 +55,10 @@ public class Users extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
+
+    public Users updateByOAuth(String nickname, String profileImage) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        return this;
+    }
 }

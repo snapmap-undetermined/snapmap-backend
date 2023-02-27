@@ -39,6 +39,7 @@ dependencies {
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	// jwt 구현 라이브러리
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
