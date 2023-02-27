@@ -5,6 +5,7 @@ import com.project.common.entity.Role;
 import com.project.common.message.Message;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 
 public class UserDTO {
@@ -86,5 +87,20 @@ public class UserDTO {
             this.userProfileImage = user.getProfileImage();
         }
     }
+
+    @Data
+    public static class UserOAuthResponse {
+        private String email;
+        private String nickname;
+        private String profileImage;
+
+        public UserOAuthResponse(String email, String nickname, String profileImage) {
+            this.email = email;
+            this.nickname = nickname;
+            this.profileImage = profileImage;
+        }
+
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.project.config;
 
 
 import com.project.auth.CustomCorsFilter;
+import com.project.auth.CustomOAuth2AuthenticationSuccessHandler;
 import com.project.auth.PermissionInterceptor;
 import com.project.common.handler.AuthUserResolver;
 import com.project.domain.users.api.CustomOAuth2ServiceImpl;
@@ -33,6 +34,8 @@ public class SecurityConfig implements WebMvcConfigurer {
     private final AuthUserResolver authUserResolver;
     private final CustomOAuth2Service customOAuth2Service;
 
+    private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,10 +54,12 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .and()
                 .authorizeHttpRequests((request) ->
                         request.requestMatchers("/**").permitAll()
-                )
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(customOAuth2Service);
+                );
+//                .oauth2Login()
+//                .userInfoEndpoint()
+//                .userService(customOAuth2Service)
+//                .and()
+//                .successHandler(customOAuth2AuthenticationSuccessHandler);
 
         return httpSecurity.build();
     }
