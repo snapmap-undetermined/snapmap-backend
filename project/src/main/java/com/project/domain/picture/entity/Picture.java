@@ -1,7 +1,7 @@
 package com.project.domain.picture.entity;
 
 import com.project.common.entity.BaseTimeEntity;
-import com.project.domain.story.entity.Story;
+import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,14 +25,14 @@ public class Picture extends BaseTimeEntity {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "story_id")
-    private Story story;
+    @JoinColumn(name = "pin_id")
+    private Pin pin;
 
 
-    public void setStory(Story story) {
-        this.story = story;
-        if (!story.getPictureList().contains(this)) {
-            story.getPictureList().add(this);
+    public void setPin(Pin pin) {
+        this.pin = pin;
+        if (!pin.getPictureList().contains(this)) {
+            pin.getPictureList().add(this);
         }
     }
 }
