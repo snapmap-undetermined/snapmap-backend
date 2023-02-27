@@ -3,6 +3,8 @@ package com.project.domain.friend.dto;
 import com.project.domain.friend.entity.Friend;
 import lombok.Data;
 
+import java.util.List;
+
 public class FriendDTO {
 
     // GetFriend
@@ -17,6 +19,15 @@ public class FriendDTO {
             this.friendId = friend.getId();
             this.friendUserId = friend.getFriend().getId();
             this.friendUserNickName = friend.getFriendName();
+        }
+    }
+
+    @Data
+    public static class FriendSimpleInfoListResponse {
+        private List<FriendSimpleInfoResponse> friendSimpleInfoListResponseList;
+
+        public FriendSimpleInfoListResponse(List<FriendSimpleInfoResponse> friendSimpleInfoResponseList) {
+            this.friendSimpleInfoListResponseList = friendSimpleInfoResponseList;
         }
     }
 
