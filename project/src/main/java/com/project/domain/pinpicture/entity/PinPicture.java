@@ -1,27 +1,27 @@
-package com.project.domain.storypicture.entity;
+package com.project.domain.pinpicture.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.picture.entity.Picture;
-import com.project.domain.story.entity.Story;
+import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "story_picture")
+@Table(name = "pin_picture")
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class StoryPicture extends BaseTimeEntity {
+public class PinPicture extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "story_picture_id")
+    @Column(name = "pin_picture_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "story_id")
-    private Story story;
+    @JoinColumn(name = "pin_id")
+    private Pin pin;
 
     @ManyToOne
     @JoinColumn(name = "picture_id")
