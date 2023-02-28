@@ -1,7 +1,6 @@
 package com.project.domain.pin.dto;
 
 import com.project.domain.location.dto.LocationDTO;
-import com.project.domain.location.dto.PointDTO;
 import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
@@ -20,14 +19,12 @@ public class PinDTO {
     @NoArgsConstructor
     public static class PinCreateRequest {
         private String title;
-        private String locationName;
-        private PointDTO pointDTO;
+        private LocationDTO location;
 
         public Pin toEntity() throws ParseException {
             return Pin.builder()
                     .title(title)
-                    .locationName(locationName)
-                    .location(PointDTO.toPoint(pointDTO))
+                    .location(location.toEntity())
                     .build();
         }
     }
@@ -37,23 +34,19 @@ public class PinDTO {
         private Long pinId;
         private String title;
         private List<MultipartFile> pictures = new ArrayList<>();
-        private String locationName;
-        private PointDTO pointDTO;
-
+        private LocationDTO locationDTO;
     }
 
     @Data
     public static class PinDetailResponse {
         private List<PictureDTO.PictureResponse> pictureList;
-        private String locationName;
-        private PointDTO location;
+        private LocationDTO location;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public PinDetailResponse(Pin pin, List<Picture> pictureList) {
             this.pictureList = pictureList.stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
-            this.locationName = pin.getLocationName();
-            this.location = new PointDTO(pin.getLocation().getX(), pin.getLocation().getY());
+            this.location = new LocationDTO(pin.getLocation());
             this.createdAt = pin.getCreatedAt();
             this.updatedAt = pin.getModifiedAt();
         }

@@ -8,6 +8,7 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.circlepin.entity.CirclePin;
 import com.project.domain.circlepin.repository.CirclePinRepository;
+import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.location.dto.PointDTO;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
@@ -40,6 +41,7 @@ public class PinServiceImpl implements PinService {
     private final CirclePinRepository circlePinRepository;
     private final PinPictureRepository pinPictureRepository;
     private final S3Uploader s3Uploader;
+    private final LocationRepository locationRepository;
 
 
     @Override
@@ -49,6 +51,7 @@ public class PinServiceImpl implements PinService {
             Circle circle = circleRepository.findById(circleId).orElseThrow(
                     () -> new EntityNotFoundException("존재하지 않는 써클입니다."));
 
+            locationRepository.save(pin.getLocation());
             pin.updateUser(user);
             pinRepository.save(pin);
 
@@ -109,8 +112,7 @@ public class PinServiceImpl implements PinService {
         });
 
         pin.updateTitle(request.getTitle());
-        pin.updateLocationName(request.getLocationName());
-        pin.updateLocation(request.getPointDTO());
+        pin.updateLocation(request.getLocationDTO().toEntity());
 
         // 사진 수정
         List<MultipartFile> newPictureList = request.getPictures();
