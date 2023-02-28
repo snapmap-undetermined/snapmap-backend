@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PinPictureRepository extends JpaRepository<PinPicture, Long>, PinRepositoryCustom {
+public interface PinPictureRepository extends JpaRepository<PinPicture, Long>, PinPictureRepositoryCustom {
 
     List<PinPicture> findAllByPinId(Long pinId);
 }

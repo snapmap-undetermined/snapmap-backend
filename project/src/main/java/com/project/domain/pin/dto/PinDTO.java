@@ -1,11 +1,13 @@
 package com.project.domain.pin.dto;
 
+import com.project.domain.location.dto.LocationDTO;
+import com.project.domain.location.dto.PointDTO;
 import com.project.domain.picture.dto.PictureDTO;
+import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
 import lombok.Data;
-import org.locationtech.jts.geom.Point;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -15,13 +17,17 @@ import java.util.stream.Collectors;
 
 public class PinDTO {
     @Data
+    @NoArgsConstructor
     public static class PinCreateRequest {
-        private Double longitude;
-        private Double latitude;
+        private String title;
+        private String locationName;
+        private PointDTO pointDTO;
 
         public Pin toEntity() throws ParseException {
             return Pin.builder()
-                    .location(toPoint(new PointDTO(longitude, latitude)))
+                    .title(title)
+                    .locationName(locationName)
+                    .location(PointDTO.toPoint(pointDTO))
                     .build();
         }
     }
@@ -29,49 +35,38 @@ public class PinDTO {
     @Data
     public static class PinUpdateRequest {
         private Long pinId;
+        private String title;
         private List<MultipartFile> pictures = new ArrayList<>();
-        private PointDTO location;
+        private String locationName;
+        private PointDTO pointDTO;
+
     }
-
-
 
     @Data
     public static class PinDetailResponse {
         private List<PictureDTO.PictureResponse> pictureList;
-        private PointDTO point;
+        private String locationName;
+        private PointDTO location;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public PinDetailResponse(Pin pin) {
-            this.pictureList = pin.getPictureList().stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
-            this.point = new PointDTO(pin.getLocation());
+        public PinDetailResponse(Pin pin, List<Picture> pictureList) {
+            this.pictureList = pictureList.stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
+            this.locationName = pin.getLocationName();
+            this.location = new PointDTO(pin.getLocation().getX(), pin.getLocation().getY());
             this.createdAt = pin.getCreatedAt();
             this.updatedAt = pin.getModifiedAt();
         }
     }
 
-
-
-
     @Data
-    public static class PointDTO {
-        private Double longitude; // 경도
-        private Double latitude;  // 위도
+    public static class PinDetailListResponse{
+        private List<PinDetailResponse> pinDetailResponseList;
 
-        public PointDTO(Point point) {
-            this.longitude = point.getX();
-            this.latitude = point.getY();
+        public PinDetailListResponse(List<PinDetailResponse> pinDetailResponseList) {
+            this.pinDetailResponseList = pinDetailResponseList;
         }
 
-        public PointDTO(Double longitude, Double latitude) {
-            this.longitude = longitude;
-            this.latitude = latitude;
-        }
-    }
-
-    public static Point toPoint(PointDTO pointDTO) throws ParseException {
-        final String pointWKT = String.format("POINT(%s %s)", pointDTO.getLongitude(), pointDTO.getLongitude());
-        return (Point) new WKTReader().read(pointWKT);
     }
 }
 

@@ -36,22 +36,22 @@ public class PinController {
 
     @GetMapping("/circle/{circleId}")
     @Permission
-    public ResponseEntity<List<PinDTO.PinDetailResponse>> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
-        List<PinDTO.PinDetailResponse> pinList = pinService.getAllPinByCircle(circleId);
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
+        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByCircle(circleId);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
     @GetMapping("/{pinId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> getPin(@AuthUser Users user, @PathVariable Long pinId) {
+    public ResponseEntity<?> getPin(@AuthUser Users user, @PathVariable Long pinId) {
         PinDTO.PinDetailResponse pin = pinService.getPinDetail(user, pinId);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
     @GetMapping("/me")
     @Permission
-    public ResponseEntity<List<PinDTO.PinDetailResponse>> getAllPinByMe(@AuthUser Users user) {
-        List<PinDTO.PinDetailResponse> pinList = pinService.getAllPinByMe(user);
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByMe(@AuthUser Users user) {
+        PinDTO.PinDetailListResponse pinList = pinService.getAllPinByMe(user);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
