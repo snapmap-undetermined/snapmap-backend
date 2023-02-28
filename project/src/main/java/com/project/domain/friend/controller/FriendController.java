@@ -20,8 +20,11 @@ public class FriendController {
 
     // user별 친구목록 조회
     @GetMapping("")
-    private ResponseEntity<List<FriendDTO.FriendSimpleInfoResponse>> getFriendListByUser(@AuthUser Users user) throws Exception {
-        List<FriendDTO.FriendSimpleInfoResponse> response = friendService.getAllFriends(user.getId());
+    private ResponseEntity<FriendDTO.FriendSimpleInfoListResponse> getFriendListByUser(@AuthUser Users user) throws Exception {
+
+        List<FriendDTO.FriendSimpleInfoResponse> friendList = friendService.getAllFriends(user.getId());
+        FriendDTO.FriendSimpleInfoListResponse response = new FriendDTO.FriendSimpleInfoListResponse(friendList);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

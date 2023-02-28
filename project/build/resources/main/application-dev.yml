@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    urL: jdbc:mysql://database-couple.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com:3306/snapmap
+    username: admin
+    password: couple123
+
+  security:
+    jwt:
+      header: Authorization
+      prefix : Bearer
+      # HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용
+      # echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
+      secret: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
+      access-token-expired-at: 3600000
+      refresh-token-expired-at: 604800000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    defer-datasource-initialization: true
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

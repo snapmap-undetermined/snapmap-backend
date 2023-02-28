@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.project.domain.friend.repository.FriendRepositoryTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-02-25T03:08:17" hostname="shinkyuchului-MacBookPro.local" time="0.169">
+  <properties/>
+  <testcase name="friendName을 user 마음대로 수정 가능하다." classname="com.project.domain.friend.repository.FriendRepositoryTest" time="0.169"/>
+  <system-out><![CDATA[12:08:15.214 [Test worker] DEBUG org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [FriendRepositoryTest]: using SpringBootContextLoader
+12:08:15.217 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.project.domain.friend.repository.FriendRepositoryTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+12:08:15.217 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.project.domain.friend.repository.FriendRepositoryTest]: FriendRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+12:08:15.240 [Test worker] DEBUG org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTestContextBootstrapper - Using ContextCustomizers for test class [FriendRepositoryTest]: [DisableAutoConfigurationContextCustomizer, DisableObservabilityContextCustomizer, TypeExcludeFiltersContextCustomizer, PropertyMappingContextCustomizer, Customizer, ImportsContextCustomizer, ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer]
+12:08:15.297 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [/Users/shinkyuchul/Desktop/github/snapmap-backend/project/build/classes/java/main/com/project/ProjectApplication.class]
+12:08:15.298 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.project.ProjectApplication for test class com.project.domain.friend.repository.FriendRepositoryTest
+12:08:15.309 [Test worker] DEBUG org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTestContextBootstrapper - Using TestExecutionListeners for test class [FriendRepositoryTest]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, WithSecurityContextTestExecutionListener, EventPublishingTestExecutionListener, ReactorContextTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener, ResetMocksTestExecutionListener]
+12:08:15.310 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: class [FriendRepositoryTest], class annotated with @DirtiesContext [false] with mode [null]
+12:08:15.316 [Test worker] DEBUG org.springframework.test.context.support.DependencyInjectionTestExecutionListener - Performing dependency injection for test class com.project.domain.friend.repository.FriendRepositoryTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.0.2)
+
+2023-02-25T12:08:15.482+09:00  INFO 40401 --- [    Test worker] c.p.d.f.repository.FriendRepositoryTest  : Starting FriendRepositoryTest using Java 17.0.3 with PID 40401 (started by shinkyuchul in /Users/shinkyuchul/Desktop/github/snapmap-backend/project)
+2023-02-25T12:08:15.483+09:00  INFO 40401 --- [    Test worker] c.p.d.f.repository.FriendRepositoryTest  : No active profile set, falling back to 1 default profile: "default"
+2023-02-25T12:08:15.677+09:00  INFO 40401 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-02-25T12:08:15.735+09:00  INFO 40401 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 55 ms. Found 10 JPA repository interfaces.
+2023-02-25T12:08:15.901+09:00  INFO 40401 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-02-25T12:08:15.923+09:00  INFO 40401 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.6.Final
+2023-02-25T12:08:15.989+09:00  INFO 40401 --- [    Test worker] o.h.spatial.integration.SpatialService   : HHH80000001: hibernate-spatial integration enabled : true
+2023-02-25T12:08:16.000+09:00  WARN 40401 --- [    Test worker] org.hibernate.orm.deprecation            : HHH90000021: Encountered deprecated setting [javax.persistence.sharedCache.mode], use [jakarta.persistence.sharedCache.mode] instead
+2023-02-25T12:08:16.051+09:00  INFO 40401 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-02-25T12:08:16.366+09:00  INFO 40401 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@8b670c0
+2023-02-25T12:08:16.367+09:00  INFO 40401 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-02-25T12:08:16.414+09:00  INFO 40401 --- [    Test worker] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2023-02-25T12:08:16.434+09:00  INFO 40401 --- [    Test worker] org.hibernate.spatial                    : HHH80000003: hibernate-spatial adding type contributions from : org.hibernate.spatial.dialect.mysql.MySQLDialectContributor
+2023-02-25T12:08:16.633+09:00  INFO 40401 --- [    Test worker] org.hibernate.spatial                    : HHH80000004: hibernate-spatial adding function contributions from : org.hibernate.spatial.dialect.mysql.MySQLDialectContributor
+2023-02-25T12:08:17.197+09:00  INFO 40401 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-02-25T12:08:17.202+09:00  INFO 40401 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-02-25T12:08:17.521+09:00  INFO 40401 --- [    Test worker] c.p.d.f.repository.FriendRepositoryTest  : Started FriendRepositoryTest in 2.188 seconds (process running for 2.765)
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, modified_at, nickname, password, phone_number, profile_image, refresh_token_id, role) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        users
+        (created_at, email, modified_at, nickname, password, phone_number, profile_image, refresh_token_id, role) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        friend
+        (created_at, friend_user_id, friend_name, me_user_id, modified_at) 
+    values
+        (?, ?, ?, ?, ?)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
