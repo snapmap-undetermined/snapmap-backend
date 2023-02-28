@@ -32,6 +32,16 @@ public class CircleDTO {
     }
 
     @Data
+    public static class CircleSimpleInfoListResponse {
+
+        private List<CircleSimpleInfoResponse> circleSimpleInfoResponseList;
+
+        public CircleSimpleInfoListResponse(List<CircleSimpleInfoResponse> circleSimpleInfoResponseList) {
+            this.circleSimpleInfoResponseList = circleSimpleInfoResponseList;
+        }
+    }
+
+    @Data
     public static class CreateCircleRequest {
 
         @NotBlank(message = "그룹이름을 입력해주세요.")
