@@ -14,7 +14,7 @@ public interface PinService {
 
     PinDTO.PinDetailListResponse getAllPinByMe(Users user);
 
-    PinDTO.PinDetailResponse updatePin(Users user, PinDTO.PinUpdateRequest request) throws ParseException;
+    PinDTO.PinDetailResponse updatePin(Users user, Long pinId, PinDTO.PinUpdateRequest request, List<MultipartFile> pictures) throws ParseException;
 
     void deletePin(Users user, Long feedId);
 

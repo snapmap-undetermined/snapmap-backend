@@ -3,7 +3,6 @@ package com.project.domain.location.dto;
 import com.project.domain.location.entity.Location;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 
 @Data

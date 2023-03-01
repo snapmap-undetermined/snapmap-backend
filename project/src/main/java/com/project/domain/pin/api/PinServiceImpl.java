@@ -8,8 +8,6 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.circlepin.entity.CirclePin;
 import com.project.domain.circlepin.repository.CirclePinRepository;
-import com.project.domain.location.dto.LocationDTO;
-import com.project.domain.location.dto.PointDTO;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
 import com.project.domain.picture.entity.Picture;
@@ -22,7 +20,6 @@ import com.project.domain.pinpicture.repository.PinPictureRepository;
 import com.project.domain.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +49,7 @@ public class PinServiceImpl implements PinService {
                     () -> new EntityNotFoundException("존재하지 않는 써클입니다."));
 
             locationRepository.save(pin.getLocation());
-            pin.updateUser(user);
+            pin.setUser(user);
             pinRepository.save(pin);
 
             // Pin - Circle 맵핑 정보 생성
@@ -104,23 +101,23 @@ public class PinServiceImpl implements PinService {
     }
 
     @Override
-    public PinDTO.PinDetailResponse updatePin(Users user, PinDTO.PinUpdateRequest request) throws ParseException {
-        Long pinId = request.getPinId();
+    public PinDTO.PinDetailResponse updatePin(Users user, Long pinId, PinDTO.PinUpdateRequest request, List<MultipartFile> pictures) throws ParseException {
         Pin pin = pinRepository.findById(pinId).orElseThrow(() -> {
             log.error("Update pin failed. pinId = {} does not exist.", pinId);
             throw new EntityNotFoundException("존재하지 않는 핀입니다.");
         });
 
+        Location updatedLocation = request.getLocation().toEntity();
+        locationRepository.save(updatedLocation);
         pin.updateTitle(request.getTitle());
-        pin.updateLocation(request.getLocationDTO().toEntity());
+        pin.updateLocation(updatedLocation);
 
         // 사진 수정
-        List<MultipartFile> newPictureList = request.getPictures();
 
         // PinPicture에서 기존 매핑 삭제하고 새롭게 추가한다.
         pinPictureRepository.deleteAll(pinPictureRepository.findAllByPinId(pinId));
 
-        List<Picture> pictureList = uploadAndSavePictures(newPictureList);
+        List<Picture> pictureList = uploadAndSavePictures(pictures);
 
         // Pin - Picture 맵핑 정보 생성
         pictureList.forEach((p) -> pinPictureRepository.save(PinPicture.builder().pin(pin).picture(p).build()));

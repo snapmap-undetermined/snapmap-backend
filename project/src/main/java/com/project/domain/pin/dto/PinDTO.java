@@ -31,20 +31,20 @@ public class PinDTO {
 
     @Data
     public static class PinUpdateRequest {
-        private Long pinId;
         private String title;
-        private List<MultipartFile> pictures = new ArrayList<>();
-        private LocationDTO locationDTO;
+        private LocationDTO location;
     }
 
     @Data
     public static class PinDetailResponse {
+        private String title;
         private List<PictureDTO.PictureResponse> pictureList;
         private LocationDTO location;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public PinDetailResponse(Pin pin, List<Picture> pictureList) {
+            this.title = pin.getTitle();
             this.pictureList = pictureList.stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
             this.location = new LocationDTO(pin.getLocation());
             this.createdAt = pin.getCreatedAt();

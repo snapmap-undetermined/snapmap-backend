@@ -2,13 +2,9 @@ package com.project.domain.pin.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.location.entity.Location;
-import com.project.domain.picture.entity.Picture;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "pin")
@@ -40,7 +36,7 @@ public class Pin extends BaseTimeEntity {
         this.title = title;
     }
 
-    public void updateUser(Users user) {
+    public void setUser(Users user) {
         this.user = user;
     }
 

@@ -55,10 +55,12 @@ public class PinController {
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
-    @PatchMapping("/")
+    @PatchMapping("/{pinId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> updatePin(@AuthUser Users user, @RequestBody PinDTO.PinUpdateRequest request) throws Exception{
-        PinDTO.PinDetailResponse pin = pinService.updatePin(user, request);
+    public ResponseEntity<PinDTO.PinDetailResponse> updatePin(@AuthUser Users user, @PathVariable Long pinId,
+                                                              @RequestPart PinDTO.PinUpdateRequest request,
+                                                              @RequestPart List<MultipartFile> pictures) throws Exception{
+        PinDTO.PinDetailResponse pin = pinService.updatePin(user, pinId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
