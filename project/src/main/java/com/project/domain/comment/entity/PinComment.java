@@ -45,12 +45,6 @@ public class PinComment extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean isDeleted; // 댓글 삭제 여부
 
-    @Column
-    private Integer likeCount; // 댓글 좋아요
-
-    @Column
-    private Integer hateCount; // 댓글 싫어요
-
     public void setDeleted() {
         this.isDeleted = true;
     }

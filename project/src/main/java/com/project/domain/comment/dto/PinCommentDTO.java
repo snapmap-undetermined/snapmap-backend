@@ -35,19 +35,13 @@ public class PinCommentDTO {
         private Long pinId;
         private String text;
         private Long parentCommentId;
-        private Long commentOrder;
-        private Boolean isDeleted;
 
         public PinComment toEntity(Users user, Pin pin) {
             return PinComment.builder()
                     .pin(pin)
-                    .parentCommentId(parentCommentId)
                     .text(text)
                     .parentCommentId(parentCommentId)
-                    .commentOrder(commentOrder)
                     .isDeleted(false)
-                    .hateCount(0)
-                    .likeCount(0)
                     .writer(user)
                     .build();
         }
