@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PinCommentServiceImpl implements PinCommentService {
 
-    private PinRepository pinRepository;
-    private UserRepository userRepository;
-    private PinCommentRepository pinCommentRepository;
+    private final PinRepository pinRepository;
+    private final UserRepository userRepository;
+    private final PinCommentRepository pinCommentRepository;
 
     @Override
     @Transactional
