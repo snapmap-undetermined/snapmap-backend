@@ -23,16 +23,4 @@ public class Picture extends BaseTimeEntity {
 
     @Column(name = "url")
     private String url;
-
-    @ManyToOne
-    @JoinColumn(name = "pin_id")
-    private Pin pin;
-
-
-    public void setPin(Pin pin) {
-        this.pin = pin;
-        if (!pin.getPictureList().contains(this)) {
-            pin.getPictureList().add(this);
-        }
-    }
 }

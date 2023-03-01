@@ -41,9 +41,6 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Group> groupList;
-//
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Pin> pinList = new ArrayList<>();

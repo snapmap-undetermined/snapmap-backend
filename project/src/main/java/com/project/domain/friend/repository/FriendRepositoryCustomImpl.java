@@ -22,5 +22,4 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
                 .where(f.me.id.eq(userId))
                 .stream().toList();
     }
-
 }

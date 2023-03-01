@@ -1,14 +1,10 @@
 package com.project.domain.pin.entity;
 
 import com.project.common.entity.BaseTimeEntity;
-import com.project.domain.picture.entity.Picture;
+import com.project.domain.location.entity.Location;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-import org.locationtech.jts.geom.Point;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "pin")
@@ -27,23 +23,24 @@ public class Pin extends BaseTimeEntity {
     @JoinColumn(name = "user")
     private Users user;
 
-    @OneToMany(mappedBy = "pin", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Picture> pictureList = new ArrayList<>();
+    // 핀 이름
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "location")
-    private Point location;
+    // 하나의 장소에 대응되는 여러 개의 핀이 존재 가능하다.
+    @ManyToOne
+    @JoinColumn(name = "location")
+    private Location location;
 
-    public void addPicture(Picture picture){
-        this.pictureList.add(picture);
-        if(picture.getPin() != this) picture.setPin(this);
+    public void updateTitle(String title) {
+        this.title = title;
     }
 
     public void setUser(Users user) {
         this.user = user;
     }
 
-    public void setLocation(Point point) {
-        this.location = point;
+    public void updateLocation(Location location) {
+        this.location = location;
     }
 }
