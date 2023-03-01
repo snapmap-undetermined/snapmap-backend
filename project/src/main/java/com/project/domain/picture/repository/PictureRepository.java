@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface PictureRepository extends JpaRepository<Picture, Long>, PictureRepositoryCustom{
 
-    List<Picture> findAllByPinId(Long pinId);
-
 }

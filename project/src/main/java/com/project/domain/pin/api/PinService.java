@@ -12,11 +12,11 @@ public interface PinService {
 
     PinDTO.PinDetailResponse getPinDetail(Users user, Long feedId);
 
-    List<PinDTO.PinDetailResponse> getAllPinByMe(Users user);
+    PinDTO.PinDetailListResponse getAllPinByMe(Users user);
 
-    PinDTO.PinDetailResponse updatePin(Users user, PinDTO.PinUpdateRequest request) throws ParseException;
+    PinDTO.PinDetailResponse updatePin(Users user, Long pinId, PinDTO.PinUpdateRequest request, List<MultipartFile> pictures) throws ParseException;
 
     void deletePin(Users user, Long feedId);
 
-    List<PinDTO.PinDetailResponse> getAllPinByCircle(Long circleId);
+    PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId);
 }
