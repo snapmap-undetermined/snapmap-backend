@@ -3,6 +3,8 @@ package com.project.domain.comment.dto;
 import com.project.domain.comment.entity.PinComment;
 import com.project.domain.pin.entity.Pin;
 import com.project.domain.users.entity.Users;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -14,16 +16,16 @@ public class PinCommentDTO {
         private Long commentId;
         private Long writerId;
         private String text;
-        private Long parentCommentId;
+        private Long parentCommentOrder;
         private Long commentOrder;
         private Boolean isDeleted;
-        private Long childCommentCount;
+        private int childCommentCount;
 
         public PinCommentDetailResponse(PinComment pinComment) {
             this.commentId = pinComment.getId();
             this.writerId = pinComment.getWriter().getId();
             this.text = pinComment.getText();
-            this.parentCommentId = pinComment.getParentCommentId();
+            this.parentCommentOrder = pinComment.getParentCommentOrder();
             this.commentOrder = pinComment.getCommentOrder();
             this.isDeleted = pinComment.getIsDeleted();
             this.childCommentCount = pinComment.getChildCommentCount();
@@ -32,15 +34,20 @@ public class PinCommentDTO {
 
     @Data
     public static class CreatePinCommentRequest {
+
+        @NotEmpty
         private Long pinId;
+        @NotEmpty
         private String text;
-        private Long parentCommentId;
+
+        private Long parentCommentOrder;
 
         public PinComment toEntity(Users user, Pin pin) {
             return PinComment.builder()
                     .pin(pin)
                     .text(text)
-                    .parentCommentId(parentCommentId)
+                    .parentCommentOrder(parentCommentOrder)
+                    .childCommentCount(0)
                     .isDeleted(false)
                     .writer(user)
                     .build();

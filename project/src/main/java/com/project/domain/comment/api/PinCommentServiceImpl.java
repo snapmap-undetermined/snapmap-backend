@@ -34,12 +34,12 @@ public class PinCommentServiceImpl implements PinCommentService {
         pinComment.setCommentOrder(pinCommentRepository.getLastPinCommentOrder(getPin.getId()) + 1);
 
         // 부모 댓글은 부모 번호를 자신의 댓글 번호로 한다.
-        if (pinComment.getParentCommentId() == -1) {
-            pinComment.setParentCommentId(pinComment.getParentCommentId());
+        if (pinComment.getParentCommentOrder() == null) {
+            pinComment.setParentCommentOrder(pinComment.getCommentOrder());
         } else {
-            long parentCommentId = pinComment.getParentCommentId();
+            long parentCommentOrder = pinComment.getParentCommentOrder();
             // 자식 댓글이라면, 부모 댓글의 자식 수를 증가시킨다.
-            PinComment parentComm = pinCommentRepository.findByCommentOrder(parentCommentId);
+            PinComment parentComm = pinCommentRepository.findByCommentOrder(parentCommentOrder);
             parentComm.plusChildCommentCount();
 
         }
@@ -62,9 +62,9 @@ public class PinCommentServiceImpl implements PinCommentService {
     public void deletePinComment(Long pinCommentId) {
 
         PinComment pinComment = pinCommentRepository.findById(pinCommentId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 pin댓글 입니다."));
-        if (!pinComment.getCommentOrder().equals(pinComment.getParentCommentId())) {
+        if (!pinComment.getCommentOrder().equals(pinComment.getParentCommentOrder())) {
             // 부모 댓글 확인
-            PinComment parentPinComment = pinCommentRepository.findByCommentOrder(pinComment.getParentCommentId());
+            PinComment parentPinComment = pinCommentRepository.findByCommentOrder(pinComment.getParentCommentOrder());
             parentPinComment.minusChildCommentCount();
             // 자식 댓글이 없고, isDeleted = true인 부모 댓글은 삭제시킨다.
             if (parentPinComment.getChildCommentCount() == 0 && parentPinComment.getIsDeleted())
@@ -84,11 +84,12 @@ public class PinCommentServiceImpl implements PinCommentService {
 
     @Override
     public PinCommentDTO.PinCommentDetailResponse updatePinComment(Long pinCommentId, PinCommentDTO.UpdatePinCommentRequest request) {
-        PinComment comment = pinCommentRepository.findById(pinCommentId).orElseThrow(
+        PinComment pinComment = pinCommentRepository.findById(pinCommentId).orElseThrow(
                 () -> new EntityNotFoundException("해당 pin댓글이 존재하지 않습니다."));
-        comment.setText(request.getText());
+        pinComment.setText(request.getText());
+        pinCommentRepository.save(pinComment);
 
-        return new PinCommentDTO.PinCommentDetailResponse(comment);
+        return new PinCommentDTO.PinCommentDetailResponse(pinComment);
     }
 
 

@@ -48,7 +48,7 @@ public class PinCommentRepositoryCustomImpl implements PinCommentRepositoryCusto
                 .select(pc.commentOrder.max().coalesce(0L))
                 .where(pc.pin.id.eq(pinId))
                 .from(pc)
-                .fetchFirst();
+                .fetchOne();
     }
 
 }

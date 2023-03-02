@@ -34,13 +34,13 @@ public class PinComment extends BaseTimeEntity {
     private Pin pin;
 
     @Column
-    private Long parentCommentId; // 원댓글의 번호
+    private Long parentCommentOrder; // 원댓글의 번호
 
     @Column
     private Long commentOrder; // 순서
 
     @Column
-    private Long childCommentCount; // 자식 댓글의 개수
+    private int childCommentCount; // 자식 댓글의 개수
 
     @Column(nullable = false)
     private Boolean isDeleted; // 댓글 삭제 여부
@@ -61,8 +61,8 @@ public class PinComment extends BaseTimeEntity {
         this.commentOrder = order;
     }
 
-    public void setParentCommentId(Long pinCommentId) {
-        this.commentOrder = pinCommentId;
+    public void setParentCommentOrder(Long order) {
+        this.parentCommentOrder = order;
     }
 
     public void setText(String text) {

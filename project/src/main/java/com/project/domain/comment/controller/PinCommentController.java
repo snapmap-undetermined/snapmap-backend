@@ -51,9 +51,8 @@ public class PinCommentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @PatchMapping("/{pinId}")
-    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> updatePinComment(Long pinCommentId, @RequestBody PinCommentDTO.UpdatePinCommentRequest request) {
+    @PatchMapping("/{pinCommentId}")
+    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> updatePinComment(@PathVariable Long pinCommentId, @RequestBody PinCommentDTO.UpdatePinCommentRequest request) {
         PinCommentDTO.PinCommentDetailResponse response = pinCommentService.updatePinComment(pinCommentId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
