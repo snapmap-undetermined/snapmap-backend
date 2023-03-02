@@ -10,6 +10,7 @@ import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,11 +79,11 @@ public class PictureCommentServiceImpl implements PictureCommentService {
     }
 
     @Override
+    @Transactional
     public PictureCommentDTO.PictureCommentDetailResponse updatePictureComment(Long pictureCommentId, PictureCommentDTO.UpdatePictureCommentRequest request) {
         PictureComment pictureComment = pictureCommentRepository.findById(pictureCommentId).orElseThrow(
                 () -> new EntityNotFoundException("해당 picture 댓글이 존재하지 않습니다."));
         pictureComment.setText(request.getText());
-        pictureCommentRepository.save(pictureComment);
 
         return new PictureCommentDTO.PictureCommentDetailResponse(pictureComment);
     }
