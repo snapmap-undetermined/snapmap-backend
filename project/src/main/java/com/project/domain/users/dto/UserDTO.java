@@ -87,4 +87,10 @@ public class UserDTO {
         }
     }
 
+    @Data
+    public static class UpdateUserRequest{
+        private String nickname;
+        private String profileImage;
+    }
+
 }
