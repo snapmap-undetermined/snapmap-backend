@@ -15,6 +15,7 @@ public class PinCommentDTO {
     public static class PinCommentDetailResponse {
         private Long commentId;
         private Long writerId;
+        private String writerNickname;
         private String text;
         private Long parentCommentOrder;
         private Long commentOrder;
@@ -24,6 +25,7 @@ public class PinCommentDTO {
         public PinCommentDetailResponse(PinComment pinComment) {
             this.commentId = pinComment.getId();
             this.writerId = pinComment.getWriter().getId();
+            this.writerNickname = pinComment.getWriter().getNickname();
             this.text = pinComment.getText();
             this.parentCommentOrder = pinComment.getParentCommentOrder();
             this.commentOrder = pinComment.getCommentOrder();
@@ -35,9 +37,9 @@ public class PinCommentDTO {
     @Data
     public static class CreatePinCommentRequest {
 
-        @NotEmpty
+        @NotNull
         private Long pinId;
-        @NotEmpty
+        @NotNull
         private String text;
 
         private Long parentCommentOrder;

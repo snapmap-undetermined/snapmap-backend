@@ -4,6 +4,7 @@ import com.project.domain.comment.entity.PictureComment;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class PictureCommentDTO {
     public static class PictureCommentDetailResponse {
         private Long commentId;
         private Long writerId;
+        private String writerNickname;
         private String text;
         private Long parentCommentOrder;
         private Long commentOrder;
@@ -23,6 +25,7 @@ public class PictureCommentDTO {
         public PictureCommentDetailResponse(PictureComment pictureComment) {
             this.commentId = pictureComment.getId();
             this.writerId = pictureComment.getWriter().getId();
+            this.writerNickname = pictureComment.getWriter().getNickname();
             this.text = pictureComment.getText();
             this.parentCommentOrder = pictureComment.getParentCommentOrder();
             this.commentOrder = pictureComment.getCommentOrder();
@@ -34,9 +37,9 @@ public class PictureCommentDTO {
     @Data
     public static class CreatePictureCommentRequest {
 
-        @NotEmpty
+        @NotNull
         private Long pictureId;
-        @NotEmpty
+        @NotNull
         private String text;
 
         private Long parentCommentOrder;

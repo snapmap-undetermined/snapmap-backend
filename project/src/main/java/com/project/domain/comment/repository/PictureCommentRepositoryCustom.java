@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PictureCommentRepositoryCustom {
 
-    List<PictureComment> findByPictureId(Long pictureId);
+    List<PictureComment> findAllByPictureId(Long pictureId);
 
     PictureComment findByCommentOrder(Long order);
 

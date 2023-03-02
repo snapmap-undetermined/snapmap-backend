@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PinCommentRepositoryCustom {
 
-    List<PinComment> findByPinId(Long pinId);
+    List<PinComment> findAllByPinId(Long pinId);
 
     PinComment findByCommentOrder(Long order);
 

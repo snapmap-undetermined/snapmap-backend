@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.project.domain.comment.entity.QPictureComment.pictureComment;
+
 @RequiredArgsConstructor
 public class PictureCommentRepositoryCustomImpl implements PictureCommentRepositoryCustom{
 
@@ -16,35 +18,28 @@ public class PictureCommentRepositoryCustomImpl implements PictureCommentReposit
     private final EntityManager em;
 
     @Override
-    public List<PictureComment> findByPictureId(Long pictureId) {
-        QPictureComment pc = new QPictureComment("pc");
-
+    public List<PictureComment> findAllByPictureId(Long pictureId) {
         return query
-                .select(pc)
-                .from(pc)
-                .where(pc.picture.id.eq(pictureId))
+                .selectFrom(pictureComment)
+                .where(pictureComment.picture.id.eq(pictureId))
                 .fetch();
     }
 
     @Override
     public PictureComment findByCommentOrder(Long order) {
-        QPictureComment pc = new QPictureComment("pc");
-
         return query
-                .select(pc)
-                .from(pc)
-                .where(pc.commentOrder.eq(order))
-                .fetch().get(0);
+                .selectFrom(pictureComment)
+                .where(pictureComment.commentOrder.eq(order))
+                .fetchOne();
 
     }
 
     @Override
     public Long getLastPictureCommentOrder(Long pictureId) {
-        QPictureComment pc = new QPictureComment("pc");
         return query
-                .select(pc.commentOrder.max().coalesce(0L))
-                .where(pc.picture.id.eq(pictureId))
-                .from(pc)
+                .select(pictureComment.commentOrder.max().coalesce(0L))
+                .where(pictureComment.picture.id.eq(pictureId))
+                .from(pictureComment)
                 .fetchOne();
     }
 }
