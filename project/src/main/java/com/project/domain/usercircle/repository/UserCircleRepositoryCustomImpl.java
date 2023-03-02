@@ -25,7 +25,8 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
                 .select(uc)
                 .from(uc)
                 .where(uc.user.id.eq(userId))
-                .stream().toList();
+                .distinct()
+                .fetch();
     }
 
     @Override
@@ -38,8 +39,8 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
                 .from(uc)
                 .where(uc.circle.id.eq(circleId))
                 .join(uc.user, u)
-                .fetch()
-                .stream().distinct().toList();
+                .fetch();
+
 
     }
     @Override
