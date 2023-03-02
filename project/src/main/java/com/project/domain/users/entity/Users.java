@@ -52,4 +52,12 @@ public class Users extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }
