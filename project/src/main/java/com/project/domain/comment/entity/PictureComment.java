@@ -3,6 +3,7 @@ package com.project.domain.comment.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.picture.entity.Picture;
+import com.project.domain.pin.entity.Pin;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,24 +33,38 @@ public class PictureComment extends BaseTimeEntity {
     private Picture picture;
 
     @Column
-    private Long parentCommentNum; // 자신이 속한 원댓글의 번호
+    private Long parentCommentOrder; // 원댓글의 번호
 
     @Column
-    private Long commentOrder; // 자신의 댓글 번호
+    private Long commentOrder; // 순서
 
     @Column
-    private Long childCommentCount; // 자식 댓글의 개수
+    private int childCommentCount; // 자식 댓글의 개수
 
     @Column(nullable = false)
     private Boolean isDeleted; // 댓글 삭제 여부
 
-    @Column
-    private Integer likeCount; // 댓글 좋아요
+    public void setDeleted() {
+        this.isDeleted = true;
+    }
 
-    @Column
-    private Integer hateCount; // 댓글 싫어요
+    public void plusChildCommentCount() {
+        this.childCommentCount++;
+    }
 
+    public void minusChildCommentCount() {
+        this.childCommentCount--;
+    }
 
+    public void setCommentOrder(Long order) {
+        this.commentOrder = order;
+    }
 
+    public void setParentCommentOrder(Long order) {
+        this.parentCommentOrder = order;
+    }
 
+    public void setText(String text) {
+        this.text = text;
+    }
 }

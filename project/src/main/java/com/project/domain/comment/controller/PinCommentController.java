@@ -57,7 +57,4 @@ public class PinCommentController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
-
 }

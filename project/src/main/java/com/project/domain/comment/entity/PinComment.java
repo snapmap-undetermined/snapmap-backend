@@ -67,8 +67,5 @@ public class PinComment extends BaseTimeEntity {
 
     public void setText(String text) {
         this.text = text;
-
     }
-
-
 }

@@ -27,7 +27,7 @@ public class PinCommentServiceImpl implements PinCommentService {
     @Transactional
     public PinCommentDTO.PinCommentDetailResponse createPinComment(Users user, PinCommentDTO.CreatePinCommentRequest request) {
 
-        Users getUser = userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+        Users getUser = userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
         Pin getPin = pinRepository.findById(request.getPinId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Pin 입니다."));
         PinComment pinComment = request.toEntity(getUser, getPin);
 
@@ -76,16 +76,16 @@ public class PinCommentServiceImpl implements PinCommentService {
 
     @Override
     public void deletePinCommentWithStatus(Long pinCommentId) {
-        PinComment comment = pinCommentRepository.findById(pinCommentId).orElseThrow(
+        PinComment pinComment = pinCommentRepository.findById(pinCommentId).orElseThrow(
                 () -> new EntityNotFoundException("해당 pin댓글이 존재하지 않습니다."));
 
-        comment.setDeleted();
+        pinComment.setDeleted();
     }
 
     @Override
     public PinCommentDTO.PinCommentDetailResponse updatePinComment(Long pinCommentId, PinCommentDTO.UpdatePinCommentRequest request) {
         PinComment pinComment = pinCommentRepository.findById(pinCommentId).orElseThrow(
-                () -> new EntityNotFoundException("해당 pin댓글이 존재하지 않습니다."));
+                () -> new EntityNotFoundException("해당 pin 댓글이 존재하지 않습니다."));
         pinComment.setText(request.getText());
         pinCommentRepository.save(pinComment);
 
