@@ -1,1 +1,1 @@
-# snapmap-backend
+# pinit-backend
