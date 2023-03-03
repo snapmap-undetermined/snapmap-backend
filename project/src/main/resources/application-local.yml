@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    urL: jdbc:mysql://database-couple.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com:3306/snapmap
+    urL: jdbc:mysql://database-pinit.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com/pinit
     username: admin
-    password: couple123
+    password: pinit123
 
   security:
     jwt:
