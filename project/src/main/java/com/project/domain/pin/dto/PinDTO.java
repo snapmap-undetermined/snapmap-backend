@@ -4,6 +4,8 @@ import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.io.ParseException;
@@ -16,7 +18,9 @@ import java.util.stream.Collectors;
 
 public class PinDTO {
     @Data
+    @Builder
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class PinCreateRequest {
         private String title;
         private LocationDTO location;
@@ -30,6 +34,7 @@ public class PinDTO {
     }
 
     @Data
+    @Builder
     public static class PinUpdateRequest {
         private String title;
         private LocationDTO location;
@@ -37,6 +42,7 @@ public class PinDTO {
 
     @Data
     public static class PinDetailResponse {
+        private Long id;
         private String title;
         private List<PictureDTO.PictureResponse> pictureList;
         private LocationDTO location;
@@ -44,6 +50,7 @@ public class PinDTO {
         private LocalDateTime updatedAt;
 
         public PinDetailResponse(Pin pin, List<Picture> pictureList) {
+            this.id = pin.getId();
             this.title = pin.getTitle();
             this.pictureList = pictureList.stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
             this.location = new LocationDTO(pin.getLocation());

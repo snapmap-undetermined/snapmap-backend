@@ -10,13 +10,13 @@ import java.util.List;
 public interface PinService {
     PinDTO.PinDetailResponse createPin(Users user, Long circleId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures);
 
-    PinDTO.PinDetailResponse getPinDetail(Users user, Long feedId);
+    PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId);
 
     PinDTO.PinDetailListResponse getAllPinByMe(Users user);
 
     PinDTO.PinDetailResponse updatePin(Users user, Long pinId, PinDTO.PinUpdateRequest request, List<MultipartFile> pictures) throws ParseException;
 
-    void deletePin(Users user, Long feedId);
+    void deletePin(Users user, Long pinId);
 
     PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId);
 }

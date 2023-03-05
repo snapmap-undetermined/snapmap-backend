@@ -6,6 +6,7 @@ import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -42,6 +43,7 @@ public class CircleDTO {
     }
 
     @Data
+    @Builder
     public static class CreateCircleRequest {
 
         @NotBlank(message = "그룹이름을 입력해주세요.")

@@ -1,5 +1,6 @@
 package com.project.domain.usercircle.repository;
 
+import com.project.domain.circle.entity.Circle;
 import com.project.domain.usercircle.entity.QUserCircle;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.QUsers;
@@ -11,6 +12,8 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 
+import static com.project.domain.usercircle.entity.QUserCircle.userCircle;
+
 @RequiredArgsConstructor
 public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCustom {
 
@@ -18,7 +21,7 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     private final EntityManager em;
 
     @Override
-    public List<UserCircle> findByUserId(Long userId) {
+    public List<UserCircle> findAllByUserId(Long userId) {
         QUserCircle uc = new QUserCircle("uc");
 
         return query
@@ -43,6 +46,16 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
 
 
     }
+
+    @Override
+    public List<Circle> findAllCircleByUserId(Long userId) {
+        return query
+                .select(userCircle.circle)
+                .from(userCircle)
+                .where(userCircle.user.id.eq(userId))
+                .fetch();
+    }
+
     @Override
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     public Long deleteByUserIdAndCircleId(Long userId, Long circleId) {

@@ -18,7 +18,7 @@ public class LocationDTO {
 
     public LocationDTO(String name, PointDTO pointDTO) {
         this.name = name;
-        this.point = new PointDTO(pointDTO.getLongitude(), point.getLatitude());
+        this.point = new PointDTO(pointDTO.getLongitude(), pointDTO.getLatitude());
     }
 
     public Location toEntity() throws ParseException {

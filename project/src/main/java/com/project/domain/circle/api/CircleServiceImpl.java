@@ -47,7 +47,7 @@ public class CircleServiceImpl implements CircleService {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         }
 
-        List<UserCircle> userCircleList = userCircleRepository.findByUserId(userId);
+        List<UserCircle> userCircleList = userCircleRepository.findAllByUserId(userId);
 
         return userCircleList.stream().map((uc) -> new CircleDTO.CircleSimpleInfoResponse(uc.getCircle())).collect(Collectors.toList());
 
