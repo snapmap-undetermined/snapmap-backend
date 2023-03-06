@@ -7,19 +7,19 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.project.domain.friend.entity.QFriend.friend;
+
 @RequiredArgsConstructor
 public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
 
     private final JPAQueryFactory query;
 
     @Override
-    public List<Friend> findByUserId(Long userId) {
-        QFriend f = new QFriend("f");
+    public List<Friend> findAllByUserId(Long userId) {
 
         return query
-                .select(f)
-                .from(f)
-                .where(f.me.id.eq(userId))
+                .selectFrom(friend)
+                .where(friend.me.id.eq(userId))
                 .stream().toList();
     }
 }

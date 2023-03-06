@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FriendRepositoryCustom {
 
-    List<Friend> findByUserId(Long userId);
+    List<Friend> findAllByUserId(Long userId);
 }
