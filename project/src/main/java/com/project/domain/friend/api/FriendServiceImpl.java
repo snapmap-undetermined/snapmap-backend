@@ -24,7 +24,7 @@ public class FriendServiceImpl implements FriendService {
     private final UserRepository userRepository;
 
     @Override
-    public FriendDTO.FriendListResponse getAllFriends(Long userId){
+    public FriendDTO.FriendListResponse getAllFriends(Long userId) {
 
         List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(userId);
 
@@ -40,13 +40,19 @@ public class FriendServiceImpl implements FriendService {
         Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         });
-        // 유저-친구 정보 동일, 이미 있는 친구관계 중복 확인
-        if (isValidFriendship(user.getId(), friendUser.getId())) {
-            friend.setFriendUser(friendUser);
-            friend.setMeUser(user);
 
-            friendRepository.save(friend);
+        // 유저-친구 정보 동일, 이미 있는 친구관계 중복 확인
+        if (Objects.equals(user.getId(), friendUser.getId())) {
+            throw new BusinessLogicException("유저-친구 정보가 동일합니다.", ErrorCode.REQUEST_USER_ID_VALID_ERROR);
         }
+        if (friendRepository.existsByUserIds(user.getId(), friendUser.getId())) {
+            throw new BusinessLogicException("이미 있는 친구관계 입니다.", ErrorCode.FRIEND_DUPLICATION);
+        }
+
+        friend.setFriendUser(friendUser);
+        friend.setMeUser(user);
+
+        friendRepository.save(friend);
 
         return new FriendDTO.FriendResponse(friend);
     }
@@ -72,13 +78,4 @@ public class FriendServiceImpl implements FriendService {
         return new FriendDTO.FriendResponse(friend);
     }
 
-    boolean isValidFriendship(Long myId, Long friendId) {
-        if (Objects.equals(myId, friendId)) {
-            throw new BusinessLogicException("유저-친구 정보가 동일합니다.", ErrorCode.REQUEST_USER_ID_VALID_ERROR);
-        }
-        if (friendRepository.existsByUserIds(myId, friendId)) {
-            throw new BusinessLogicException("이미 있는 친구관계 입니다.", ErrorCode.FRIEND_DUPLICATION);
-        }
-        return true;
-    }
 }

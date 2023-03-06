@@ -1,18 +1,14 @@
 package com.project.domain.usercircle.repository;
 
-import com.project.domain.usercircle.entity.QUserCircle;
-import com.project.domain.usercircle.entity.UserCircle;
-import com.project.domain.users.entity.QUsers;
+import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 
 import static com.project.domain.usercircle.entity.QUserCircle.userCircle;
-import static com.project.domain.users.entity.QUsers.users;
 
 @RequiredArgsConstructor
 public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCustom {
@@ -20,10 +16,10 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     private final JPAQueryFactory query;
 
     @Override
-    public List<UserCircle> findAllByUserId(Long userId) {
+    public List<Circle> findAllByUserId(Long userId) {
 
         return query
-                .selectFrom(userCircle)
+                .selectFrom(userCircle.circle)
                 .where(userCircle.user.id.eq(userId))
                 .distinct()
                 .fetch();
