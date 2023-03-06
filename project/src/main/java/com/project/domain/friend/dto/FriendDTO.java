@@ -2,6 +2,8 @@ package com.project.domain.friend.dto;
 
 import com.project.domain.friend.entity.Friend;
 import com.project.domain.users.entity.Users;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -34,7 +36,13 @@ public class FriendDTO {
 
     @Data
     public static class UpdateFriendNameRequest {
+
+        @NotNull(message = "친구이름은 Null이나 '' 일 수 없습니다.")
         private String friendName;
+
+        public UpdateFriendNameRequest(String friendName) {
+            this.friendName = friendName;
+        }
     }
 
     @Data
