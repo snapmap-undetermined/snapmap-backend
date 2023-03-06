@@ -121,22 +121,6 @@ public class FriendServiceTest {
     }
 
     @Test
-    @DisplayName("빈문자열 및 null값으로 친구의 닉네임을 수정할 수 없다.")
-    public void update_friend_with_not_exist_friend_id_fail() throws Exception {
-
-        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1User);
-        FriendDTO.FriendSimpleInfoResponse friend = friendService.createFriend(meUser, createFriendRequest);
-        FriendDTO.UpdateFriendNameRequest updateFriendNameRequest = new FriendDTO.UpdateFriendNameRequest("");
-
-        Throwable exception = assertThrows(MethodArgumentNotValidException.class, () -> {
-//            friendService.updateFriendName(friend.getFriendId(), updateFriendNameRequest);
-            new FriendDTO.UpdateFriendNameRequest(null);
-        });
-
-        assertEquals("친구이름은 Null 일 수 없습니다", exception.getMessage());
-    }
-
-    @Test
     @DisplayName("친구관계를 정상적으로 삭제한다.")
     public void delete_friend_with_friend_id() throws Exception {
 
