@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    urL: jdbc:mysql://database-couple.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com:3306/snapmap
+    urL: jdbc:mysql://database-pinit.c4wybh857q9a.ap-northeast-2.rds.amazonaws.com/pinit
     username: admin
-    password: couple123
+    password: pinit123
 
   security:
     jwt:
@@ -23,3 +23,15 @@ spring:
         show_sql: true
         format_sql: true
     defer-datasource-initialization: true
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA4FBINOGC5JQYWKE4
+      secret-key: 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
+    s3:
+      bucket: snapmap-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    snapmap-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
