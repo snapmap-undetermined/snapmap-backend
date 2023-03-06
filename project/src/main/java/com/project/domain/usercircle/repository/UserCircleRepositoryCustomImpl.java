@@ -20,7 +20,7 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     private final JPAQueryFactory query;
 
     @Override
-    public List<UserCircle> findByUserId(Long userId) {
+    public List<UserCircle> findAllByUserId(Long userId) {
 
         return query
                 .selectFrom(userCircle)
