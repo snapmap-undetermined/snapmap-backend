@@ -1,81 +1,105 @@
 package com.project.domain.friend.api;
 
-import com.project.common.entity.Role;
 import com.project.domain.friend.dto.FriendDTO;
-import com.project.domain.friend.entity.Friend;
 import com.project.domain.friend.repository.FriendRepository;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 public class FriendServiceTest {
 
-    @InjectMocks
-    FriendServiceImpl friendService;
+    private final FriendRepository friendRepository;
+    private final FriendService friendService;
+    private final UserRepository userRepository;
 
-    @Mock
-    FriendRepository friendRepository;
+    @Autowired
+    public FriendServiceTest(FriendRepository friendRepository, FriendService friendService, UserRepository userRepository) {
+        this.friendService = friendService;
+        this.friendRepository = friendRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Mock
-    UserRepository userRepository;
 
-    Users meUser;
-    Users friendUser;
-
-    @BeforeEach
-    @DisplayName("테스트에 필요한 me user객체와 friend user객체를 미리 생성해 놓는다.")
-    void initUseCase() {
-        meUser = Users.builder().email("kc@a.com").nickname("kc").password("123").role(Role.USER).build();
-        friendUser = Users.builder().email("sh@a.com").nickname("sh").password("123").role(Role.USER).build();
+    public void createInitUsers() {
+        Users meUser = Users.builder().email("skc@aaa.com").nickname("skc").password("123").build();
+        Users friendUser = Users.builder().email("jsh@aaa.com").nickname("jsh").password("123").build();
         userRepository.save(meUser);
         userRepository.save(friendUser);
     }
 
-    @Test
-    @DisplayName("userId로 friend의 리스트를 가져온다.")
-    void getAllFriendsByUser() throws Exception {
-
-        //given
-        List<Friend> friendList = new ArrayList<>();
-        Friend friend = Friend.builder().friend(friendUser).me(meUser).friendName("testFriend").build();
-        friendRepository.save(friend);
-        friendList.add(friend);
-        given(friendRepository.findByUserId(meUser.getId())).willReturn(friendList);
-
-        //when
-        final FriendDTO.FriendSimpleInfoResponse friendSimpleInfoResponse = friendService.getAllFriends(meUser.getId()).get(0);
-
-        //then
-        assertThat(friendSimpleInfoResponse.getFriendUserId()).isEqualTo(friendUser.getId());
+    @BeforeEach
+    public void initUseCase() {
+        createInitUsers();
     }
 
     @Test
-    void createFriend() throws Exception {
+    @DisplayName("올바른 요청이 들어왔을 때 친구가 정상적으로 생성된다.")
+    public void create_friend_with_correct_request_success() throws Exception {
 
         //given
-        List<Friend> friendList = new ArrayList<>();
-        Friend friend = Friend.builder().friend(friendUser).me(meUser).friendName("testFriend").build();
-        friendRepository.save(friend);
-
-        given(friendRepository.save(friend)).willReturn(friend);
-        //mocking
+        Users user1 = userRepository.findByEmail("skc@aaa.com").orElseThrow();
+        Users user2 = userRepository.findByEmail("jsh@aaa.com").orElseThrow();
+        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(user2);
 
         //when
-//        final FriendDTO.FriendSimpleInfoResponse friendSimpleInfoResponse = friendService.createFriend(meUser,)
+        friendService.createFriend(user1, request);
+
+        //then
+        assertEquals(1, friendRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("유저가 본인을 선택해서 friend 생성을 할 경우에 에러가 발생한다.")
+    public void create_friend_has_same_user_id_fail() {
+
+        //given
+        Users user1 = userRepository.findByEmail("skc@aaa.com").orElseThrow();
+        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(user1);
+
+        //when
+        Exception exception = assertThrows(Exception.class, ()-> friendService.createFriend(user1, request));
+
+        //then
+        String message = exception.getMessage();
+        assertEquals("user와 frienduser가 동일합니다.", message);
+
+    }
+
+    @Test
+    public void get_all_friends_without_user_id_fail() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    public void get_all_friends_without_user_id_success() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    public void delete_friend_without_friend_id() {
+        //given
+        //when
+        //then
+    }
+
+    @Test
+    public void delete_friend_with_same_user_id() {
+        //given
+        //when
         //then
     }
 }

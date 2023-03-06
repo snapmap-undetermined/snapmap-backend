@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<FriendDTO.FriendSimpleInfoResponse> getAllFriends(Long userId) throws Exception {
 
-        List<Friend> friendList = friendRepository.findByUserId(userId);
+        List<Friend> friendList = friendRepository.findAllByUserId(userId);
 
         return friendList.stream().map(FriendDTO.FriendSimpleInfoResponse::new).collect(Collectors.toList());
 
@@ -33,7 +34,9 @@ public class FriendServiceImpl implements FriendService {
 
         Friend friend = createFriendRequest.toEntity();
         Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow();
-
+        if (Objects.equals(user.getId(), friendUser.getId())){
+            throw new Exception("user와 frienduser가 동일합니다.");
+        }
         friend.setFriendUser(friendUser);
         friend.setMeUser(user);
 

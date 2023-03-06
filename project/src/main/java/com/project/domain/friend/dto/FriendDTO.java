@@ -1,6 +1,7 @@
 package com.project.domain.friend.dto;
 
 import com.project.domain.friend.entity.Friend;
+import com.project.domain.users.entity.Users;
 import lombok.Data;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class FriendDTO {
             return Friend.builder()
                     .friendName(friendName)
                     .build();
+        }
+        public CreateFriendRequest(Users friend) {
+            this.friendName = friend.getNickname();
+            this.friendUserId = friend.getId();
         }
 
     }
