@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,31 +24,31 @@ public class FriendServiceImpl implements FriendService {
     private final UserRepository userRepository;
 
     @Override
-    public List<FriendDTO.FriendSimpleInfoResponse> getAllFriends(Long userId) throws Exception {
+    public FriendDTO.FriendListResponse getAllFriends(Long userId){
 
-        List<Friend> friendList = friendRepository.findAllByUserId(userId);
+        List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(userId);
 
-        return friendList.stream().map(FriendDTO.FriendSimpleInfoResponse::new).collect(Collectors.toList());
+        return new FriendDTO.FriendListResponse(friendList);
 
     }
 
     @Override
     @Transactional
-    public FriendDTO.FriendSimpleInfoResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
+    public FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
 
         Friend friend = createFriendRequest.toEntity();
         Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         });
         // 유저-친구 정보 동일, 이미 있는 친구관계 중복 확인
-        validCheckAboutCreateFriend(user.getId(), friendUser.getId());
+        if (isValidFriendship(user.getId(), friendUser.getId())) {
+            friend.setFriendUser(friendUser);
+            friend.setMeUser(user);
 
-        friend.setFriendUser(friendUser);
-        friend.setMeUser(user);
+            friendRepository.save(friend);
+        }
 
-        friendRepository.save(friend);
-
-        return new FriendDTO.FriendSimpleInfoResponse(friend);
+        return new FriendDTO.FriendResponse(friend);
     }
 
     @Override
@@ -63,22 +62,23 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO.FriendSimpleInfoResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
+    public FriendDTO.FriendResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
         Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
         });
         String updateFriendName = updateFriendNameRequest.getFriendName();
         friend.setFriendName(updateFriendName);
 
-        return new FriendDTO.FriendSimpleInfoResponse(friend);
+        return new FriendDTO.FriendResponse(friend);
     }
 
-    void validCheckAboutCreateFriend(Long meUserId, Long friendUserId) {
-        if (Objects.equals(meUserId, friendUserId)) {
+    boolean isValidFriendship(Long myId, Long friendId) {
+        if (Objects.equals(myId, friendId)) {
             throw new BusinessLogicException("유저-친구 정보가 동일합니다.", ErrorCode.REQUEST_USER_ID_VALID_ERROR);
         }
-        if (friendRepository.existByMeUserIdAndFriendUserId(meUserId, friendUserId)) {
+        if (friendRepository.existsByUserIds(myId, friendId)) {
             throw new BusinessLogicException("이미 있는 친구관계 입니다.", ErrorCode.FRIEND_DUPLICATION);
         }
+        return true;
     }
 }

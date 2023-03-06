@@ -2,8 +2,8 @@ package com.project.domain.friend.dto;
 
 import com.project.domain.friend.entity.Friend;
 import com.project.domain.users.entity.Users;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.querydsl.core.annotations.QueryProjection;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
@@ -12,32 +12,34 @@ public class FriendDTO {
 
     // GetFriend
     @Data
-    public static class FriendSimpleInfoResponse {
-        private Long friendId;
-        private Long friendUserId;
-        private String friendUserNickName;
+    public static class FriendResponse {
+        private Long id;
+        private Long userId;
+        private String userNickName;
+        private String userProfileImage;
 
-        //        private String friendProfileImage;
-        public FriendSimpleInfoResponse(Friend friend) {
-            this.friendId = friend.getId();
-            this.friendUserId = friend.getFriend().getId();
-            this.friendUserNickName = friend.getFriendName();
+        @QueryProjection
+        public FriendResponse(Friend friend) {
+            this.id = friend.getId();
+            this.userId = friend.getMate().getId();
+            this.userNickName = friend.getFriendName();
+            this.userProfileImage = friend.getMate().getProfileImage();
         }
     }
 
     @Data
-    public static class FriendSimpleInfoListResponse {
-        private List<FriendSimpleInfoResponse> friendSimpleInfoListResponseList;
+    public static class FriendListResponse {
+        private List<FriendResponse> friendListResponseList;
 
-        public FriendSimpleInfoListResponse(List<FriendSimpleInfoResponse> friendSimpleInfoResponseList) {
-            this.friendSimpleInfoListResponseList = friendSimpleInfoResponseList;
+        public FriendListResponse(List<FriendResponse> friendResponseList) {
+            this.friendListResponseList = friendResponseList;
         }
     }
 
     @Data
     public static class UpdateFriendNameRequest {
 
-        @NotNull(message = "친구이름은 Null이나 '' 일 수 없습니다.")
+        @NotBlank(message = "친구 이름을 입력하세요.")
         private String friendName;
 
         public UpdateFriendNameRequest(String friendName) {

@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/friend")
@@ -20,32 +18,31 @@ public class FriendController {
 
     // user별 친구목록 조회
     @GetMapping("")
-    private ResponseEntity<FriendDTO.FriendSimpleInfoListResponse> getFriendListByUser(@AuthUser Users user) throws Exception {
+    private ResponseEntity<FriendDTO.FriendListResponse> getFriendListByUser(@AuthUser Users user) throws Exception {
 
-        List<FriendDTO.FriendSimpleInfoResponse> friendList = friendService.getAllFriends(user.getId());
-        FriendDTO.FriendSimpleInfoListResponse response = new FriendDTO.FriendSimpleInfoListResponse(friendList);
+        FriendDTO.FriendListResponse response = friendService.getAllFriends(user.getId());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 검색해서 (파라미터로) 친구목록에 생성
     @PostMapping("")
-    private ResponseEntity<FriendDTO.FriendSimpleInfoResponse> createFriend(@AuthUser Users user, @RequestBody FriendDTO.CreateFriendRequest request) throws Exception {
-        FriendDTO.FriendSimpleInfoResponse response = friendService.createFriend(user, request);
+    private ResponseEntity<FriendDTO.FriendResponse> createFriend(@AuthUser Users user, @RequestBody FriendDTO.CreateFriendRequest request) throws Exception {
+        FriendDTO.FriendResponse response = friendService.createFriend(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 친구삭제
     @DeleteMapping("/{friendId}")
-    private ResponseEntity<FriendDTO.FriendSimpleInfoResponse> deleteFriend(@PathVariable Long friendId) throws Exception {
+    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@PathVariable Long friendId) throws Exception {
         friendService.deleteFriend(friendId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 친구이름 수정
     @PatchMapping("/{friendId}")
-    private ResponseEntity<FriendDTO.FriendSimpleInfoResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
-        FriendDTO.FriendSimpleInfoResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
+    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+        FriendDTO.FriendResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -13,9 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,8 +25,8 @@ public class FriendServiceTest {
     private final FriendService friendService;
     private final UserRepository userRepository;
 
-    Users meUser;
-    Users friend1User;
+    Users me;
+    Users friend1;
 
     @Autowired
     public FriendServiceTest(FriendRepository friendRepository, FriendService friendService, UserRepository userRepository) {
@@ -38,25 +35,25 @@ public class FriendServiceTest {
         this.userRepository = userRepository;
     }
 
-    public void createInitUsers() {
-        meUser = Users.builder().email("skc@aaa.com").nickname("skc").password("123").build();
-        friend1User = Users.builder().email("jsh@aaa.com").nickname("jsh").password("123").build();
-        userRepository.save(meUser);
-        userRepository.save(friend1User);
+    public void initUsers() {
+        me = Users.builder().email("skc@aaa.com").nickname("skc").password("123").build();
+        friend1 = Users.builder().email("jsh@aaa.com").nickname("jsh").password("123").build();
+        userRepository.save(me);
+        userRepository.save(friend1);
     }
 
     @BeforeEach
     public void initUseCase() {
-        createInitUsers();
+        initUsers();
     }
 
     @Test
     @DisplayName("올바른 요청이 들어왔을 때 친구가 정상적으로 생성된다.")
     public void create_friend_with_valid_request_success() throws Exception {
 
-        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(friend1User);
+        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(friend1);
 
-        friendService.createFriend(meUser, request);
+        friendService.createFriend(me, request);
 
         assertEquals(1, friendRepository.findAll().size());
     }
@@ -65,10 +62,10 @@ public class FriendServiceTest {
     @DisplayName("요청에 같은 유저의 정보가 담겨 있을 경우에 에러가 발생한다.")
     public void create_friend_has_same_user_id_fail() {
 
-        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(meUser);
+        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(me);
 
         Throwable exception = assertThrows(BusinessLogicException.class, () -> {
-            friendService.createFriend(meUser, request);
+            friendService.createFriend(me, request);
         });
 
         assertEquals("유저-친구 정보가 동일합니다.", exception.getMessage());
@@ -79,14 +76,14 @@ public class FriendServiceTest {
     @DisplayName("이미 존재하는 친구관계일 경우에 에러가 발생한다.")
     public void create_friend_already_exist_fail() throws Exception {
 
-        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(friend1User);
-        friendService.createFriend(meUser, request);
+        FriendDTO.CreateFriendRequest request = new FriendDTO.CreateFriendRequest(friend1);
+        friendService.createFriend(me, request);
 
         Throwable exception = assertThrows(BusinessLogicException.class, () -> {
-            friendService.createFriend(meUser, request);
+            friendService.createFriend(me, request);
         });
 
-        assertEquals("이미 있는 친구관계 입니다.", exception.getMessage());
+        assertEquals("이미 존재하는 친구관계 입니다.", exception.getMessage());
 
     }
 
@@ -94,54 +91,54 @@ public class FriendServiceTest {
     @DisplayName("유저 아이디로 유저의 친구관계를 모두 조회할 수 있다.")
     public void get_all_friends_with_user_id_success() throws Exception {
 
-        Users friend2User = Users.builder().email("jsh@aaa.com").nickname("jsh").password("123").build();
-        userRepository.save(friend2User);
-        FriendDTO.CreateFriendRequest request1 = new FriendDTO.CreateFriendRequest(friend1User);
-        FriendDTO.CreateFriendRequest request2 = new FriendDTO.CreateFriendRequest(friend2User);
-        friendService.createFriend(meUser, request1);
-        friendService.createFriend(meUser, request2);
+        Users friend2 = Users.builder().email("jsh@aaa.com").nickname("jsh").password("123").build();
+        userRepository.save(friend2);
+        FriendDTO.CreateFriendRequest request1 = new FriendDTO.CreateFriendRequest(friend1);
+        FriendDTO.CreateFriendRequest request2 = new FriendDTO.CreateFriendRequest(friend2);
+        friendService.createFriend(me, request1);
+        friendService.createFriend(me, request2);
 
-        List<FriendDTO.FriendSimpleInfoResponse> response = friendService.getAllFriends(meUser.getId());
+        FriendDTO.FriendListResponse response = friendService.getAllFriends(me.getId());
 
-        assertEquals(2, response.size());
+        assertEquals(2, response.getFriendListResponseList().size());
     }
 
     @Test
     @DisplayName("임의로 친구의 닉네임을 수정할 수 있다.")
     public void update_friend_name_success() throws Exception {
 
-        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1User);
-        FriendDTO.FriendSimpleInfoResponse friend = friendService.createFriend(meUser, createFriendRequest);
-        FriendDTO.UpdateFriendNameRequest updateFriendNameRequest = new FriendDTO.UpdateFriendNameRequest("friend1User닉네임을Test로바꿈");
-        friendService.updateFriendName(friend.getFriendId(), updateFriendNameRequest);
+        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1);
+        FriendDTO.FriendResponse friend = friendService.createFriend(me, createFriendRequest);
+        FriendDTO.UpdateFriendNameRequest updateFriendNameRequest = new FriendDTO.UpdateFriendNameRequest("changed");
+        friendService.updateFriendName(friend.getId(), updateFriendNameRequest);
 
-        Friend updateFriend = friendRepository.findById(friend.getFriendId()).orElseThrow();
+        Friend updateFriend = friendRepository.findById(friend.getId()).orElseThrow();
 
-        assertEquals("friend1User닉네임을Test로바꿈", updateFriend.getFriendName());
+        assertEquals("changed", updateFriend.getFriendName());
     }
 
     @Test
     @DisplayName("친구관계를 정상적으로 삭제한다.")
     public void delete_friend_with_friend_id() throws Exception {
 
-        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1User);
-        FriendDTO.FriendSimpleInfoResponse friend = friendService.createFriend(meUser, createFriendRequest);
+        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1);
+        FriendDTO.FriendResponse friend = friendService.createFriend(me, createFriendRequest);
 
-        friendService.deleteFriend(friend.getFriendId());
+        friendService.deleteFriend(friend.getId());
 
-        assertEquals(0, friendRepository.findAllByUserId(meUser.getId()).size());
+        assertEquals(0, friendRepository.findAllByUserId(me.getId()).size());
     }
 
     @Test
     @DisplayName("이미 삭제되거나 없는 친구관계를 삭제하려고 한다.")
     public void delete_friend_with_same_user_id() throws Exception {
         //given
-        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1User);
-        FriendDTO.FriendSimpleInfoResponse friend = friendService.createFriend(meUser, createFriendRequest);
-        friendService.deleteFriend(friend.getFriendId());
+        FriendDTO.CreateFriendRequest createFriendRequest = new FriendDTO.CreateFriendRequest(friend1);
+        FriendDTO.FriendResponse friend = friendService.createFriend(me, createFriendRequest);
+        friendService.deleteFriend(friend.getId());
 
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> {
-            friendService.deleteFriend(friend.getFriendId());
+            friendService.deleteFriend(friend.getId());
         });
 
         assertEquals("존재하지 않는 친구관계 입니다.", exception.getMessage());

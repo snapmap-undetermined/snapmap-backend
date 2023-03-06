@@ -1,12 +1,15 @@
 package com.project.domain.friend.repository;
 
+import com.project.domain.friend.dto.FriendDTO;
+import com.project.domain.friend.dto.QFriendDTO_FriendResponse;
 import com.project.domain.friend.entity.Friend;
+import com.project.domain.users.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.project.domain.friend.entity.QFriend.friend1;
+import static com.project.domain.friend.entity.QFriend.friend;
 
 
 @RequiredArgsConstructor
@@ -16,26 +19,34 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
 
     @Override
     public List<Friend> findAllByUserId(Long userId) {
-
         return query
-                .selectFrom(friend1)
-                .where(friend1.me.id.eq(userId))
+                .selectFrom(friend)
+                .where(friend.me.id.eq(userId))
                 .stream().toList();
     }
 
     @Override
-    public boolean existByMeUserIdAndFriendUserId(Long meUserId, Long friendUserId) {
+    public boolean existsByUserIds(Long myId, Long friendId) {
 
         Integer fetchFirst = query
                 .selectOne()
-                .from(friend1)
-                .where(friend1.me.id.eq(meUserId))
-                .where(friend1.friend.id.eq(friendUserId))
+                .from(friend)
+                .where(friend.me.id.eq(myId))
+                .where(friend.mate.id.eq(friendId))
                 .fetchFirst();
 
         return fetchFirst != null;
 
     }
 
+    @Override
+    public List<FriendDTO.FriendResponse> findAllFriendsOfUser(Long userId) {
+
+        return query
+                .select(new QFriendDTO_FriendResponse(friend))
+                .from(friend)
+                .where(friend.me.id.eq(userId))
+                .fetch();
+    }
 
 }
