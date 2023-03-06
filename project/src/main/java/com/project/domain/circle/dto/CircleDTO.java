@@ -52,6 +52,10 @@ public class CircleDTO {
                     .name(circleName)
                     .build();
         }
+
+        public CreateCircleRequest(String circleName) {
+            this.circleName = circleName;
+        }
     }
 
     @Data
@@ -84,8 +88,8 @@ public class CircleDTO {
         @NotBlank(message = "circleId를 입력해주세요.")
         private Long circleId;
 
-        public JoinCircleRequest(UserCircle userCircle) {
-            this.circleId = userCircle.getCircle().getId();
+        public JoinCircleRequest(Long circleId) {
+            this.circleId = circleId;
         }
 
         public UserCircle toEntity(Users user, Circle circle) {

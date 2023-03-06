@@ -33,7 +33,7 @@ public class CircleController {
     @GetMapping("")
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getCircleListByUser(@AuthUser Users user) throws Exception {
-        List<CircleDTO.CircleSimpleInfoResponse> circleList = circleService.getCircleListByUser(user.getId());
+        List<CircleDTO.CircleSimpleInfoResponse> circleList = circleService.getAllCircleByUser(user.getId());
         CircleDTO.CircleSimpleInfoListResponse response = new CircleDTO.CircleSimpleInfoListResponse(circleList);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -1,5 +1,6 @@
 package com.project.domain.usercircle.repository;
 
+import com.project.domain.circle.entity.Circle;
 import com.project.domain.usercircle.entity.QUserCircle;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.QUsers;
@@ -11,38 +12,41 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
 
+import static com.project.domain.usercircle.entity.QUserCircle.userCircle;
+
 @RequiredArgsConstructor
 public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCustom {
 
     private final JPAQueryFactory query;
-    private final EntityManager em;
 
     @Override
-    public List<UserCircle> findByUserId(Long userId) {
-        QUserCircle uc = new QUserCircle("uc");
-
+    public List<UserCircle> findAllByUserId(Long userId) {
         return query
-                .select(uc)
-                .from(uc)
-                .where(uc.user.id.eq(userId))
+                .selectFrom(userCircle)
+                .where(userCircle.user.id.eq(userId))
                 .distinct()
                 .fetch();
     }
 
     @Override
     public List<Users> findAllUserByCircleId(Long circleId) {
-        QUsers u = new QUsers("u");
-        QUserCircle uc = new QUserCircle("uc");
-
         return query
-                .select(uc.user)
-                .from(uc)
-                .where(uc.circle.id.eq(circleId))
-                .join(uc.user, u)
+                .select(userCircle.user)
+                .from(userCircle)
+                .where(userCircle.circle.id.eq(circleId))
                 .fetch();
 
-
     }
+
+    @Override
+    public List<Circle> findAllCircleByUserId(Long userId) {
+        return query
+                .select(userCircle.circle)
+                .from(userCircle)
+                .where(userCircle.user.id.eq(userId))
+                .fetch();
+    }
+
     @Override
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     public Long deleteByUserIdAndCircleId(Long userId, Long circleId) {
