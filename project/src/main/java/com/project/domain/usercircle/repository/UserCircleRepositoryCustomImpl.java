@@ -36,7 +36,6 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
                 .select(userCircle.user)
                 .from(userCircle)
                 .where(userCircle.circle.id.eq(circleId))
-                .join(userCircle.user, users)
                 .fetch();
 
 
