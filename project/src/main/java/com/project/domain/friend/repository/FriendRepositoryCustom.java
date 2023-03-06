@@ -7,4 +7,6 @@ import java.util.List;
 public interface FriendRepositoryCustom {
 
     List<Friend> findAllByUserId(Long userId);
+
+    boolean existByMeUserIdAndFriendUserId(Long meUserId, Long friendUserId);
 }
