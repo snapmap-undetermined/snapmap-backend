@@ -9,7 +9,7 @@ public interface CircleService {
 
     CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest);
 
-    List<CircleDTO.CircleSimpleInfoResponse> getAllCircleByUser(Long userId);
+    CircleDTO.CircleSimpleInfoListResponse getCircleListByUser(Long userId);
 
     CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) throws Exception;
 

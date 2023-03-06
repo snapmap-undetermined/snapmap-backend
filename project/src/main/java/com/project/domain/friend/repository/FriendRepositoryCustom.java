@@ -1,10 +1,15 @@
 package com.project.domain.friend.repository;
 
+import com.project.domain.friend.dto.FriendDTO;
 import com.project.domain.friend.entity.Friend;
 
 import java.util.List;
 
 public interface FriendRepositoryCustom {
 
-    List<Friend> findByUserId(Long userId);
+    List<Friend> findAllByUserId(Long userId);
+
+    boolean existsByUserIds(Long myId, Long friendId);
+
+    List<FriendDTO.FriendResponse> findAllFriendsOfUser(Long userId);
 }

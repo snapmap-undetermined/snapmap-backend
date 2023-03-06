@@ -25,6 +25,10 @@ public enum ErrorCode {
 
     // Circle
     CIRCLENAME_DUPLICATION(400, "CI001", "존재하지 않는 그룹입니다."),
+
+    // Friend
+    FRIEND_DUPLICATION(400,"F001","이미 존재하는 친구관계 입니다."),
+    REQUEST_USER_ID_VALID_ERROR(400,"F002","자신의 아이디를 요청값에 포함 시킬 수 없습니다.")
     ;
     private final String code;
     private final String message;

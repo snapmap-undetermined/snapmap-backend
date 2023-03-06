@@ -41,15 +41,17 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public List<CircleDTO.CircleSimpleInfoResponse> getAllCircleByUser(Long userId) {
+    public CircleDTO.CircleSimpleInfoListResponse getCircleListByUser(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.error("Get circle list by user failed. userId={}", userId);
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         }
 
-        List<Circle> circleList = userCircleRepository.findAllCircleByUserId(userId);
+        List<Circle> circleList = userCircleRepository.findAllByUserId(userId);
 
-        return circleList.stream().map(CircleDTO.CircleSimpleInfoResponse::new).collect(Collectors.toList());
+        List<CircleDTO.CircleSimpleInfoResponse> response = circleList.stream().map(CircleDTO.CircleSimpleInfoResponse::new).collect(Collectors.toList());
+
+        return new CircleDTO.CircleSimpleInfoListResponse(response);
 
     }
 
