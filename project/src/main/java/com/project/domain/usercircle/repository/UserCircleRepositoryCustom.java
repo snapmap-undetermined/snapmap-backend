@@ -7,7 +7,7 @@ import com.project.domain.users.entity.Users;
 import java.util.List;
 
 public interface UserCircleRepositoryCustom {
-    List<UserCircle> findAllByUserId(Long userId);
+    List<Circle> findAllByUserId(Long userId);
 
     List<Users> findAllUserByCircleId(Long circleId);
 

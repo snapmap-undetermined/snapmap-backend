@@ -15,7 +15,6 @@ import static com.project.domain.comment.entity.QPictureComment.pictureComment;
 public class PictureCommentRepositoryCustomImpl implements PictureCommentRepositoryCustom{
 
     private final JPAQueryFactory query;
-    private final EntityManager em;
 
     @Override
     public List<PictureComment> findAllByPictureId(Long pictureId) {
