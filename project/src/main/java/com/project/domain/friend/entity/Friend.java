@@ -19,11 +19,11 @@ public class Friend extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id")
+    @JoinColumn(name = "me_user_id")
     private Users me;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id")
+    @JoinColumn(name = "mate_user_id")
     private Users mate;
 
     @Column(name = "friend_name")
