@@ -13,15 +13,27 @@ import static com.project.domain.circlepin.entity.QCirclePin.circlePin;
 @RequiredArgsConstructor
 public class PinRepositoryCustomImpl implements PinRepositoryCustom {
 
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory query;
 
     @Override
     public List<Pin> findAllByCircleId(Long circleId) {
 
-        return jpaQueryFactory
+        return query
                 .select(circlePin.pin)
                 .from(circlePin)
                 .where(circlePin.circle.id.eq(circleId))
                 .fetch();
     }
+
+    @Override
+    public int pinTotalCountByCircleId(Long circleId) {
+        return Math.toIntExact(query
+                .select(circlePin.count())
+                .from(circlePin)
+                .where(circlePin.circle.id.eq(circleId))
+                .fetchFirst()
+        );
+    }
+
+
 }

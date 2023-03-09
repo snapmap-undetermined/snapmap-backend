@@ -15,4 +15,6 @@ public interface UserCircleRepositoryCustom {
 
     List<Circle> findAllCircleByUserId(Long userId);
 
+    int userTotalCountByCircleId(Long circleId);
+
 }

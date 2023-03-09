@@ -23,8 +23,8 @@ public class CircleController {
     //그룹을 생성한다.
     @PostMapping("")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> createCircle(@AuthUser Users user, @Valid @RequestBody CircleDTO.CreateCircleRequest createCircleRequest) throws Exception {
-        CircleDTO.CircleSimpleInfoResponse response = circleService.createCircle(user, createCircleRequest);
+    private ResponseEntity<CircleDTO.CircleSimpleResponse> createCircle(@AuthUser Users user, @Valid @RequestBody CircleDTO.CreateCircleRequest createCircleRequest) throws Exception {
+        CircleDTO.CircleSimpleResponse response = circleService.createCircle(user, createCircleRequest);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -32,8 +32,17 @@ public class CircleController {
     //유저별로 그룹을 조회한다.
     @GetMapping("")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getCircleListByUser(@AuthUser Users user) throws Exception {
-        CircleDTO.CircleSimpleInfoListResponse response = circleService.getCircleListByUser(user.getId());
+    private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getAllCircleByUser(@AuthUser Users user) throws Exception {
+        CircleDTO.CircleSimpleInfoListResponse response = circleService.getAllCircleByUser(user.getId());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 그룹 상세정보를 조회 한다.
+    @GetMapping("/{circleId}")
+    @Permission
+    private ResponseEntity<CircleDTO.CircleDetailResponse> getCircleDetail(@PathVariable Long circleId) {
+        CircleDTO.CircleDetailResponse response = circleService.getCircleDetail(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -42,7 +51,7 @@ public class CircleController {
     @GetMapping("/{circleId}/users")
     @Permission
     private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(@PathVariable Long circleId) throws Exception {
-        CircleDTO.CircleWithJoinUserResponse response = circleService.getUserListByCircle(circleId);
+        CircleDTO.CircleWithJoinUserResponse response = circleService.getAllUserByCircle(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -50,7 +59,7 @@ public class CircleController {
     //유저가 그룹에서 나온다.
     @DeleteMapping("/{circleId}")
     @Permission
-    private Long leaveCircle(@AuthUser Users user, Long circleId) throws Exception {
+    private Long leaveCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
         return circleService.leaveCircle(user.getId(), circleId);
     }
 
@@ -63,11 +72,11 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 유저가 그룹이름을 수정한다.
+    // 유저가 그룹을 수정한다.
     @PatchMapping("/{circleId}")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircleName(@PathVariable Long circleId, @Valid @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
-        CircleDTO.CircleSimpleInfoResponse response = circleService.updateCircleName(circleId, request);
+    private ResponseEntity<CircleDTO.CircleSimpleResponse> updateCircleName(@PathVariable Long circleId, @Valid @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
+        CircleDTO.CircleSimpleResponse response = circleService.updateCircleName(circleId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

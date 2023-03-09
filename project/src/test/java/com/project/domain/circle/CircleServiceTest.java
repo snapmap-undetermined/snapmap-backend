@@ -53,7 +53,7 @@ public class CircleServiceTest {
 
         CircleDTO.CreateCircleRequest request = new CircleDTO.CreateCircleRequest("testCircleName");
 
-        CircleDTO.CircleSimpleInfoResponse response = circleService.createCircle(user1, request);
+        CircleDTO.CircleSimpleResponse response = circleService.createCircle(user1, request);
 
         assertEquals("testCircleName", response.getCircleName());
     }
@@ -63,7 +63,7 @@ public class CircleServiceTest {
     public void create_user_circle_with_valid_request() {
 
         CircleDTO.CreateCircleRequest request = new CircleDTO.CreateCircleRequest("testCircleName");
-        CircleDTO.CircleSimpleInfoResponse circle = circleService.createCircle(user1, request);
+        CircleDTO.CircleSimpleResponse circle = circleService.createCircle(user1, request);
 
         List<Circle> userCircleList = userCircleRepository.findAllCircleByUserId(user1.getId());
 
@@ -74,7 +74,7 @@ public class CircleServiceTest {
     @DisplayName("유저의 정보로 유저가 속한 모든 그룹을 조회 할 수 있다.")
     public void get_circle_list_has_user_id_success() throws Exception {
         CircleDTO.CreateCircleRequest request = new CircleDTO.CreateCircleRequest("testCircleName");
-        CircleDTO.CircleSimpleInfoResponse circle = circleService.createCircle(user1, request);
+        CircleDTO.CircleSimpleResponse circle = circleService.createCircle(user1, request);
 
 //        List<CircleDTO.CircleSimpleInfoResponse>
     }

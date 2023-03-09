@@ -2,6 +2,7 @@ package com.project.domain.circle.dto;
 
 
 import com.project.domain.circle.entity.Circle;
+import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
@@ -17,15 +18,40 @@ import java.util.stream.Collectors;
 public class CircleDTO {
 
     @Data
-    public static class CircleSimpleInfoResponse {
-        private Long circleId;
-        private String circleName;
+    public static class CircleDetailResponse {
+        private Long id;
+        private String name;
+        private String imageUrl;
+        private int userTotalCount;
+        private int pinTotalCount;
+        private int pictureTotalCount;
+        private List<PictureDTO.PictureResponse> thumbnailImage;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public CircleSimpleInfoResponse(Circle circle) {
-            this.circleId = circle.getId();
-            this.circleName = circle.getName();
+        public CircleDetailResponse(Circle circle, int userTotalCount, int pinTotalCount,int photoTotalCount) {
+            this.id = circle.getId();
+            this.name = circle.getName();
+            this.imageUrl = circle.getImageUrl();
+            this.userTotalCount = userTotalCount;
+            this.pinTotalCount = pinTotalCount;
+            this.createdAt = circle.getCreatedAt();
+            this.updatedAt = circle.getModifiedAt();
+        }
+    }
+
+    @Data
+    public static class CircleSimpleResponse {
+        private Long id;
+        private String name;
+        private String imageUrl;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public CircleSimpleResponse(Circle circle) {
+            this.id = circle.getId();
+            this.name = circle.getName();
+            this.imageUrl = circle.getImageUrl();
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -34,9 +60,9 @@ public class CircleDTO {
     @Data
     public static class CircleSimpleInfoListResponse {
 
-        private List<CircleSimpleInfoResponse> circleSimpleInfoResponseList;
+        private List<CircleSimpleResponse> circleSimpleInfoResponseList;
 
-        public CircleSimpleInfoListResponse(List<CircleSimpleInfoResponse> circleSimpleInfoResponseList) {
+        public CircleSimpleInfoListResponse(List<CircleSimpleResponse> circleSimpleInfoResponseList) {
             this.circleSimpleInfoResponseList = circleSimpleInfoResponseList;
         }
     }
@@ -63,6 +89,8 @@ public class CircleDTO {
 
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
+
+        private String imageUrl;
     }
 
     @Data

@@ -7,17 +7,19 @@ import java.util.List;
 
 public interface CircleService {
 
-    CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest);
+    CircleDTO.CircleSimpleResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest);
 
-    CircleDTO.CircleSimpleInfoListResponse getCircleListByUser(Long userId);
+    CircleDTO.CircleSimpleInfoListResponse getAllCircleByUser(Long userId);
 
-    CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) throws Exception;
+    CircleDTO.CircleDetailResponse getCircleDetail(Long circleId);
+
+    CircleDTO.CircleWithJoinUserResponse getAllUserByCircle(Long circleId) throws Exception;
 
     Long leaveCircle(Long userId, Long circleId) throws Exception;
 
     CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request);
 
-    CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request);
+    CircleDTO.CircleSimpleResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request);
 
 
 }

@@ -7,4 +7,6 @@ import java.util.List;
 public interface PinRepositoryCustom {
     List<Pin> findAllByCircleId(Long circleId);
 
+    int pinTotalCountByCircleId(Long circleId);
+
 }

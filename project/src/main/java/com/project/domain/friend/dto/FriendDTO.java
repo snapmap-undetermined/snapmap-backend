@@ -29,10 +29,10 @@ public class FriendDTO {
 
     @Data
     public static class FriendListResponse {
-        private List<FriendResponse> friendListResponseList;
+        private List<FriendResponse> friendAllResponse;
 
         public FriendListResponse(List<FriendResponse> friendResponseList) {
-            this.friendListResponseList = friendResponseList;
+            this.friendAllResponse = friendResponseList;
         }
     }
 

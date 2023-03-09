@@ -5,6 +5,9 @@ import com.project.common.exception.ErrorCode;
 import com.project.domain.circle.dto.CircleDTO;
 import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
+import com.project.domain.pin.repository.PinRepository;
+import com.project.domain.pinpicture.repository.PinPictureRepository;
+import com.project.domain.pinpicture.repository.PinPictureRepositoryCustomImpl;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.usercircle.repository.UserCircleRepository;
 import com.project.domain.users.entity.Users;
@@ -20,28 +23,31 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CircleServiceImpl implements CircleService {
 
     private final UserCircleRepository userCircleRepository;
     private final CircleRepository circleRepository;
     private final UserRepository userRepository;
+    private final PinRepository pinRepository;
+    private final PinPictureRepository pinPictureRepository;
 
     @Override
     @Transactional
-    public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
+    public CircleDTO.CircleSimpleResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
         Circle circle = createCircleRequest.toEntity();
         circleRepository.save(circle);
 
-        // userCircle에도 반영이 되어야 한다.
+        // userCircle 에 반영이 되어야 한다.
         UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
         userCircleRepository.save(userCircle);
 
-        return new CircleDTO.CircleSimpleInfoResponse(circle);
+        return new CircleDTO.CircleSimpleResponse(circle);
 
     }
 
     @Override
-    public CircleDTO.CircleSimpleInfoListResponse getCircleListByUser(Long userId) {
+    public CircleDTO.CircleSimpleInfoListResponse getAllCircleByUser(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.error("Get circle list by user failed. userId={}", userId);
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
@@ -49,17 +55,27 @@ public class CircleServiceImpl implements CircleService {
 
         List<Circle> circleList = userCircleRepository.findAllByUserId(userId);
 
-        List<CircleDTO.CircleSimpleInfoResponse> response = circleList.stream().map(CircleDTO.CircleSimpleInfoResponse::new).collect(Collectors.toList());
+        List<CircleDTO.CircleSimpleResponse> response = circleList.stream().map(CircleDTO.CircleSimpleResponse::new).collect(Collectors.toList());
 
         return new CircleDTO.CircleSimpleInfoListResponse(response);
 
     }
 
     @Override
-    public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) {
+    public CircleDTO.CircleDetailResponse getCircleDetail(Long circleId) {
+        Circle circle = circleRepository.findById(circleId).orElseThrow();
+        int userTotalCount = userCircleRepository.userTotalCountByCircleId(circleId);
+        int pinTotalCount = pinRepository.pinTotalCountByCircleId(circleId);
+        int pictureTotalCount = pinPictureRepository.pictureTotalCountByCircleId(circleId);
+
+        return new CircleDTO.CircleDetailResponse(circle, userTotalCount, pinTotalCount, pictureTotalCount);
+    }
+
+    @Override
+    public CircleDTO.CircleWithJoinUserResponse getAllUserByCircle(Long circleId) {
 
         List<Users> userList = userCircleRepository.findAllUserByCircleId(circleId);
-        Circle circle = circleRepository.findById(circleId).orElseThrow(()->{
+        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Get circle failed. circleId={}", circleId);
             throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
         });
@@ -85,13 +101,16 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request) {
+    @Transactional
+    public CircleDTO.CircleSimpleResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Update circle name failed. circleId = {}", circleId);
             throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
         });
-        circle.setName(request.getCircleName());
 
-        return new CircleDTO.CircleSimpleInfoResponse(circle);
+        circle.setName(request.getCircleName());
+        circle.setImageUrl(request.getImageUrl());
+
+        return new CircleDTO.CircleSimpleResponse(circle);
     }
 }

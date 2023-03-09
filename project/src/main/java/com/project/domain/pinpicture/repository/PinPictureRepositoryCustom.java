@@ -7,4 +7,6 @@ import java.util.List;
 public interface PinPictureRepositoryCustom {
 
     List<Picture> findAllPicturesByPinId(Long pinId);
+
+    int pictureTotalCountByCircleId(Long circleId);
 }

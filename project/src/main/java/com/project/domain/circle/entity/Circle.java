@@ -20,8 +20,15 @@ public class Circle extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public void setName(String circleName) {
         this.name = circleName;
+    }
+
+    public void setImageUrl(String url) {
+        this.imageUrl = url;
     }
 
 }

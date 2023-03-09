@@ -45,6 +45,15 @@ public class UserCircleRepositoryCustomImpl implements UserCircleRepositoryCusto
     }
 
     @Override
+    public int userTotalCountByCircleId(Long circleId) {
+        return Math.toIntExact(query
+                .select(userCircle.count())
+                .from(userCircle)
+                .where(userCircle.circle.id.eq(circleId))
+                .fetchFirst());
+    }
+
+    @Override
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     public Long deleteByUserIdAndCircleId(Long userId, Long circleId) {
 
