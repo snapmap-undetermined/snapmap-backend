@@ -14,11 +14,10 @@ import com.project.domain.usercircle.repository.UserCircleRepository;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +29,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
+@Slf4j
 class PinServiceTest {
 
     private final UserRepository userRepository;
@@ -71,6 +71,10 @@ class PinServiceTest {
         userCircleRepository.save(UserCircle.builder().user(user).circle(circle).build());
     }
 
+    private List<String> generateTagNames(String... tagNames) {
+        return List.of(tagNames);
+    }
+
     @Test
     @DisplayName("모든 파라미터가 유효할 때 핀이 생성된다.")
     public void create_pin_with_valid_param_success() {
@@ -79,11 +83,13 @@ class PinServiceTest {
         Circle circle = generateSimpleCircle("test-circle");
         userJoinCircle(user, circle);
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).build();
+        List<String> tagNames = generateTagNames("tag1", "tag2");
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).tagNames(tagNames).build();
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
 
         // When
         PinDTO.PinDetailResponse createdPin = pinService.createPin(user, circle.getId(), request, pictures);
+        log.info("createdPin = " + createdPin);
 
         // Then
         Assertions.assertNotNull(pinRepository.findById(createdPin.getId()));

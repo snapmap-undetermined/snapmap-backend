@@ -53,6 +53,17 @@ public class Users extends BaseTimeEntity {
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
+    public void addPin(Pin pin) {
+        if (!this.pinList.contains(pin)) {
+            this.pinList.add(pin);
+        }
+        pin.setUser(this);
+    }
+
+    public void removePin(Pin pin) {
+        this.pinList.remove(pin);
+    }
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }

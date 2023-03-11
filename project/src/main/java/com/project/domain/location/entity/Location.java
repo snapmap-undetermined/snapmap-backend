@@ -30,7 +30,7 @@ public class Location {
     @Column(name = "point")
     private Point point;
 
-    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Pin> pinList = new ArrayList<>();
+//    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Builder.Default
+//    private List<Pin> pinList = new ArrayList<>();
 }

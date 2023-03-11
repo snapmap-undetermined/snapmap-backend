@@ -17,7 +17,7 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
 
     private final JPAQueryFactory query;
 
-    @Overridew
+    @Override
     public List<Friend> findAllByUserId(Long userId) {
         return query
                 .selectFrom(friend)

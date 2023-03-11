@@ -17,6 +17,10 @@ import com.project.domain.pin.entity.Pin;
 import com.project.domain.pin.repository.PinRepository;
 import com.project.domain.pinpicture.entity.PinPicture;
 import com.project.domain.pinpicture.repository.PinPictureRepository;
+import com.project.domain.pintag.entity.PinTag;
+import com.project.domain.pintag.repository.PinTagRepository;
+import com.project.domain.tag.entity.Tag;
+import com.project.domain.tag.repository.TagRepository;
 import com.project.domain.usercircle.repository.UserCircleRepository;
 import com.project.domain.users.entity.Users;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +29,7 @@ import org.locationtech.jts.io.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +45,9 @@ public class PinServiceImpl implements PinService {
     private final PinPictureRepository pinPictureRepository;
     private final S3Uploader s3Uploader;
     private final LocationRepository locationRepository;
+    private final PinTagRepository pinTagRepository;
+
+    private final TagRepository tagRepository;
 
 
     @Override
@@ -51,19 +57,31 @@ public class PinServiceImpl implements PinService {
 
         validateUserMembershipOnCircle(user, circle);
         validatePictureInput(pictures);
-        pin.setUser(user);
+        // 양방향 연관관계 매핑
+        user.addPin(pin);
 
         locationRepository.save(pin.getLocation());
-        pinRepository.save(pin);
         circlePinRepository.save(CirclePin.builder().circle(circle).pin(pin).build());
+
+        List<PinTag> pinTags = new ArrayList<>();
+        for (String tagName : request.getTagNames()) {
+            Tag tag = tagRepository.findByName(tagName).orElseGet(() -> {
+                Tag newTag = Tag.builder().name(tagName).build();
+                return tagRepository.save(newTag);
+            });
+            PinTag pinTag = PinTag.builder().pin(pin).tag(tag).build();
+            pinTags.add(pinTag);
+        }
+        pin.setPinTags(pinTags);
 
         List<Picture> pictureList = uploadAndSavePictures(pictures);
         List<PinPicture> pinPictures = pictureList.stream()
                 .map((p) -> PinPicture.builder().pin(pin).picture(p).build())
                 .collect(Collectors.toList());
-        pinPictureRepository.saveAll(pinPictures);
+        pin.setPinPictures(pinPictures);
 
-        return new PinDTO.PinDetailResponse(pin, pictureList);
+        pinRepository.save(pin);
+        return new PinDTO.PinDetailResponse(pin);
     }
 
 
@@ -76,8 +94,7 @@ public class PinServiceImpl implements PinService {
 
         checkPinAccessibility(user, userJoinCircles, pin);
 
-        List<Picture> pictureList = pinPictureRepository.findAllPicturesByPinId(pinId);
-        return new PinDTO.PinDetailResponse(pin, pictureList);
+        return new PinDTO.PinDetailResponse(pin);
     }
 
 
@@ -87,22 +104,14 @@ public class PinServiceImpl implements PinService {
 
         // Pin을 모두 조회하고, 각 Pin에 존재하는 사진을 가져온다.
         List<Pin> allPins = pinRepository.findAllByCircleId(circleId);
-        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map((pin) -> {
-            List<Picture> pictureList = pinPictureRepository.findAllPicturesByPinId(pin.getId());
-            return new PinDTO.PinDetailResponse(pin, pictureList);
-        }).toList();
-
+        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map(PinDTO.PinDetailResponse::new).toList();
         return new PinDTO.PinDetailListResponse(pinDetailResponseList);
     }
 
     @Override
     public PinDTO.PinDetailListResponse getAllPinByMe(Users user) {
         List<Pin> allPins = pinRepository.findByUserId(user.getId());
-        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map((pin) -> {
-            List<Picture> pictureList = pinPictureRepository.findAllPicturesByPinId(pin.getId());
-            return new PinDTO.PinDetailResponse(pin, pictureList);
-        }).toList();
-
+        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map(PinDTO.PinDetailResponse::new).toList();
         return new PinDTO.PinDetailListResponse(pinDetailResponseList);
     }
 
@@ -121,26 +130,25 @@ public class PinServiceImpl implements PinService {
         // 사진 수정. 새로운 사진 목록에 최소 한 장 이상의 사진이 존재해야 한다.
         validatePictureInput(pictures);
 
-        // PinPicture에서 기존 매핑 삭제하고 새롭게 추가한다.
-        pinPictureRepository.deleteAll(pinPictureRepository.findAllByPinId(pinId));
-
         List<Picture> pictureList = uploadAndSavePictures(pictures);
+        List<PinPicture> pinPictures = pictureList.stream()
+                .map((p) -> PinPicture.builder().pin(pin).picture(p).build())
+                .collect(Collectors.toList());
+        pin.setPinPictures(pinPictures);
 
-        // Pin - Picture 맵핑 정보 생성
-        pictureList.forEach((p) -> pinPictureRepository.save(PinPicture.builder().pin(pin).picture(p).build()));
-
-        return new PinDTO.PinDetailResponse(pin, pictureList);
+        return new PinDTO.PinDetailResponse(pin);
     }
 
     @Override
     public void deletePin(Users user, Long pinId) {
         Pin pin = getPin(pinId);
         if (isPinCreatedByUser(user, pin)) {
-            // PinPicture, circlePin에서 먼저 삭제한다.
-            // 내가 삭제하면 그룹 내에서도 삭제된다.
-            pinPictureRepository.deleteAll(pinPictureRepository.findAllByPinId(pinId));
+            // circlePin에서 먼저 삭제한다.
             circlePinRepository.deleteAll(circlePinRepository.findAllByPinId(pinId));
+
+            // 내가 삭제하면 그룹 내에서도 해당 핀이 삭제된다.
             pinRepository.delete(pin);
+            user.removePin(pin);
         } else {
             throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
         }
