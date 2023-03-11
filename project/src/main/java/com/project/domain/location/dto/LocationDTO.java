@@ -21,7 +21,7 @@ public class LocationDTO {
         this.point = new PointDTO(pointDTO.getLongitude(), pointDTO.getLatitude());
     }
 
-    public Location toEntity() throws ParseException {
+    public Location toEntity() {
         return Location.builder()
                 .name(name)
                 .point(PointDTO.toPoint(point))

@@ -25,7 +25,7 @@ public class PinDTO {
         private String title;
         private LocationDTO location;
 
-        public Pin toEntity() throws ParseException {
+        public Pin toEntity() {
             return Pin.builder()
                     .title(title)
                     .location(location.toEntity())

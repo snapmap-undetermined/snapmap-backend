@@ -15,6 +15,7 @@ import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
@@ -189,7 +190,6 @@ class PinServiceTest {
 
         // Then
         Assertions.assertEquals(2, allPinByMe.getPinDetailResponseList().size());
-
     }
 
     @Test
