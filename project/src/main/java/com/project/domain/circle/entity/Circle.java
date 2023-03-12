@@ -1,8 +1,12 @@
 package com.project.domain.circle.entity;
 
 import com.project.common.entity.BaseTimeEntity;
+import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "circle")
@@ -14,11 +18,24 @@ public class Circle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "circle_id")
     private Long id;
+
+    @OneToMany(mappedBy = "circle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Pin> pins = new ArrayList<>();
 
     @Column(name = "name")
     private String name;
+
+    public void addPin(Pin pin) {
+        this.getPins().add(pin);
+        pin.setCircle(this);
+    }
+
+    public void removePin(Pin pin) {
+        this.getPins().remove(pin);
+        pin.setCircle(null);
+    }
 
     public void setName(String circleName) {
         this.name = circleName;

@@ -18,18 +18,15 @@ public class PictureComment extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "picture_comment_id")
     private Long id;
 
     @Column(name = "text", nullable = false)
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private Users writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "picture_id")
     private Picture picture;
 
     @Column

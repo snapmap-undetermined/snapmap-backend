@@ -15,7 +15,6 @@ public class Picture extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "picture_id")
     private Long id;
 
     @Column(name = "original_name")
@@ -23,4 +22,11 @@ public class Picture extends BaseTimeEntity {
 
     @Column(name = "url")
     private String url;
+
+    @ManyToOne
+    private Pin pin;
+
+    public void setPin(Pin pin) {
+        this.pin = pin;
+    }
 }

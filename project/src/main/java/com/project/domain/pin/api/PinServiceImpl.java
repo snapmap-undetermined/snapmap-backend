@@ -6,8 +6,6 @@ import com.project.common.exception.ErrorCode;
 import com.project.common.handler.S3Uploader;
 import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
-import com.project.domain.circlepin.entity.CirclePin;
-import com.project.domain.circlepin.repository.CirclePinRepository;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
 import com.project.domain.picture.entity.Picture;
@@ -15,14 +13,12 @@ import com.project.domain.picture.repository.PictureRepository;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.pin.entity.Pin;
 import com.project.domain.pin.repository.PinRepository;
-import com.project.domain.pinpicture.entity.PinPicture;
-import com.project.domain.pinpicture.repository.PinPictureRepository;
 import com.project.domain.pintag.entity.PinTag;
-import com.project.domain.pintag.repository.PinTagRepository;
 import com.project.domain.tag.entity.Tag;
 import com.project.domain.tag.repository.TagRepository;
 import com.project.domain.usercircle.repository.UserCircleRepository;
 import com.project.domain.users.entity.Users;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.io.ParseException;
@@ -30,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,27 +36,24 @@ public class PinServiceImpl implements PinService {
     private final PictureRepository pictureRepository;
     private final CircleRepository circleRepository;
     private final UserCircleRepository userCircleRepository;
-    private final CirclePinRepository circlePinRepository;
-    private final PinPictureRepository pinPictureRepository;
     private final S3Uploader s3Uploader;
     private final LocationRepository locationRepository;
-    private final PinTagRepository pinTagRepository;
-
     private final TagRepository tagRepository;
 
 
     @Override
+    @Transactional
     public PinDTO.PinDetailResponse createPin(Users user, Long circleId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
         Pin pin = request.toEntity();
         Circle circle = getCircle(circleId);
 
         validateUserMembershipOnCircle(user, circle);
         validatePictureInput(pictures);
-        // 양방향 연관관계 매핑
+
         user.addPin(pin);
+        circle.addPin(pin);
 
         locationRepository.save(pin.getLocation());
-        circlePinRepository.save(CirclePin.builder().circle(circle).pin(pin).build());
 
         List<PinTag> pinTags = new ArrayList<>();
         for (String tagName : request.getTagNames()) {
@@ -71,37 +63,27 @@ public class PinServiceImpl implements PinService {
             });
             PinTag pinTag = PinTag.builder().pin(pin).tag(tag).build();
             pinTags.add(pinTag);
+            pinTag.setPin(pin);
         }
-        pin.setPinTags(pinTags);
 
         List<Picture> pictureList = uploadAndSavePictures(pictures);
-        List<PinPicture> pinPictures = pictureList.stream()
-                .map((p) -> PinPicture.builder().pin(pin).picture(p).build())
-                .collect(Collectors.toList());
-        pin.setPinPictures(pinPictures);
-
+        pictureList.forEach(pin::addPicture);
         pinRepository.save(pin);
         return new PinDTO.PinDetailResponse(pin);
     }
-
-
 
     @Override
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
         List<Circle> userJoinCircles = userCircleRepository.findAllCircleByUserId(user.getId());
-
         checkPinAccessibility(user, userJoinCircles, pin);
 
         return new PinDTO.PinDetailResponse(pin);
     }
 
-
-
     @Override
     public PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId) {
-
         // Pin을 모두 조회하고, 각 Pin에 존재하는 사진을 가져온다.
         List<Pin> allPins = pinRepository.findAllByCircleId(circleId);
         List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map(PinDTO.PinDetailResponse::new).toList();
@@ -124,17 +106,15 @@ public class PinServiceImpl implements PinService {
             Location updatedLocation = request.getLocation().toEntity();
             locationRepository.save(updatedLocation);
             pin.updateTitle(request.getTitle());
-            pin.updateLocation(updatedLocation);
+            pin.setLocation(updatedLocation);
         }
 
         // 사진 수정. 새로운 사진 목록에 최소 한 장 이상의 사진이 존재해야 한다.
         validatePictureInput(pictures);
 
         List<Picture> pictureList = uploadAndSavePictures(pictures);
-        List<PinPicture> pinPictures = pictureList.stream()
-                .map((p) -> PinPicture.builder().pin(pin).picture(p).build())
-                .collect(Collectors.toList());
-        pin.setPinPictures(pinPictures);
+        pin.getPictures().clear();
+        pictureList.forEach(pin::addPicture);
 
         return new PinDTO.PinDetailResponse(pin);
     }
@@ -143,8 +123,7 @@ public class PinServiceImpl implements PinService {
     public void deletePin(Users user, Long pinId) {
         Pin pin = getPin(pinId);
         if (isPinCreatedByUser(user, pin)) {
-            // circlePin에서 먼저 삭제한다.
-            circlePinRepository.deleteAll(circlePinRepository.findAllByPinId(pinId));
+            pin.getCircle().getPins().remove(pin);
 
             // 내가 삭제하면 그룹 내에서도 해당 핀이 삭제된다.
             pinRepository.delete(pin);
@@ -160,7 +139,6 @@ public class PinServiceImpl implements PinService {
             Map<String, String> result = s3Uploader.upload(p, "static");
             String pictureName = result.get("originalName");
             String uploadUrl = result.get("uploadUrl");
-
             // Picture 생성
             return pictureRepository.save(Picture.builder().originalName(pictureName).url(uploadUrl).build());
         }).toList();
@@ -174,7 +152,7 @@ public class PinServiceImpl implements PinService {
 
     private boolean isPinCreatedByCircle(List<Circle> userJoinCircles, Pin pin) {
         for (Circle circle : userJoinCircles) {
-            List<Pin> pinsByCircle = circlePinRepository.findAllPinsByCircleId(circle.getId());
+            List<Pin> pinsByCircle = pinRepository.findAllByCircleId(circle.getId());
             if (pinsByCircle.contains(pin)) {
                 return true;
             }

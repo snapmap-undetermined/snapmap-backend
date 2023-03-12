@@ -15,15 +15,12 @@ public class Friend extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "friend_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id")
     private Users me;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "user_id")
     private Users mate;
 
     @Column(name = "friend_name")

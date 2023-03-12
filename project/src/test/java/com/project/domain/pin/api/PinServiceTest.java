@@ -3,12 +3,10 @@ package com.project.domain.pin.api;
 import com.project.common.exception.BusinessLogicException;
 import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
-import com.project.domain.circlepin.repository.CirclePinRepository;
 import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.location.dto.PointDTO;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.pin.repository.PinRepository;
-import com.project.domain.pinpicture.repository.PinPictureRepository;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.usercircle.repository.UserCircleRepository;
 import com.project.domain.users.entity.Users;
@@ -28,27 +26,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-@Transactional
 @Slf4j
+@Transactional
 class PinServiceTest {
 
     private final UserRepository userRepository;
     private final CircleRepository circleRepository;
     private final UserCircleRepository userCircleRepository;
-    private final CirclePinRepository circlePinRepository;
     private final PinService pinService;
     private final PinRepository pinRepository;
-    private final PinPictureRepository pinPictureRepository;
 
     @Autowired
-    public PinServiceTest(UserRepository userRepository, CircleRepository circleRepository, UserCircleRepository userCircleRepository, CirclePinRepository circlePinRepository, PinServiceImpl pinService, PinRepository pinRepository, PinPictureRepository pinPictureRepository) {
+    public PinServiceTest(UserRepository userRepository, CircleRepository circleRepository, UserCircleRepository userCircleRepository, PinServiceImpl pinService, PinRepository pinRepository) {
         this.userRepository = userRepository;
         this.circleRepository = circleRepository;
         this.userCircleRepository = userCircleRepository;
-        this.circlePinRepository = circlePinRepository;
         this.pinService = pinService;
         this.pinRepository = pinRepository;
-        this.pinPictureRepository = pinPictureRepository;
     }
 
     private MockMultipartFile generateFile(String name, String originalFileName) {
@@ -116,44 +110,6 @@ class PinServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 생성 시 핀-써클 매핑 관계가 생성된다.")
-    public void create_pin_results_in_creation_of_pinCircle() {
-        // Given
-        Users user = generateSimpleUser("test-email", "test-nickname");
-        Circle circle = generateSimpleCircle("test-circle");
-        userJoinCircle(user, circle);
-
-        LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).build();
-        List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
-
-        // When
-        PinDTO.PinDetailResponse createdPin = pinService.createPin(user, circle.getId(), request, pictures);
-
-        // Then
-        Assertions.assertTrue(circlePinRepository.findAllCirclesByPinId(createdPin.getId()).contains(circle));
-    }
-
-    @Test
-    @DisplayName("핀을 생성 시 핀-사진 매핑 관계가 생성된다.")
-    public void create_pin_results_in_creation_of_pinPicture() {
-        // Given
-        Users user = generateSimpleUser("test-email", "test-nickname");
-        Circle circle = generateSimpleCircle("test-circle");
-        userJoinCircle(user, circle);
-
-        LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).build();
-        List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
-
-        // When
-        PinDTO.PinDetailResponse createdPin = pinService.createPin(user, circle.getId(), request, pictures);
-
-        // Then
-        Assertions.assertEquals(2, pinPictureRepository.findAllPicturesByPinId(createdPin.getId()).size());
-    }
-
-    @Test
     @DisplayName("자신 혹은 자신이 가입한 써클의 핀을 조회할 수 있다.")
     public void get_pin_detail_by_me_or_circle_success() {
         // Given
@@ -168,6 +124,7 @@ class PinServiceTest {
 
         // When
         PinDTO.PinDetailResponse pinDetail = pinService.getPinDetail(user, createdPin.getId());
+        log.info("getPinDetail = " + pinDetail);
 
         // Then
         Assertions.assertEquals("pin", pinDetail.getTitle());

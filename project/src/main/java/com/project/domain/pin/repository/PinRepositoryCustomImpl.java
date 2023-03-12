@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.project.domain.circlepin.entity.QCirclePin.circlePin;
+import static com.project.domain.pin.entity.QPin.pin;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -19,9 +20,8 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
     public List<Pin> findAllByCircleId(Long circleId) {
 
         return jpaQueryFactory
-                .select(circlePin.pin)
-                .from(circlePin)
-                .where(circlePin.circle.id.eq(circleId))
+                .selectFrom(pin)
+                .where(pin.circle.id.eq(circleId))
                 .fetch();
     }
 }

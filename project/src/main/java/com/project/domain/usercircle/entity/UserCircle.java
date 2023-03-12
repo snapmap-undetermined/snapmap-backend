@@ -16,15 +16,12 @@ public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "user_circle_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "circle_id")
     private Circle circle;
 
     public void setUser(Users user) {

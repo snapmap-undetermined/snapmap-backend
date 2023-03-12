@@ -20,7 +20,6 @@ public class Users extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "email")
@@ -50,7 +49,6 @@ public class Users extends BaseTimeEntity {
     private List<Friend> friendList = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
     public void addPin(Pin pin) {
@@ -62,6 +60,7 @@ public class Users extends BaseTimeEntity {
 
     public void removePin(Pin pin) {
         this.pinList.remove(pin);
+        pin.setUser(null);
     }
 
     public void setNickname(String nickname) {
