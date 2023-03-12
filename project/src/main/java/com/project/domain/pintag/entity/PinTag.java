@@ -1,22 +1,21 @@
-package com.project.domain.pinhashtag.entity;
+package com.project.domain.pintag.entity;
 
-import com.project.domain.hashtag.entity.Hashtag;
-import com.project.domain.picture.entity.Picture;
+import com.project.domain.tag.entity.Tag;
 import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "pin_hashtag")
+@Table(name = "pin_tag")
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class PinHashtag {
+public class PinTag {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "pin_hashtag_id")
+    @Column(name = "pin_tag_id")
     private Long id;
 
     @ManyToOne
@@ -24,7 +23,14 @@ public class PinHashtag {
     private Pin pin;
 
     @ManyToOne
-    @JoinColumn(name = "hashtag_id")
-    private Hashtag hashtag;
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
+    public void setPin(Pin pin) {
+        this.pin = pin;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
 }

@@ -11,6 +11,8 @@ public interface UserCircleRepositoryCustom {
 
     List<Users> findAllUserByCircleId(Long circleId);
 
+    List<Circle> findAllCircleByUserId(Long userId);
+
     Long deleteByUserIdAndCircleId(Long userId, Long circleId);
 
     List<Circle> findAllCircleByUserId(Long userId);

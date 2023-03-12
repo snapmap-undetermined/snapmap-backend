@@ -19,8 +19,12 @@ public class PointDTO {
         this.latitude = latitude;
     }
 
-    public static Point toPoint(PointDTO pointDTO) throws ParseException {
+    public static Point toPoint(PointDTO pointDTO) {
         final String pointWKT = String.format("POINT(%s %s)", pointDTO.getLongitude(), pointDTO.getLatitude());
-        return (Point) new WKTReader().read(pointWKT);
+        try {
+            return (Point) new WKTReader().read(pointWKT);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

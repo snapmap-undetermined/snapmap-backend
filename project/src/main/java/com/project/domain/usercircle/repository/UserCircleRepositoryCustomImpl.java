@@ -1,6 +1,8 @@
 package com.project.domain.usercircle.repository;
 
 import com.project.domain.circle.entity.Circle;
+import com.project.domain.usercircle.entity.QUserCircle;
+import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
