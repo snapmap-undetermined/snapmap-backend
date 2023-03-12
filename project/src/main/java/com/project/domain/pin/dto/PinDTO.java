@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PinDTO {
@@ -54,8 +53,7 @@ public class PinDTO {
         public PinDetailResponse(Pin pin) {
             this.id = pin.getId();
             this.title = pin.getTitle();
-            this.pictureList = pin.getPinPictures().stream()
-                    .map((pinPicture -> new PictureDTO.PictureResponse(pinPicture.getPicture()))).collect(Collectors.toList());
+            this.pictureList = pin.getPictures().stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
             this.location = new LocationDTO(pin.getLocation());
             this.tags = pin.getPinTags().stream()
                     .map((pinTag -> pinTag.getTag().getName())).toList();

@@ -15,22 +15,27 @@ public class PinTag {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "pin_tag_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "pin_id")
     private Pin pin;
 
     @ManyToOne
-    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     public void setPin(Pin pin) {
+        if (this.pin != null) {
+            this.pin.getPinTags().remove(this);
+        }
         this.pin = pin;
+        pin.getPinTags().add(this);
     }
 
     public void setTag(Tag tag) {
+        if (this.tag != null) {
+            this.tag.getPinTags().remove(this);
+        }
         this.tag = tag;
+        tag.getPinTags().add(this);
     }
 }

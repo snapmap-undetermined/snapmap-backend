@@ -20,7 +20,6 @@ public class Location {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "location_id")
     private Long id;
 
     // 해당 Point의 별칭
@@ -30,7 +29,19 @@ public class Location {
     @Column(name = "point")
     private Point point;
 
-//    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @Builder.Default
-//    private List<Pin> pinList = new ArrayList<>();
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Pin> pins = new ArrayList<>();
+
+    public void addPin(Pin pin) {
+        if (!this.pins.contains(pin)) {
+            this.pins.add(pin);
+        }
+        pin.setLocation(this);
+    }
+
+    public void removePin(Pin pin) {
+        this.pins.remove(pin);
+        pin.setLocation(null);
+    }
 }
