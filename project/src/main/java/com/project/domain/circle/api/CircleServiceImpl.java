@@ -47,7 +47,7 @@ public class CircleServiceImpl implements CircleService {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         }
 
-        List<Circle> circleList = userCircleRepository.findAllByUserId(userId);
+        List<Circle> circleList = circleRepository.findAllCircleByUserId(userId);
 
         List<CircleDTO.CircleSimpleInfoResponse> response = circleList.stream().map(CircleDTO.CircleSimpleInfoResponse::new).collect(Collectors.toList());
 
@@ -58,7 +58,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) {
 
-        List<Users> userList = userCircleRepository.findAllUserByCircleId(circleId);
+        List<Users> userList = userRepository.findAllUserByCircleId(circleId);
         Circle circle = circleRepository.findById(circleId).orElseThrow(()->{
             log.error("Get circle failed. circleId={}", circleId);
             throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
@@ -68,6 +68,9 @@ public class CircleServiceImpl implements CircleService {
 
     @Override
     public Long leaveCircle(Long userId, Long circleId) {
+        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(userId, circleId).orElseThrow();
+        Circle circle = circleRepository.findById(circleId).orElseThrow();
+        circle.removeUser(userCircle);
 
         return userCircleRepository.deleteByUserIdAndCircleId(userId, circleId);
     }

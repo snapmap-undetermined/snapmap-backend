@@ -76,7 +76,7 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
-        List<Circle> userJoinCircles = userCircleRepository.findAllCircleByUserId(user.getId());
+        List<Circle> userJoinCircles = circleRepository.findAllCircleByUserId(user.getId());
         checkPinAccessibility(user, userJoinCircles, pin);
 
         return new PinDTO.PinDetailResponse(pin);
@@ -123,7 +123,7 @@ public class PinServiceImpl implements PinService {
     public void deletePin(Users user, Long pinId) {
         Pin pin = getPin(pinId);
         if (isPinCreatedByUser(user, pin)) {
-            pin.getCircle().getPins().remove(pin);
+            pin.getCircle().getPinList().remove(pin);
 
             // 내가 삭제하면 그룹 내에서도 해당 핀이 삭제된다.
             pinRepository.delete(pin);
