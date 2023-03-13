@@ -38,11 +38,11 @@ public class Pin extends BaseTimeEntity {
     @ManyToOne
     private Location location;
 
-    @OneToMany(mappedBy = "pin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL)
     @Builder.Default
     private List<PinTag> pinTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Picture> pictures = new ArrayList<>();
 
