@@ -28,7 +28,7 @@ public class Circle extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "circle", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<UserCircle> userList = new ArrayList<>();
+    private List<UserCircle> userCircleList = new ArrayList<>();
 
     @Column(name = "name")
     private String name;
@@ -47,13 +47,13 @@ public class Circle extends BaseTimeEntity {
         this.name = circleName;
     }
 
-    public void addUser(UserCircle userCircle) {
-        this.getUserList().add(userCircle);
+    public void addUserCircle(UserCircle userCircle) {
+        this.getUserCircleList().add(userCircle);
         userCircle.setCircle(this);
     }
 
-    public void removeUser(UserCircle userCircle) {
-        this.getUserList().remove(userCircle);
+    public void removeUserCircle(UserCircle userCircle) {
+        this.getUserCircleList().remove(userCircle);
         userCircle.setCircle(null);
     }
 

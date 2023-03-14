@@ -30,11 +30,11 @@ public class CircleServiceImpl implements CircleService {
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
         Circle circle = createCircleRequest.toEntity();
-        circleRepository.save(circle);
 
         // userCircle에도 반영이 되어야 한다.
         UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
-        userCircleRepository.save(userCircle);
+        circle.addUserCircle(userCircle);
+        circleRepository.save(circle);
 
         return new CircleDTO.CircleSimpleInfoResponse(circle);
 
@@ -67,12 +67,12 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public Long leaveCircle(Long userId, Long circleId) {
+    public CircleDTO.CircleSimpleInfoResponse leaveCircle(Long userId, Long circleId) {
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(userId, circleId).orElseThrow();
         Circle circle = circleRepository.findById(circleId).orElseThrow();
-        circle.removeUser(userCircle);
+        circle.removeUserCircle(userCircle);
 
-        return userCircleRepository.deleteByUserIdAndCircleId(userId, circleId);
+        return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
 
     @Override

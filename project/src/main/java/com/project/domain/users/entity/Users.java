@@ -52,7 +52,7 @@ public class Users extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<UserCircle> circleList = new ArrayList<>();
+    private List<UserCircle> userCircleList = new ArrayList<>();
 
     @OneToOne
     private RefreshToken refreshToken;
