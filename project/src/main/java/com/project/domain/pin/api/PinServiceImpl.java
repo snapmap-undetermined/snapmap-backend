@@ -44,26 +44,23 @@ public class PinServiceImpl implements PinService {
     @Override
     @Transactional
     public PinDTO.PinDetailResponse createPin(Users user, Long circleId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
-        Pin pin = request.toEntity();
         Circle circle = getCircle(circleId);
-
-        validateUserMembershipOnCircle(user, circle);
         validatePictureInput(pictures);
+        validateUserMembershipOnCircle(user, circle);
 
-        user.addPin(pin);
-        circle.addPin(pin);
+        Pin pin = request.toEntity();
+        user.addPin(pin); // 유저에 핀 추가
+        circle.addPin(pin); // 그룹에 핀 추가
 
         locationRepository.save(pin.getLocation());
 
-        List<PinTag> pinTags = new ArrayList<>();
         for (String tagName : request.getTagNames()) {
             Tag tag = tagRepository.findByName(tagName).orElseGet(() -> {
                 Tag newTag = Tag.builder().name(tagName).build();
                 return tagRepository.save(newTag);
             });
             PinTag pinTag = PinTag.builder().pin(pin).tag(tag).build();
-            pinTags.add(pinTag);
-            pinTag.setPin(pin);
+            pin.addPinTag(pinTag);
         }
 
         List<Picture> pictureList = uploadAndSavePictures(pictures);
@@ -98,6 +95,7 @@ public class PinServiceImpl implements PinService {
     }
 
     @Override
+    @Transactional
     public PinDTO.PinDetailResponse updatePin(Users user, Long pinId, PinDTO.PinUpdateRequest request, List<MultipartFile> pictures) throws ParseException {
         Pin pin = getPin(pinId);
 
@@ -120,14 +118,12 @@ public class PinServiceImpl implements PinService {
     }
 
     @Override
+    @Transactional
     public void deletePin(Users user, Long pinId) {
         Pin pin = getPin(pinId);
         if (isPinCreatedByUser(user, pin)) {
-            pin.getCircle().getPins().remove(pin);
-
-            // 내가 삭제하면 그룹 내에서도 해당 핀이 삭제된다.
-            pinRepository.delete(pin);
-            user.removePin(pin);
+            pin.getCircle().removePin(pin); // 써클에서 해당 핀 삭제
+            user.removePin(pin); // 유저에서 해당 핀 삭제
         } else {
             throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
         }

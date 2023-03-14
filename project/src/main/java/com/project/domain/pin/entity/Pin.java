@@ -56,6 +56,11 @@ public class Pin extends BaseTimeEntity {
         picture.setPin(this);
     }
 
+    public void addPinTag(PinTag pinTag) {
+        getPinTags().add(pinTag);
+        pinTag.setPin(this);
+    }
+
     public void removePicture(Picture picture) {
         this.getPictures().remove(picture);
         picture.setPin(null);
