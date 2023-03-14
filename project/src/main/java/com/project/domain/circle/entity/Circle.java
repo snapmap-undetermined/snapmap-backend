@@ -33,7 +33,7 @@ public class Circle extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users master;
 
     @Column(name = "key")
@@ -65,6 +65,10 @@ public class Circle extends BaseTimeEntity {
     public void removeUserCircle(UserCircle userCircle) {
         this.getUserCircleList().remove(userCircle);
         userCircle.setCircle(null);
+    }
+
+    public void setMaster(Users user) {
+        this.master = user;
     }
 
 }

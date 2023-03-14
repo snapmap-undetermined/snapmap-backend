@@ -39,8 +39,7 @@ public class CircleServiceImpl implements CircleService {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
         circle.setKey(circleKey);
-        circleRepository.save(circle);
-
+        circle.setMaster(user);
         // userCircle에도 반영이 되어야 한다.
         UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
         circle.addUserCircle(userCircle);
