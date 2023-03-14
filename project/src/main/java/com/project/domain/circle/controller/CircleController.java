@@ -50,8 +50,9 @@ public class CircleController {
     //유저가 그룹에서 나온다.
     @DeleteMapping("/{circleId}")
     @Permission
-    private Long leaveCircle(@AuthUser Users user, Long circleId) throws Exception {
-        return circleService.leaveCircle(user.getId(), circleId);
+    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> leaveCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
+        CircleDTO.CircleSimpleInfoResponse response = circleService.leaveCircle(user.getId(), circleId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 유저가 그룹에 조인한다.

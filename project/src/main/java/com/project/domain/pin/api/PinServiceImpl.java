@@ -73,7 +73,7 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
-        List<Circle> userJoinCircles = userCircleRepository.findAllCircleByUserId(user.getId());
+        List<Circle> userJoinCircles = circleRepository.findAllCircleByUserId(user.getId());
         checkPinAccessibility(user, userJoinCircles, pin);
 
         return new PinDTO.PinDetailResponse(pin);
