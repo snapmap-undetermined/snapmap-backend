@@ -17,10 +17,10 @@ public class Friend extends BaseTimeEntity {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users me;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users mate;
 
     @Column(name = "friend_name")

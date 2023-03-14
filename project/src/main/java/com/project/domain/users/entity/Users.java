@@ -2,8 +2,10 @@ package com.project.domain.users.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.common.entity.Role;
+import com.project.domain.circle.entity.Circle;
 import com.project.domain.friend.entity.Friend;
 import com.project.domain.pin.entity.Pin;
+import com.project.domain.usercircle.entity.UserCircle;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,13 +42,17 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<Pin> pinList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "me", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "me", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<Friend> friendList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserCircle> userCircleList = new ArrayList<>();
 
     @OneToOne
     private RefreshToken refreshToken;

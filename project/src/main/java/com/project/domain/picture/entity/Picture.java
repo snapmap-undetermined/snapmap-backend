@@ -23,7 +23,7 @@ public class Picture extends BaseTimeEntity {
     @Column(name = "url")
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Pin pin;
 
     public void setPin(Pin pin) {

@@ -2,6 +2,7 @@ package com.project.domain.circle.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.pin.entity.Pin;
+import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,9 +22,13 @@ public class Circle extends BaseTimeEntity {
     @Id
     private Long id;
 
-    @OneToMany(mappedBy = "circle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "circle", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
-    private List<Pin> pins = new ArrayList<>();
+    private List<Pin> pinList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "circle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserCircle> userCircleList = new ArrayList<>();
 
     @Column(name = "name")
     private String name;
@@ -35,12 +40,12 @@ public class Circle extends BaseTimeEntity {
     private String key;
 
     public void addPin(Pin pin) {
-        this.getPins().add(pin);
+        this.getPinList().add(pin);
         pin.setCircle(this);
     }
 
     public void removePin(Pin pin) {
-        this.getPins().remove(pin);
+        this.getPinList().remove(pin);
         pin.setCircle(null);
     }
 
@@ -50,6 +55,16 @@ public class Circle extends BaseTimeEntity {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void addUserCircle(UserCircle userCircle) {
+        this.getUserCircleList().add(userCircle);
+        userCircle.setCircle(this);
+    }
+
+    public void removeUserCircle(UserCircle userCircle) {
+        this.getUserCircleList().remove(userCircle);
+        userCircle.setCircle(null);
     }
 
 }

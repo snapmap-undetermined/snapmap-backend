@@ -24,25 +24,25 @@ public class Pin extends BaseTimeEntity {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
 
     // 핀 이름
     @Column(name = "title")
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
     // 하나의 장소에 대응되는 여러 개의 핀이 존재 가능하다.
     @ManyToOne
     private Location location;
 
-    @OneToMany(mappedBy = "pin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<PinTag> pinTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Picture> pictures = new ArrayList<>();
 
@@ -54,6 +54,11 @@ public class Pin extends BaseTimeEntity {
     public void addPicture(Picture picture) {
         getPictures().add(picture);
         picture.setPin(this);
+    }
+
+    public void addPinTag(PinTag pinTag) {
+        getPinTags().add(pinTag);
+        pinTag.setPin(this);
     }
 
     public void removePicture(Picture picture) {

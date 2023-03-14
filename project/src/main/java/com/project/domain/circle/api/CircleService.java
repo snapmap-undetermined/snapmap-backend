@@ -13,7 +13,7 @@ public interface CircleService {
 
     CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) throws Exception;
 
-    Long leaveCircle(Long userId, Long circleId) throws Exception;
+    CircleDTO.CircleSimpleInfoResponse leaveCircle(Long userId, Long circleId) throws Exception;
 
     CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request);
 
