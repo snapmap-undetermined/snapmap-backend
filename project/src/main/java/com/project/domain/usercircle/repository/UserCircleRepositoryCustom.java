@@ -7,6 +7,4 @@ import com.project.domain.users.entity.Users;
 import java.util.List;
 
 public interface UserCircleRepositoryCustom {
-    Long deleteByUserIdAndCircleId(Long userId, Long circleId);
-
 }
