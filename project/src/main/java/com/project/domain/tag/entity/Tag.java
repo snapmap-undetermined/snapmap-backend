@@ -23,7 +23,7 @@ public class Tag extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tag")
     @Builder.Default
     private List<PinTag> pinTags = new ArrayList<>();
 

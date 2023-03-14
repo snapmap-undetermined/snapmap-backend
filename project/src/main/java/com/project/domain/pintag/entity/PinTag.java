@@ -17,10 +17,10 @@ public class PinTag {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Pin pin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Tag tag;
 
     public void setPin(Pin pin) {
