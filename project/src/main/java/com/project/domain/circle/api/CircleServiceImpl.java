@@ -58,7 +58,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) {
 
-        List<Users> userList = userRepository.findAllUserByCircleId(circleId);
+        List<Users> userList = circleRepository.findAllUserByCircleId(circleId);
         Circle circle = circleRepository.findById(circleId).orElseThrow(()->{
             log.error("Get circle failed. circleId={}", circleId);
             throw new EntityNotFoundException("존재하지 않는 그룹입니다.");

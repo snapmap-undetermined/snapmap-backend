@@ -22,7 +22,7 @@ public class Circle extends BaseTimeEntity {
     @Id
     private Long id;
 
-    @OneToMany(mappedBy = "circle", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "circle", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<Pin> pinList = new ArrayList<>();
 
