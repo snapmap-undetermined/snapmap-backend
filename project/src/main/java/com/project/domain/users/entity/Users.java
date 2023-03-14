@@ -42,11 +42,11 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<Pin> pinList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "me", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "me", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     private List<Friend> friendList = new ArrayList<>();
 

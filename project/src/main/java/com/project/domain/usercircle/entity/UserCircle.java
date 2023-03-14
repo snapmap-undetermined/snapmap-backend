@@ -18,10 +18,10 @@ public class UserCircle extends BaseTimeEntity {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
     public void setUser(Users user) {
