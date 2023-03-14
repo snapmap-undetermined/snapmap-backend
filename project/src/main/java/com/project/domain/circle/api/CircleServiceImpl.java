@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,14 @@ public class CircleServiceImpl implements CircleService {
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
         Circle circle = createCircleRequest.toEntity();
+
+        Random random = new Random();
+        String circleKey = random.ints(48, 122 + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(10)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        circle.setKey(circleKey);
         circleRepository.save(circle);
 
         // userCircle에도 반영이 되어야 한다.
