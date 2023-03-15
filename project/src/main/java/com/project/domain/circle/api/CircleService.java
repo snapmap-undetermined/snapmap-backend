@@ -15,9 +15,11 @@ public interface CircleService {
 
     CircleDTO.CircleSimpleInfoResponse leaveCircle(Long userId, Long circleId) throws Exception;
 
+    CircleDTO.CircleSimpleInfoResponse expulsionUserFromCircle(Long userId, Long circleId, CircleDTO.ExpulsionUserRequest expulsionUserRequest);
+
     CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request);
 
-    CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request);
+    CircleDTO.CircleSimpleInfoResponse updateCircleName(Long userId, Long circleId, CircleDTO.UpdateCircleRequest request);
 
 
 }

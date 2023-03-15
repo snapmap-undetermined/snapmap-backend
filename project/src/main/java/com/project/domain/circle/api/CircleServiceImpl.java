@@ -75,12 +75,26 @@ public class CircleServiceImpl implements CircleService {
         return new CircleDTO.CircleWithJoinUserResponse(userList, circle);
     }
 
+    // 본인이 스스로 나감
     @Override
     public CircleDTO.CircleSimpleInfoResponse leaveCircle(Long userId, Long circleId) {
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(userId, circleId).orElseThrow();
         Circle circle = circleRepository.findById(circleId).orElseThrow();
         circle.removeUserCircle(userCircle);
 
+        return new CircleDTO.CircleSimpleInfoResponse(circle);
+    }
+
+    // 방장이 유저를 추방함
+    @Override
+    public CircleDTO.CircleSimpleInfoResponse expulsionUserFromCircle(Long userId, Long circleId, CircleDTO.ExpulsionUserRequest expulsionUserRequest) {
+
+        Circle circle = circleRepository.findById(circleId).orElseThrow();
+        // 방장 권한일 경우
+        if (isMasterUser(circle,userId)){
+            UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(expulsionUserRequest.getUserId(), circleId).orElseThrow();
+            circle.removeUserCircle(userCircle);
+        }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
 
@@ -97,13 +111,19 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleSimpleInfoResponse updateCircleName(Long circleId, CircleDTO.UpdateCircleRequest request) {
+    public CircleDTO.CircleSimpleInfoResponse updateCircleName(Long userId,Long circleId, CircleDTO.UpdateCircleRequest request) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Update circle name failed. circleId = {}", circleId);
             throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
         });
-        circle.setName(request.getCircleName());
+        if (isMasterUser(circle,userId)){
+            circle.setName(request.getCircleName());
 
+        }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
+    }
+
+    private boolean isMasterUser(Circle circle, Long userId) {
+        return circle.getMaster().getId().equals(userId);
     }
 }

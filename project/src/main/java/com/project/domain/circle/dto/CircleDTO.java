@@ -113,5 +113,17 @@ public class CircleDTO {
 
     }
 
+    @Data
+    public static class ExpulsionUserRequest {
+
+        @NotBlank(message = "userId 입력해주세요.")
+        private Long userId;
+
+        public ExpulsionUserRequest(Long userId) {
+            this.userId = userId;
+        }
+
+    }
+
 
 }
