@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CircleServiceImpl implements CircleService {
 
     private final UserCircleRepository userCircleRepository;
@@ -32,21 +33,14 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
         Circle circle = createCircleRequest.toEntity();
 
-        Random random = new Random();
-        String circleKey = random.ints(48, 122 + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(10)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-        circle.setKey(circleKey);
+        circle.setKey(randomCircleKey());
         circle.setMaster(user);
         // userCircle에도 반영이 되어야 한다.
-        UserCircle userCircle = UserCircle.builder().user(user).circle(circle).build();
+        UserCircle userCircle = UserCircle.builder().user(user).status(1).circle(circle).build();
         circle.addUserCircle(userCircle);
         circleRepository.save(circle);
 
         return new CircleDTO.CircleSimpleInfoResponse(circle);
-
     }
 
     @Override
@@ -68,7 +62,7 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.CircleWithJoinUserResponse getUserListByCircle(Long circleId) {
 
         List<Users> userList = circleRepository.findAllUserByCircleId(circleId);
-        Circle circle = circleRepository.findById(circleId).orElseThrow(()->{
+        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Get circle failed. circleId={}", circleId);
             throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
         });
@@ -91,15 +85,16 @@ public class CircleServiceImpl implements CircleService {
 
         Circle circle = circleRepository.findById(circleId).orElseThrow();
         // 방장 권한일 경우
-        if (isMasterUser(circle,userId)){
+        if (isMasterUser(circle, userId)) {
             UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(expulsionUserRequest.getUserId(), circleId).orElseThrow();
             circle.removeUserCircle(userCircle);
         }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
 
+    // 그룹에 유저를 초대
     @Override
-    public CircleDTO.JoinCircleResponse joinCircle(Users user, CircleDTO.JoinCircleRequest request) {
+    public CircleDTO.InviteCircleResponse inviteCircle(Users user, CircleDTO.InviteCircleRequest request) {
         Circle circle = circleRepository.findById(request.getCircleId()).orElseThrow(() -> {
             log.error("Join circle failed. circleId = {}", request.getCircleId());
             throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
@@ -107,23 +102,42 @@ public class CircleServiceImpl implements CircleService {
         UserCircle userCircle = request.toEntity(user, circle);
         userCircleRepository.save(userCircle);
 
-        return new CircleDTO.JoinCircleResponse(userCircle);
+        return new CircleDTO.InviteCircleResponse(userCircle);
+    }
+
+    // 유저가 초대요청을 수락
+    @Override
+    @Transactional
+    public CircleDTO.AllowJoinCircleResponse allowJoinCircleResponse(Users user, Long circleId) {
+        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
+
+        userCircle.setStatus();
+        return new CircleDTO.AllowJoinCircleResponse(user, userCircle);
     }
 
     @Override
-    public CircleDTO.CircleSimpleInfoResponse updateCircleName(Long userId,Long circleId, CircleDTO.UpdateCircleRequest request) {
+    public CircleDTO.CircleSimpleInfoResponse updateCircle(Long userId, Long circleId, CircleDTO.UpdateCircleRequest request) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Update circle name failed. circleId = {}", circleId);
             throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
         });
-        if (isMasterUser(circle,userId)){
+        if (isMasterUser(circle, userId)) {
             circle.setName(request.getCircleName());
-
+            circle.setImageUrl(request.getImageUrl());
         }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
 
     private boolean isMasterUser(Circle circle, Long userId) {
         return circle.getMaster().getId().equals(userId);
+    }
+
+    private String randomCircleKey() {
+        Random random = new Random();
+        return random.ints(48, 122 + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(10)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

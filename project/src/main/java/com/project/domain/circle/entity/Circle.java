@@ -36,8 +36,11 @@ public class Circle extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Users master;
 
-    @Column(name = "key")
+    @Column(name = "circlekey")
     private String key;
+
+    @Column(name = "imageUrl")
+    private String imageUrl;
 
     public void addPin(Pin pin) {
         this.getPinList().add(pin);
@@ -69,6 +72,10 @@ public class Circle extends BaseTimeEntity {
 
     public void setMaster(Users user) {
         this.master = user;
+    }
+
+    public void setImageUrl(String url) {
+        this.imageUrl = url;
     }
 
 }

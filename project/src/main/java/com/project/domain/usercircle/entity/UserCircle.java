@@ -5,6 +5,8 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "user_circle")
@@ -24,6 +26,8 @@ public class UserCircle extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
+    private int status;
+
     public void setUser(Users user) {
         this.user = user;
     }
@@ -31,4 +35,9 @@ public class UserCircle extends BaseTimeEntity {
     public void setCircle(Circle circle) {
         this.circle = circle;
     }
+
+    public void setStatus() {
+        this.status = 1;
+    }
+
 }

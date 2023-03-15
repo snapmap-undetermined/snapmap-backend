@@ -61,6 +61,7 @@ public class CircleDTO {
 
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
+        private String imageUrl;
     }
 
     @Data
@@ -75,18 +76,18 @@ public class CircleDTO {
             this.joinedUserList = userList.stream().map(UserDTO.UserSimpleInfoResponse::new).collect(Collectors.toList());
             this.circleId = circle.getId();
             this.circleName = circle.getName();
-
         }
-
     }
 
     @Data
-    public static class JoinCircleRequest {
+    public static class InviteCircleRequest {
 
         @NotBlank(message = "circleId를 입력해주세요.")
         private Long circleId;
 
-        public JoinCircleRequest(UserCircle userCircle) {
+        private List<Users> users;
+
+        public InviteCircleRequest(UserCircle userCircle) {
             this.circleId = userCircle.getCircle().getId();
         }
 
@@ -94,21 +95,22 @@ public class CircleDTO {
             return UserCircle.builder()
                     .user(user)
                     .circle(circle)
+                    .status(0)
                     .build();
         }
     }
 
     @Data
-    public static class JoinCircleResponse {
+    public static class InviteCircleResponse {
 
         private Long userId;
-        private String userNickname;
         private Long circleId;
+        private List<UserDTO.UserSimpleInfoResponse> users;
 
-        public JoinCircleResponse(UserCircle userCircle) {
+        public InviteCircleResponse(UserCircle userCircle) {
             this.userId = userCircle.getUser().getId();
-            this.userNickname = userCircle.getUser().getNickname();
             this.circleId = userCircle.getCircle().getId();
+            this.users = userCircle.getCircle().getUserCircleList().stream().map((uc) -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).toList();
         }
 
     }
@@ -123,6 +125,20 @@ public class CircleDTO {
             this.userId = userId;
         }
 
+    }
+
+    @Data
+    public static class AllowJoinCircleResponse {
+
+        private Long userId;
+        private Long circleId;
+        private String userNickname;
+
+        public AllowJoinCircleResponse(Users user, UserCircle userCircle) {
+            this.userId = user.getId();
+            this.circleId = userCircle.getCircle().getId();
+            this.userNickname = user.getNickname();
+        }
     }
 
 
