@@ -54,12 +54,11 @@ public class FriendDTO {
 
         public Friend toEntity() {
             return Friend.builder()
-                    .friendName(friendName)
                     .build();
         }
-        public CreateFriendRequest(Users friend) {
-            this.friendName = friend.getNickname();
-            this.friendUserId = friend.getId();
+        public CreateFriendRequest(Users mate) {
+            this.friendName = mate.getNickname();
+            this.friendUserId = mate.getId();
         }
 
     }
