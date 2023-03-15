@@ -37,20 +37,20 @@ public class FriendServiceImpl implements FriendService {
     public FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
 
         Friend friend = createFriendRequest.toEntity();
-        Users friendUser = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
+        Users mate = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         });
 
         // 유저-친구 정보 동일, 이미 있는 친구관계 중복 확인
-        if (Objects.equals(user.getId(), friendUser.getId())) {
+        if (Objects.equals(user.getId(), mate.getId())) {
             throw new BusinessLogicException("유저-친구 정보가 동일합니다.", ErrorCode.REQUEST_USER_ID_VALID_ERROR);
         }
-        if (friendRepository.existsByUserIds(user.getId(), friendUser.getId())) {
+        if (friendRepository.existsByUserIds(user.getId(), mate.getId())) {
             throw new BusinessLogicException("이미 있는 친구관계 입니다.", ErrorCode.FRIEND_DUPLICATION);
         }
 
-        friend.setFriendUser(friendUser);
-        friend.setMeUser(user);
+        friend.setMate(mate);
+        friend.setMe(user);
 
         friendRepository.save(friend);
 
