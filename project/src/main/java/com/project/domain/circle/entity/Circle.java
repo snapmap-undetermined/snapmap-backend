@@ -60,11 +60,6 @@ public class Circle extends BaseTimeEntity {
         this.key = key;
     }
 
-    public void addUserCircle(UserCircle userCircle) {
-        this.getUserCircleList().add(userCircle);
-        userCircle.setCircle(this);
-    }
-
     public void removeUserCircle(UserCircle userCircle) {
         this.getUserCircleList().remove(userCircle);
         userCircle.setCircle(null);

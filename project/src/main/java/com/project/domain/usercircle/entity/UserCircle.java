@@ -28,6 +28,25 @@ public class UserCircle extends BaseTimeEntity {
 
     private int status;
 
+    public void setUserAndCircle(Users user, Circle circle) {
+        addUserCircleForUser(user);
+        addUserCircleForCircle(circle);
+        setUser(user);
+        setCircle(circle);
+    }
+
+    private void addUserCircleForUser(Users user) {
+        if(!user.getUserCircleList().contains(this)){
+            user.getUserCircleList().add(this);
+        }
+    }
+
+    private void addUserCircleForCircle(Circle circle) {
+        if(!circle.getUserCircleList().contains(this)){
+            circle.getUserCircleList().add(this);
+        }
+    }
+
     public void setUser(Users user) {
         this.user = user;
     }
