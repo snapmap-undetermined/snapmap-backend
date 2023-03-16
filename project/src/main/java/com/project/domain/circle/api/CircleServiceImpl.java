@@ -30,8 +30,8 @@ public class CircleServiceImpl implements CircleService {
 
     @Override
     @Transactional
-    public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest createCircleRequest) {
-        Circle circle = createCircleRequest.toEntity();
+    public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest request) {
+        Circle circle = request.toEntity();
 
         circle.setKey(randomCircleKey());
         circle.setMaster(user);
@@ -41,10 +41,11 @@ public class CircleServiceImpl implements CircleService {
         userCircle.setUserAndCircle(user, circle);
 
         // 생성할 때 같이 초대할 유저들 생성
-        createCircleRequest.getUserList().forEach((userId) -> {
+        request.getUserList().forEach((userId) -> {
             Users u = userRepository.findById(userId).orElseThrow();
-            UserCircle uc = UserCircle.builder().user(u).status(0).circle(circle).build();
+            UserCircle uc = UserCircle.builder().circle(circle).status(0).user(u).build();
             uc.setUserAndCircle(u, circle);
+            userCircleRepository.save(uc);
         });
 
         circleRepository.save(circle);
@@ -110,8 +111,9 @@ public class CircleServiceImpl implements CircleService {
         });
         request.getUserList().forEach((userId) -> {
             Users u = userRepository.findById(userId).orElseThrow();
-            UserCircle userCircle = request.toEntity(u, circle);
-            userCircleRepository.save(userCircle);
+            UserCircle uc = request.toEntity(u, circle);
+            uc.setUserAndCircle(u, circle);
+            userCircleRepository.save(uc);
         });
 
         return new CircleDTO.InviteCircleResponse(circle);
