@@ -21,7 +21,7 @@ public class CircleRepositoryCustomImpl implements CircleRepositoryCustom {
     public List<Circle> findAllCircleByUserId(Long userId) {
         return query
                 .selectFrom(circle)
-                .innerJoin(circle.userList, userCircle)
+                .innerJoin(circle.userCircleList, userCircle)
                 .fetchJoin()
                 .where(userCircle.user.id.eq(userId))
                 .distinct()
@@ -34,7 +34,7 @@ public class CircleRepositoryCustomImpl implements CircleRepositoryCustom {
 
         return query
                 .selectFrom(users)
-                .innerJoin(users.circleList, userCircle)
+                .innerJoin(users.userCircleList, userCircle)
                 .fetchJoin()
                 .where(userCircle.circle.id.eq(circleId))
                 .distinct()
