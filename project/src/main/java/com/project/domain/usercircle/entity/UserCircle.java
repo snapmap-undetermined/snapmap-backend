@@ -5,8 +5,6 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -15,7 +13,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "status = 1")
+@Where(clause = "isActive = 1")
 public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +26,7 @@ public class UserCircle extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
-    private int status;
+    private int isActive;
 
     public void setUserAndCircle(Users user, Circle circle) {
         addUserCircleForUser(user);
@@ -57,8 +55,8 @@ public class UserCircle extends BaseTimeEntity {
         this.circle = circle;
     }
 
-    public void setStatus() {
-        this.status = 1;
+    public void setIsActive() {
+        this.isActive = 1;
     }
 
 }

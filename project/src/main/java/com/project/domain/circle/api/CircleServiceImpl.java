@@ -37,13 +37,13 @@ public class CircleServiceImpl implements CircleService {
         circle.setMaster(user);
 
         // userCircle에도 반영이 되어야 한다.
-        UserCircle userCircle = UserCircle.builder().user(user).status(1).circle(circle).build();
+        UserCircle userCircle = UserCircle.builder().user(user).isActive(1).circle(circle).build();
         userCircle.setUserAndCircle(user, circle);
 
         // 생성할 때 같이 초대할 유저들 생성
         request.getUserList().forEach((userId) -> {
             Users u = userRepository.findById(userId).orElseThrow();
-            UserCircle uc = UserCircle.builder().circle(circle).status(0).user(u).build();
+            UserCircle uc = UserCircle.builder().circle(circle).isActive(0).user(u).build();
             uc.setUserAndCircle(u, circle);
             userCircleRepository.save(uc);
         });
@@ -125,7 +125,7 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.AllowJoinCircleResponse allowJoinCircle(Users user, Long circleId) {
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
 
-        userCircle.setStatus();
+        userCircle.setIsActive();
         return new CircleDTO.AllowJoinCircleResponse(user, userCircle);
     }
 

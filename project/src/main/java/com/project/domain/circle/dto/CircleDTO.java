@@ -91,7 +91,7 @@ public class CircleDTO {
             return UserCircle.builder()
                     .user(user)
                     .circle(circle)
-                    .status(0)
+                    .isActive(0)
                     .build();
         }
     }
