@@ -35,9 +35,18 @@ public class CircleServiceImpl implements CircleService {
 
         circle.setKey(randomCircleKey());
         circle.setMaster(user);
+
         // userCircle에도 반영이 되어야 한다.
         UserCircle userCircle = UserCircle.builder().user(user).status(1).circle(circle).build();
-        circle.addUserCircle(userCircle);
+        userCircle.setUserAndCircle(user, circle);
+
+        // 생성할 때 같이 초대할 유저들 생성
+        createCircleRequest.getUserList().forEach((userId) -> {
+            Users u = userRepository.findById(userId).orElseThrow();
+            UserCircle uc = UserCircle.builder().user(u).status(0).circle(circle).build();
+            uc.setUserAndCircle(u, circle);
+        });
+
         circleRepository.save(circle);
 
         return new CircleDTO.CircleSimpleInfoResponse(circle);
@@ -94,21 +103,24 @@ public class CircleServiceImpl implements CircleService {
 
     // 그룹에 유저를 초대
     @Override
-    public CircleDTO.InviteCircleResponse inviteCircle(Users user, CircleDTO.InviteCircleRequest request) {
-        Circle circle = circleRepository.findById(request.getCircleId()).orElseThrow(() -> {
-            log.error("Join circle failed. circleId = {}", request.getCircleId());
+    public CircleDTO.InviteCircleResponse inviteCircle(Users user, Long circleId, CircleDTO.InviteCircleRequest request) {
+        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
+            log.error("Join circle failed. circleId = {}", circleId);
             throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
         });
-        UserCircle userCircle = request.toEntity(user, circle);
-        userCircleRepository.save(userCircle);
+        request.getUserList().forEach((userId) -> {
+            Users u = userRepository.findById(userId).orElseThrow();
+            UserCircle userCircle = request.toEntity(u, circle);
+            userCircleRepository.save(userCircle);
+        });
 
-        return new CircleDTO.InviteCircleResponse(userCircle);
+        return new CircleDTO.InviteCircleResponse(circle);
     }
 
     // 유저가 초대요청을 수락
     @Override
     @Transactional
-    public CircleDTO.AllowJoinCircleResponse allowJoinCircleResponse(Users user, Long circleId) {
+    public CircleDTO.AllowJoinCircleResponse allowJoinCircle(Users user, Long circleId) {
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
 
         userCircle.setStatus();

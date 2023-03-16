@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,8 @@ public class CircleDTO {
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
 
+        private List<Long> userList;
+
         public Circle toEntity() {
             return Circle.builder()
                     .name(circleName)
@@ -82,14 +85,7 @@ public class CircleDTO {
     @Data
     public static class InviteCircleRequest {
 
-        @NotBlank(message = "circleId를 입력해주세요.")
-        private Long circleId;
-
-        private List<Users> users;
-
-        public InviteCircleRequest(UserCircle userCircle) {
-            this.circleId = userCircle.getCircle().getId();
-        }
+        private List<Long> userList;
 
         public UserCircle toEntity(Users user, Circle circle) {
             return UserCircle.builder()
@@ -103,16 +99,17 @@ public class CircleDTO {
     @Data
     public static class InviteCircleResponse {
 
-        private Long userId;
         private Long circleId;
-        private List<UserDTO.UserSimpleInfoResponse> users;
+        private List<UserDTO.UserSimpleInfoResponse> userList;
 
-        public InviteCircleResponse(UserCircle userCircle) {
-            this.userId = userCircle.getUser().getId();
-            this.circleId = userCircle.getCircle().getId();
-            this.users = userCircle.getCircle().getUserCircleList().stream().map((uc) -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).toList();
+        public InviteCircleResponse(Circle circle) {
+            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
+            circle.getUserCircleList().forEach((userCircle) -> {
+                userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
+            });
+            this.circleId = circle.getId();
+            this.userList = userList;
         }
-
     }
 
     @Data
@@ -141,5 +138,9 @@ public class CircleDTO {
         }
     }
 
-
+//    @Data
+//    public static class CreateUserRequest {
+//
+//        private Long userId;
+//    }
 }

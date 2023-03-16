@@ -17,9 +17,9 @@ public interface CircleService {
 
     CircleDTO.CircleSimpleInfoResponse expulsionUserFromCircle(Long userId, Long circleId, CircleDTO.ExpulsionUserRequest expulsionUserRequest);
 
-    CircleDTO.InviteCircleResponse inviteCircle(Users user, CircleDTO.InviteCircleRequest request);
+    CircleDTO.InviteCircleResponse inviteCircle(Users user, Long circleId, CircleDTO.InviteCircleRequest request);
 
-    CircleDTO.AllowJoinCircleResponse allowJoinCircleResponse(Users user, Long circleId);
+    CircleDTO.AllowJoinCircleResponse allowJoinCircle(Users user, Long circleId);
 
     CircleDTO.CircleSimpleInfoResponse updateCircle(Long userId, Long circleId, CircleDTO.UpdateCircleRequest request);
 

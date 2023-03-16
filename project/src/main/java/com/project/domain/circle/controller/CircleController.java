@@ -64,23 +64,31 @@ public class CircleController {
     }
 
     // 유저를 그룹에 초대한다.
-    @PostMapping("/join")
+    @PostMapping("/{circleId}/invite")
     @Permission
-    private ResponseEntity<CircleDTO.InviteCircleResponse> inviteCircle(@AuthUser Users user, @RequestBody @Valid CircleDTO.InviteCircleRequest request) throws Exception {
-        CircleDTO.InviteCircleResponse response = circleService.inviteCircle(user, request);
+    private ResponseEntity<CircleDTO.InviteCircleResponse> inviteCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody @Valid CircleDTO.InviteCircleRequest request) throws Exception {
+        CircleDTO.InviteCircleResponse response = circleService.inviteCircle(user, circleId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 유저가 그룹 초대를 수락한다.
+    @PostMapping("/{circleId}/allow")
+    @Permission
+    private ResponseEntity<CircleDTO.AllowJoinCircleResponse> allowJoinCircle(@AuthUser Users user, @PathVariable Long circleId) {
+        CircleDTO.AllowJoinCircleResponse response = circleService.allowJoinCircle(user, circleId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 유저가 그룹이름을 수정한다.
     @PatchMapping("/{circleId}")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircle(@AuthUser Users user,@PathVariable Long circleId, @Valid @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
+    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircle(@AuthUser Users user, @PathVariable Long circleId, @Valid @RequestBody CircleDTO.UpdateCircleRequest request) throws Exception {
         CircleDTO.CircleSimpleInfoResponse response = circleService.updateCircle(user.getId(), circleId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
 }
