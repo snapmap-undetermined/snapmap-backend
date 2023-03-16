@@ -9,7 +9,7 @@ public interface FriendService {
 
     FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) throws Exception;
 
-    void deleteFriend(Long friendId) throws Exception;
+    FriendDTO.FriendResponse deleteFriend(Long friendId) throws Exception;
 
     FriendDTO.FriendResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception;
 

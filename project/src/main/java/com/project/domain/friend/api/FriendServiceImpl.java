@@ -58,13 +58,15 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void deleteFriend(Long friendId) {
+    @Transactional
+    public FriendDTO.FriendResponse deleteFriend(Long friendId) {
 
         Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
         });
-        friendRepository.delete(friend);
+        friend.setIsActive();
 
+        return new FriendDTO.FriendResponse(friend);
     }
 
     @Override
