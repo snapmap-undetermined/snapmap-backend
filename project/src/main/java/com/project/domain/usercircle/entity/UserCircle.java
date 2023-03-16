@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "user_circle")
@@ -14,6 +15,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Where(clause = "status = 1")
 public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
