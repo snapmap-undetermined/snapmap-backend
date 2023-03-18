@@ -38,14 +38,14 @@ public class FriendController {
     }
 
     // 친구삭제
-    @DeleteMapping("/{friendId}")
+    @PatchMapping("/{friendId}/")
     private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@PathVariable Long friendId) throws Exception {
         friendService.deleteFriend(friendId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 친구이름 수정
-    @PatchMapping("/{friendId}")
+    @PatchMapping("/{friendId}/info")
     private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
         FriendDTO.FriendResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
