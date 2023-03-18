@@ -56,6 +56,7 @@ public class FriendDTO {
 
         public Friend toEntity() {
             return Friend.builder()
+                    .activated(true)
                     .build();
         }
         public CreateFriendRequest(Users mate) {

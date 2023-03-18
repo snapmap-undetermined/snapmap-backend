@@ -64,7 +64,7 @@ public class FriendServiceImpl implements FriendService {
         Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
         });
-        friend.setIsActive();
+        friend.setActivated();
 
         return new FriendDTO.FriendResponse(friend);
     }

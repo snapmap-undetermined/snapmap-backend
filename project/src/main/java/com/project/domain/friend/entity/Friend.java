@@ -26,7 +26,7 @@ public class Friend extends BaseTimeEntity {
     @Column(name = "friend_name")
     private String friendName;
 
-    private int isActive;
+    private boolean activated;
 
     public void setFriendName(String friendName) {
         this.friendName = friendName;
@@ -40,7 +40,7 @@ public class Friend extends BaseTimeEntity {
         this.me = me;
     }
 
-    public void setIsActive() {
-        this.isActive = 1;
+    public void setActivated() {
+        this.activated = false;
     }
 }
