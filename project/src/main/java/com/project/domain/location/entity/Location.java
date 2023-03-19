@@ -34,14 +34,14 @@ public class Location {
     private List<Pin> pins = new ArrayList<>();
 
     public void addPin(Pin pin) {
-        if (!this.pins.contains(pin)) {
-            this.pins.add(pin);
+        if (!getPins().contains(pin)) {
+            getPins().add(pin);
         }
         pin.setLocation(this);
     }
 
     public void removePin(Pin pin) {
-        this.pins.remove(pin);
+        getPins().remove(pin);
         pin.setLocation(null);
     }
 }

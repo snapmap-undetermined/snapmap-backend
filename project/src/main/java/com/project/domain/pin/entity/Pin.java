@@ -27,15 +27,11 @@ public class Pin extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
 
-    // 핀 이름
-    @Column(name = "title")
-    private String title;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
     // 하나의 장소에 대응되는 여러 개의 핀이 존재 가능하다.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Location location;
 
     @OneToMany(mappedBy = "pin", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -52,23 +48,29 @@ public class Pin extends BaseTimeEntity {
     }
 
     public void addPicture(Picture picture) {
-        getPictures().add(picture);
+        if (!getPictures().contains(picture)) {
+            getPictures().add(picture);
+        }
         picture.setPin(this);
     }
 
     public void addPinTag(PinTag pinTag) {
-        getPinTags().add(pinTag);
+        if (!getPinTags().contains(pinTag)) {
+            getPinTags().add(pinTag);
+        }
         pinTag.setPin(this);
     }
 
     public void removePicture(Picture picture) {
-        this.getPictures().remove(picture);
+        getPictures().remove(picture);
         picture.setPin(null);
     }
 
-    public void updateTitle(String title) {
-        this.title = title;
+    public void removePinTag(PinTag pinTag) {
+        getPinTags().remove(pinTag);
+        pinTag.setPin(this);
     }
+
 
     public void setUser(Users user) {
         this.user = user;
