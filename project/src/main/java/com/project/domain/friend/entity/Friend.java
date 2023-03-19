@@ -26,7 +26,8 @@ public class Friend extends BaseTimeEntity {
     @Column(name = "friend_name")
     private String friendName;
 
-    private boolean activated;
+    @Column(columnDefinition = "TINYINT(1)")
+    private Boolean activated;
 
     public void setFriendName(String friendName) {
         this.friendName = friendName;

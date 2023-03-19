@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "isActive = 1")
+@Where(clause = "activated = 1")
 public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,25 +26,43 @@ public class UserCircle extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
-    private int isActive;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean activated;
 
-    public void setUserAndCircle(Users user, Circle circle) {
-        addUserCircleForUser(user);
-        addUserCircleForCircle(circle);
+    public void addUserCircleToUserAndCircle(Users user, Circle circle) {
+        addUserCircleToUser(user);
+        addUserCircleToCircle(circle);
         setUser(user);
         setCircle(circle);
     }
 
-    private void addUserCircleForUser(Users user) {
+    public void removeUserCircleFromUserAndCircle(Users user, Circle circle) {
+        removeUserCircleFromCircle(circle);
+        removeUserCircleFromUser(user);
+        setUser(null);
+        setCircle(null);
+    }
+
+
+    private void addUserCircleToUser(Users user) {
         if(!user.getUserCircleList().contains(this)){
             user.getUserCircleList().add(this);
         }
     }
 
-    private void addUserCircleForCircle(Circle circle) {
+    private void removeUserCircleFromUser(Users user) {
+        user.getUserCircleList().remove(this);
+
+    }
+
+    private void addUserCircleToCircle(Circle circle) {
         if(!circle.getUserCircleList().contains(this)){
             circle.getUserCircleList().add(this);
         }
+    }
+
+    private void removeUserCircleFromCircle(Circle circle) {
+        circle.getUserCircleList().remove(this);
     }
 
     public void setUser(Users user) {
@@ -55,8 +73,7 @@ public class UserCircle extends BaseTimeEntity {
         this.circle = circle;
     }
 
-    public void setIsActive() {
-        this.isActive = 1;
+    public void setActivated() {
+        this.activated = true;
     }
-
 }

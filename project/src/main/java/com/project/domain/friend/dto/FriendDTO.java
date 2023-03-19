@@ -17,7 +17,7 @@ public class FriendDTO {
         private Long userId;
         private String userNickName;
         private String userProfileImage;
-        private int isActive;
+        private Boolean activated;
 
         @QueryProjection
         public FriendResponse(Friend friend) {
@@ -25,7 +25,7 @@ public class FriendDTO {
             this.userId = friend.getMate().getId();
             this.userNickName = friend.getFriendName();
             this.userProfileImage = friend.getMate().getProfileImage();
-            this.isActive = friend.getIsActive();
+            this.activated = friend.getActivated();
         }
     }
 

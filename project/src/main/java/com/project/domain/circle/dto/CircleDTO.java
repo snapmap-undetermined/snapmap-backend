@@ -50,11 +50,14 @@ public class CircleDTO {
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
 
-        private List<Long> userList;
+        private List<Long> invitedUserList;
+
+        private String imageUrl = "hello";
 
         public Circle toEntity() {
             return Circle.builder()
                     .name(circleName)
+                    .imageUrl(imageUrl)
                     .build();
         }
     }
@@ -64,7 +67,6 @@ public class CircleDTO {
 
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
-        private String imageUrl;
     }
 
     @Data
@@ -83,26 +85,18 @@ public class CircleDTO {
     }
 
     @Data
-    public static class InviteCircleRequest {
+    public static class InviteUserRequest {
 
-        private List<Long> userList;
-
-        public UserCircle toEntity(Users user, Circle circle) {
-            return UserCircle.builder()
-                    .user(user)
-                    .circle(circle)
-                    .isActive(0)
-                    .build();
-        }
+        private List<Long> invitedUserList;
     }
 
     @Data
-    public static class InviteCircleResponse {
+    public static class InviteUserResponse {
 
         private Long circleId;
         private List<UserDTO.UserSimpleInfoResponse> userList;
 
-        public InviteCircleResponse(Circle circle) {
+        public InviteUserResponse(Circle circle) {
             List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
             circle.getUserCircleList().forEach((userCircle) -> {
                 userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
@@ -113,25 +107,25 @@ public class CircleDTO {
     }
 
     @Data
-    public static class ExpulsionUserRequest {
+    public static class BanUserRequest {
 
         @NotBlank(message = "userId 입력해주세요.")
         private Long userId;
 
-        public ExpulsionUserRequest(Long userId) {
+        public BanUserRequest(Long userId) {
             this.userId = userId;
         }
 
     }
 
     @Data
-    public static class AllowJoinCircleResponse {
+    public static class AllowUserJoinResponse {
 
         private Long userId;
         private Long circleId;
         private String userNickname;
 
-        public AllowJoinCircleResponse(Users user, UserCircle userCircle) {
+        public AllowUserJoinResponse(Users user, UserCircle userCircle) {
             this.userId = user.getId();
             this.circleId = userCircle.getCircle().getId();
             this.userNickname = user.getNickname();
