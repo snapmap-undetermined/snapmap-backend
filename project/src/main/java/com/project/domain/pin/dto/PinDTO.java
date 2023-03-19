@@ -19,7 +19,6 @@ public class PinDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PinCreateRequest {
-        private String title;
         private LocationDTO location;
 
         @Builder.Default
@@ -27,7 +26,6 @@ public class PinDTO {
 
         public Pin toEntity() {
             return Pin.builder()
-                    .title(title)
                     .location(location.toEntity())
                     .build();
         }
@@ -36,14 +34,12 @@ public class PinDTO {
     @Data
     @Builder
     public static class PinUpdateRequest {
-        private String title;
         private LocationDTO location;
     }
 
     @Data
     public static class PinDetailResponse {
         private Long id;
-        private String title;
         private List<PictureDTO.PictureResponse> pictureList;
         private LocationDTO location;
         private List<String> tags;
@@ -52,7 +48,6 @@ public class PinDTO {
 
         public PinDetailResponse(Pin pin) {
             this.id = pin.getId();
-            this.title = pin.getTitle();
             this.pictureList = pin.getPictures().stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
             this.location = new LocationDTO(pin.getLocation());
             this.tags = pin.getPinTags().stream()
