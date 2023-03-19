@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +50,14 @@ public class CircleDTO {
         @NotBlank(message = "그룹이름을 입력해주세요.")
         private String circleName;
 
+        private List<Long> invitedUserList;
+
+        private String imageUrl = "hello";
+
         public Circle toEntity() {
             return Circle.builder()
                     .name(circleName)
+                    .imageUrl(imageUrl)
                     .build();
         }
     }
@@ -75,43 +81,60 @@ public class CircleDTO {
             this.joinedUserList = userList.stream().map(UserDTO.UserSimpleInfoResponse::new).collect(Collectors.toList());
             this.circleId = circle.getId();
             this.circleName = circle.getName();
-
         }
-
     }
 
     @Data
-    public static class JoinCircleRequest {
+    public static class InviteUserRequest {
 
-        @NotBlank(message = "circleId를 입력해주세요.")
+        private List<Long> invitedUserList;
+    }
+
+    @Data
+    public static class InviteUserResponse {
+
         private Long circleId;
+        private List<UserDTO.UserSimpleInfoResponse> userList;
 
-        public JoinCircleRequest(UserCircle userCircle) {
-            this.circleId = userCircle.getCircle().getId();
-        }
-
-        public UserCircle toEntity(Users user, Circle circle) {
-            return UserCircle.builder()
-                    .user(user)
-                    .circle(circle)
-                    .build();
+        public InviteUserResponse(Circle circle) {
+            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
+            circle.getUserCircleList().forEach((userCircle) -> {
+                userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
+            });
+            this.circleId = circle.getId();
+            this.userList = userList;
         }
     }
 
     @Data
-    public static class JoinCircleResponse {
+    public static class BanUserRequest {
+
+        @NotBlank(message = "userId 입력해주세요.")
+        private Long userId;
+
+        public BanUserRequest(Long userId) {
+            this.userId = userId;
+        }
+
+    }
+
+    @Data
+    public static class AllowUserJoinResponse {
 
         private Long userId;
-        private String userNickname;
         private Long circleId;
+        private String userNickname;
 
-        public JoinCircleResponse(UserCircle userCircle) {
-            this.userId = userCircle.getUser().getId();
-            this.userNickname = userCircle.getUser().getNickname();
+        public AllowUserJoinResponse(Users user, UserCircle userCircle) {
+            this.userId = user.getId();
             this.circleId = userCircle.getCircle().getId();
+            this.userNickname = user.getNickname();
         }
-
     }
 
-
+//    @Data
+//    public static class CreateUserRequest {
+//
+//        private Long userId;
+//    }
 }

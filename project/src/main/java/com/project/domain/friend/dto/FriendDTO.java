@@ -17,7 +17,7 @@ public class FriendDTO {
         private Long userId;
         private String userNickName;
         private String userProfileImage;
-        private boolean activated;
+        private Boolean activated;
 
         @QueryProjection
         public FriendResponse(Friend friend) {

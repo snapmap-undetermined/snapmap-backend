@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Entity
 @Table(name = "circle")
@@ -33,8 +34,19 @@ public class Circle extends BaseTimeEntity {
     @Column(name = "name")
     private String name;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Users master;
+
+    @Column(name = "circle_key")
+    private String circleKey = generateCircleKey();
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public void addPin(Pin pin) {
-        this.getPinList().add(pin);
+        if (!getPinList().contains(pin)) {
+            getPinList().add(pin);
+        }
         pin.setCircle(this);
     }
 
@@ -47,14 +59,20 @@ public class Circle extends BaseTimeEntity {
         this.name = circleName;
     }
 
-    public void addUserCircle(UserCircle userCircle) {
-        this.getUserCircleList().add(userCircle);
-        userCircle.setCircle(this);
+    public void setMaster(Users user) {
+        this.master = user;
     }
 
-    public void removeUserCircle(UserCircle userCircle) {
-        this.getUserCircleList().remove(userCircle);
-        userCircle.setCircle(null);
+    public void setImageUrl(String url) {
+        this.imageUrl = url;
     }
 
+    public String generateCircleKey() {
+        Random random = new Random();
+        return random.ints(48, 122 + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(10)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
 }

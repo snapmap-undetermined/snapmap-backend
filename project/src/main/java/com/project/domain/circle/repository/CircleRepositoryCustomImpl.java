@@ -38,5 +38,6 @@ public class CircleRepositoryCustomImpl implements CircleRepositoryCustom {
                 .fetchJoin()
                 .where(userCircle.circle.id.eq(circleId))
                 .distinct()
-                .fetch();    }
+                .fetch();
+    }
 }

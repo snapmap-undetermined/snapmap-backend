@@ -63,7 +63,7 @@ public class PinServiceImpl implements PinService {
             pin.addPinTag(pinTag);
         }
 
-        List<Picture> pictureList = uploadAndSavePictures(pictures);
+        List<Picture> pictureList = s3Uploader.uploadAndSavePictures(pictures);
         pictureList.forEach(pin::addPicture);
         pinRepository.save(pin);
         return new PinDTO.PinDetailResponse(pin);
@@ -110,7 +110,7 @@ public class PinServiceImpl implements PinService {
         // 사진 수정. 새로운 사진 목록에 최소 한 장 이상의 사진이 존재해야 한다.
         validatePictureInput(pictures);
 
-        List<Picture> pictureList = uploadAndSavePictures(pictures);
+        List<Picture> pictureList = s3Uploader.uploadAndSavePictures(pictures);
         pin.getPictures().clear();
         pictureList.forEach(pin::addPicture);
 
@@ -128,18 +128,6 @@ public class PinServiceImpl implements PinService {
             throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
         }
     }
-
-    private List<Picture> uploadAndSavePictures(List<MultipartFile> pictureList) {
-        return pictureList.stream().map((p) -> {
-            // S3에 사진 업로드
-            Map<String, String> result = s3Uploader.upload(p, "static");
-            String pictureName = result.get("originalName");
-            String uploadUrl = result.get("uploadUrl");
-            // Picture 생성
-            return pictureRepository.save(Picture.builder().originalName(pictureName).url(uploadUrl).build());
-        }).toList();
-    }
-
 
     private boolean isPinCreatedByUser(Users user, Pin pin) {
         List<Pin> myPins = pinRepository.findByUserId(user.getId());

@@ -22,8 +22,6 @@ public class UserCircleDTO {
             this.createdAt = userCircle.getCreatedAt();
             this.updatedAt = userCircle.getModifiedAt();
         }
-
-
     }
 
 }

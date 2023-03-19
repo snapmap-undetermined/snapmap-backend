@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.ErrorCode;
+import com.project.domain.picture.entity.Picture;
+import com.project.domain.picture.repository.PictureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -30,6 +29,8 @@ public class S3Uploader {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    private final PictureRepository pictureRepository;
 
     public Map<String, String> upload(MultipartFile multipartFile, String dirName) {
         File uploadFile = null;
@@ -76,5 +77,16 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    public List<Picture> uploadAndSavePictures(List<MultipartFile> pictureList) {
+        return pictureList.stream().map((p) -> {
+            // S3에 사진 업로드
+            Map<String, String> result = upload(p, "static");
+            String pictureName = result.get("originalName");
+            String uploadUrl = result.get("uploadUrl");
+            // Picture 생성
+            return pictureRepository.save(Picture.builder().originalName(pictureName).url(uploadUrl).build());
+        }).toList();
     }
 }
