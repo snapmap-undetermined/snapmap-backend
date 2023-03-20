@@ -6,6 +6,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FriendDTO {
@@ -18,6 +19,8 @@ public class FriendDTO {
         private String userNickName;
         private String userProfileImage;
         private Boolean activated;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         @QueryProjection
         public FriendResponse(Friend friend) {
@@ -26,15 +29,21 @@ public class FriendDTO {
             this.userNickName = friend.getFriendName();
             this.userProfileImage = friend.getMate().getProfileImage();
             this.activated = friend.getActivated();
+            this.createdAt = friend.getCreatedAt();
+            this.updatedAt = friend.getModifiedAt();
         }
     }
 
     @Data
     public static class FriendListResponse {
         private List<FriendResponse> friendListResponseList;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public FriendListResponse(List<FriendResponse> friendResponseList) {
             this.friendListResponseList = friendResponseList;
+            this.createdAt = friendListResponseList.get(0).getCreatedAt();
+            this.updatedAt = friendResponseList.get(0).getUpdatedAt();
         }
     }
 

@@ -37,8 +37,10 @@ public class Circle extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Users master;
 
+    private String description;
+
     @Column(name = "circle_key")
-    private String circleKey = generateCircleKey();
+    private String circleKey;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -67,6 +69,9 @@ public class Circle extends BaseTimeEntity {
         this.imageUrl = url;
     }
 
+    public void setCircleKey(String key) {
+        this.circleKey = key;
+    }
     public String generateCircleKey() {
         Random random = new Random();
         return random.ints(48, 122 + 1)
