@@ -49,6 +49,7 @@ public class FriendServiceImpl implements FriendService {
 
         friend.setMate(mate);
         friend.setMe(user);
+        friend.setFriendName(mate.getNickname());
 
         friendRepository.save(friend);
 
@@ -68,6 +69,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
+    @Transactional
     public FriendDTO.FriendResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
         Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
