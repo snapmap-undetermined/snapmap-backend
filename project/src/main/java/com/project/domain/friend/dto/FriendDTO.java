@@ -37,13 +37,9 @@ public class FriendDTO {
     @Data
     public static class FriendListResponse {
         private List<FriendResponse> friendListResponseList;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
 
         public FriendListResponse(List<FriendResponse> friendResponseList) {
             this.friendListResponseList = friendResponseList;
-            this.createdAt = friendListResponseList.get(0).getCreatedAt();
-            this.updatedAt = friendResponseList.get(0).getUpdatedAt();
         }
     }
 
