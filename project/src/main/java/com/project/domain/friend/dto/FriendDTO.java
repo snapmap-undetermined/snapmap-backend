@@ -1,8 +1,10 @@
 package com.project.domain.friend.dto;
 
 import com.project.domain.friend.entity.Friend;
+import com.project.domain.users.entity.Users;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -42,6 +44,7 @@ public class FriendDTO {
     }
 
     @Data
+    @AllArgsConstructor
     public static class UpdateFriendNameRequest {
 
         @NotBlank(message = "친구 이름을 입력하세요.")
@@ -57,5 +60,10 @@ public class FriendDTO {
                     .activated(true)
                     .build();
         }
+
+        public CreateFriendRequest(Users mate) {
+            this.friendUserId = mate.getId();
+        }
     }
+
 }
