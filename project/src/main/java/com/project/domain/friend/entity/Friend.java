@@ -4,6 +4,7 @@ import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "friend")
@@ -11,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Where(clause = "activated = 1")
 public class Friend extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

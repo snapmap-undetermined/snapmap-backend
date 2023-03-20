@@ -27,9 +27,7 @@ public class FriendServiceImpl implements FriendService {
     public FriendDTO.FriendListResponse getAllFriends(Long userId) {
 
         List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(userId);
-
         return new FriendDTO.FriendListResponse(friendList);
-
     }
 
     @Override

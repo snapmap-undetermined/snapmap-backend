@@ -1,13 +1,8 @@
 package com.project.domain.friend.controller;
 
 import com.project.common.annotation.AuthUser;
-import com.project.common.exception.EntityNotFoundException;
-import com.project.common.exception.ErrorCode;
-import com.project.domain.circle.dto.CircleDTO;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.friend.api.FriendService;
 import com.project.domain.friend.dto.FriendDTO;
-import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

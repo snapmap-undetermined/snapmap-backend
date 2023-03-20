@@ -112,10 +112,6 @@ public class CircleDTO {
         @NotBlank(message = "userId 입력해주세요.")
         private Long userId;
 
-        public BanUserRequest(Long userId) {
-            this.userId = userId;
-        }
-
     }
 
     @Data

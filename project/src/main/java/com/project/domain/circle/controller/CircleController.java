@@ -31,7 +31,7 @@ public class CircleController {
     //유저별로 그룹을 조회한다.
     @GetMapping("")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getAllCircleByUser(@AuthUser Users user){
+    private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getAllCircleByUser(@AuthUser Users user) {
         CircleDTO.CircleSimpleInfoListResponse response = circleService.getAllCircleByUser(user.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -44,9 +44,16 @@ public class CircleController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    // 그룹 상세 조회
+    @GetMapping("/{circleId}")
+    @Permission
+    private ResponseEntity<CircleDTO.CircleDetailInfoResponse> getCircle(@PathVariable Long circleId) throws Exception {
+        CircleDTO.CircleDetailInfoResponse response = circleService.getCircle(circleId);
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     //유저가 그룹에서 나온다.
-    @DeleteMapping("/{circleId}")
+    @PatchMapping("/{circleId}/leave")
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> leaveCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
         CircleDTO.CircleSimpleInfoResponse response = circleService.leaveCircle(user, circleId);
@@ -56,7 +63,7 @@ public class CircleController {
     //방장이 유저를 강퇴한다.
     @PostMapping("/{circleId}/ban")
     @Permission
-    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> expulsionCircleFromCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody CircleDTO.BanUserRequest banUserRequest) {
+    private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> banUserFromCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody CircleDTO.BanUserRequest banUserRequest) {
         CircleDTO.CircleSimpleInfoResponse response = circleService.banUserFromCircle(user, circleId, banUserRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -64,7 +71,7 @@ public class CircleController {
     // 유저를 그룹에 초대한다.
     @PostMapping("/{circleId}/invite")
     @Permission
-    private ResponseEntity<CircleDTO.InviteUserResponse> inviteCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody @Valid CircleDTO.InviteUserRequest request) throws Exception {
+    private ResponseEntity<CircleDTO.InviteUserResponse> inviteCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody @Valid CircleDTO.InviteUserRequest request) {
         CircleDTO.InviteUserResponse response = circleService.inviteUser(user, circleId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -84,7 +91,7 @@ public class CircleController {
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircle(@AuthUser Users user, @PathVariable Long circleId,
                                                                             @Valid @RequestPart CircleDTO.UpdateCircleRequest request,
-                                                                            @RequestPart MultipartFile picture) throws Exception {
+                                                                            @RequestPart MultipartFile picture) {
         CircleDTO.CircleSimpleInfoResponse response = circleService.updateCircle(user, circleId, request, picture);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

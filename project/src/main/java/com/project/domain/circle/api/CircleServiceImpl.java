@@ -83,7 +83,9 @@ public class CircleServiceImpl implements CircleService {
     }
 
     // 본인이 스스로 나감
+    // TODO: 방장이 나갈 경우 고려
     @Override
+    @Transactional
     public CircleDTO.CircleSimpleInfoResponse leaveCircle(Users user, Long circleId) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Get circle failed. circleId={}", circleId);
@@ -98,6 +100,7 @@ public class CircleServiceImpl implements CircleService {
 
     // 방장이 유저를 추방함
     @Override
+    @Transactional
     public CircleDTO.CircleSimpleInfoResponse banUserFromCircle(Users user, Long circleId, CircleDTO.BanUserRequest banUserRequest) {
 
         Circle circle = circleRepository.findById(circleId).orElseThrow();
@@ -111,6 +114,7 @@ public class CircleServiceImpl implements CircleService {
 
     // 그룹에 유저를 초대
     @Override
+    @Transactional
     public CircleDTO.InviteUserResponse inviteUser(Users user, Long circleId, CircleDTO.InviteUserRequest request) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Join circle failed. circleId = {}", circleId);
@@ -120,9 +124,12 @@ public class CircleServiceImpl implements CircleService {
         List<Long> invitedUserList = request.getInvitedUserList();
 
         invitedUserList.forEach((userId) -> {
-            Users u = userRepository.findById(userId).orElseThrow();
+            Users u = userRepository.findById(userId).orElseThrow(()->{
+                log.error("Get user failed. userId={}", userId);
+                throw new EntityNotFoundException("존재하지 않는 유저입니다.");
+            });
             UserCircle uc = UserCircle.builder().user(u).circle(circle).activated(false).build(); // activated = false : 수락 이전 상태
-            uc.addUserCircleToUserAndCircle(user, circle);
+            uc.addUserCircleToUserAndCircle(u, circle);
             userCircleRepository.save(uc);
         });
 
@@ -135,7 +142,7 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.AllowUserJoinResponse allowUserJoin(Users user, Long circleId) {
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
 
-        userCircle.setActivated();
+        userCircle.setActivated(userCircle.getActivated());
         return new CircleDTO.AllowUserJoinResponse(user, userCircle);
     }
 
