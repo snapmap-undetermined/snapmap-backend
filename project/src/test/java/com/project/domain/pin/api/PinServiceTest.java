@@ -62,7 +62,7 @@ class PinServiceTest {
 
     private void userJoinCircle(Users user, Circle circle) {
         circleRepository.save(circle);
-        userCircleRepository.save(UserCircle.builder().user(user).circle(circle).build());
+        userCircleRepository.save(UserCircle.builder().user(user).circle(circle).activated(true).build());
     }
 
     private List<String> generateTagNames(String... tagNames) {
@@ -78,7 +78,7 @@ class PinServiceTest {
         userJoinCircle(user, circle);
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
         List<String> tagNames = generateTagNames("tag1", "tag2");
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).tagNames(tagNames).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).tagNames(tagNames).build();
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
 
         // When
@@ -97,7 +97,7 @@ class PinServiceTest {
         Circle circle = generateSimpleCircle("test-circle");
         userJoinCircle(user, circle);
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         List<MultipartFile> pictures = new ArrayList<>();
 
         // When
@@ -119,7 +119,7 @@ class PinServiceTest {
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         PinDTO.PinDetailResponse createdPin = pinService.createPin(user, circle.getId(), request, pictures);
 
         // When
@@ -127,7 +127,7 @@ class PinServiceTest {
         log.info("getPinDetail = " + pinDetail);
 
         // Then
-        Assertions.assertEquals("pin", pinDetail.getTitle());
+        Assertions.assertEquals("location", pinDetail.getLocation().getName());
 
     }
 
@@ -140,8 +140,8 @@ class PinServiceTest {
         userJoinCircle(user, circle);
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request1 = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
-        PinDTO.PinCreateRequest request2 = PinDTO.PinCreateRequest.builder().title("pin2").location(locationDTO).build();
+        PinDTO.PinCreateRequest request1 = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
+        PinDTO.PinCreateRequest request2 = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         List<MultipartFile> pictures1 = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
         List<MultipartFile> pictures2 = List.of(generateFile("p3", "p3"),generateFile("p4", "p4"));
 
@@ -181,7 +181,7 @@ class PinServiceTest {
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         PinDTO.PinDetailResponse createdPin = pinService.createPin(stranger, circle.getId(), request, pictures);
 
         // When
@@ -204,8 +204,8 @@ class PinServiceTest {
         userJoinCircle(friend, circle);
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request1 = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
-        PinDTO.PinCreateRequest request2 = PinDTO.PinCreateRequest.builder().title("pin2").location(locationDTO).build();
+        PinDTO.PinCreateRequest request1 = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
+        PinDTO.PinCreateRequest request2 = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         List<MultipartFile> pictures1 = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
         List<MultipartFile> pictures2 = List.of(generateFile("p3", "p3"),generateFile("p4", "p4"));
 
@@ -229,12 +229,12 @@ class PinServiceTest {
         userJoinCircle(me, circle);
 
         LocationDTO locationDTOBefore = new LocationDTO("before", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTOBefore).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTOBefore).build();
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
         PinDTO.PinDetailResponse createdPin = pinService.createPin(me, circle.getId(), request, pictures);
 
         LocationDTO locationDTOAfter = new LocationDTO("after", new PointDTO(123.123, 123.456));
-        PinDTO.PinUpdateRequest updateRequest = PinDTO.PinUpdateRequest.builder().title("pin1").location(locationDTOAfter).build();
+        PinDTO.PinUpdateRequest updateRequest = PinDTO.PinUpdateRequest.builder().location(locationDTOAfter).build();
 
         // When
         PinDTO.PinDetailResponse updatedPin = pinService.updatePin(me, createdPin.getId(), updateRequest, pictures);
@@ -252,7 +252,7 @@ class PinServiceTest {
         userJoinCircle(me, circle);
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         List<MultipartFile> picturesBefore = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
 
         PinDTO.PinDetailResponse createdPin = pinService.createPin(me, circle.getId(), request, picturesBefore);
@@ -275,7 +275,7 @@ class PinServiceTest {
         userJoinCircle(me, circle);
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
         PinDTO.PinDetailResponse createdPin = pinService.createPin(me, circle.getId(), request, pictures);
 
@@ -313,7 +313,7 @@ class PinServiceTest {
 
         LocationDTO locationDTO = new LocationDTO("location", new PointDTO(123.123, 123.456));
         List<MultipartFile> pictures = List.of(generateFile("p1", "p1"),generateFile("p2", "p2"));
-        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().title("pin1").location(locationDTO).build();
+        PinDTO.PinCreateRequest request = PinDTO.PinCreateRequest.builder().location(locationDTO).build();
         PinDTO.PinDetailResponse createdPin = pinService.createPin(stranger, circle.getId(), request, pictures);
 
         // When

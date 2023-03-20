@@ -28,8 +28,6 @@ public class PinController {
                                                               @RequestPart PinDTO.PinCreateRequest request,
                                                               @RequestPart List<MultipartFile> pictures) {
 
-        System.out.println("request = " + request);
-        System.out.println("pictures = " + pictures);
         PinDTO.PinDetailResponse pin = pinService.createPin(user, circleId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }

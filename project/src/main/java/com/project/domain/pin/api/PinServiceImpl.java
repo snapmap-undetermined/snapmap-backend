@@ -33,7 +33,6 @@ import java.util.*;
 public class PinServiceImpl implements PinService {
 
     private final PinRepository pinRepository;
-    private final PictureRepository pictureRepository;
     private final CircleRepository circleRepository;
     private final UserCircleRepository userCircleRepository;
     private final S3Uploader s3Uploader;
@@ -103,7 +102,6 @@ public class PinServiceImpl implements PinService {
         if (request != null) {
             Location updatedLocation = request.getLocation().toEntity();
             locationRepository.save(updatedLocation);
-            pin.updateTitle(request.getTitle());
             pin.setLocation(updatedLocation);
         }
 
