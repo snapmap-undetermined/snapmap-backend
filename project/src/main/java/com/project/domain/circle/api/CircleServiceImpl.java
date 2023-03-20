@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,20 +36,21 @@ public class CircleServiceImpl implements CircleService {
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse createCircle(Users user, CircleDTO.CreateCircleRequest request) {
         Circle circle = request.toEntity();
-
+        circle.setCircleKey(circle.generateCircleKey());
         circle.setMaster(user);
 
-        UserCircle userCircle = UserCircle.builder().user(user).activated(false).circle(circle).build();
+        UserCircle userCircle = UserCircle.builder().user(user).activated(true).circle(circle).build();
         userCircle.addUserCircleToUserAndCircle(user, circle);
 
-        // 생성할 때 같이 초대할 유저들 생성
-        request.getInvitedUserList().forEach((userId) -> {
-            Users u = userRepository.findById(userId).orElseThrow();
-            UserCircle uc = UserCircle.builder().circle(circle).activated(false).user(u).build();
-            uc.addUserCircleToUserAndCircle(u, circle);
-            userCircleRepository.save(uc);
-        });
-
+        // 그룹 생성 시, 친구를 같이 초대하는 경우 처리
+        if (request.getInvitedUserList() != null && !request.getInvitedUserList().isEmpty()) {
+            request.getInvitedUserList().forEach((userId) -> {
+                Users u = userRepository.findById(userId).orElseThrow();
+                UserCircle uc = UserCircle.builder().circle(circle).activated(false).user(u).build();
+                uc.addUserCircleToUserAndCircle(u, circle);
+                userCircleRepository.save(uc);
+            });
+        }
         circleRepository.save(circle);
 
         return new CircleDTO.CircleSimpleInfoResponse(circle);
@@ -69,6 +69,18 @@ public class CircleServiceImpl implements CircleService {
 
         return new CircleDTO.CircleSimpleInfoListResponse(response);
 
+    }
+
+    @Override
+    public CircleDTO.CircleDetailInfoResponse getCircle(Long circleId) {
+
+        List<Users> userList = circleRepository.findAllUserByCircleId(circleId);
+        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
+            log.error("Get circle failed. circleId={}", circleId);
+            throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
+        });
+
+        return new CircleDTO.CircleDetailInfoResponse(userList, circle);
     }
 
     @Override

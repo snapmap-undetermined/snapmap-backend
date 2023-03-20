@@ -44,6 +44,14 @@ public class CircleController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    // 그룹 상세 조회
+    @GetMapping("/{circleId}")
+    @Permission
+    private ResponseEntity<CircleDTO.CircleDetailInfoResponse> getCircle(@PathVariable Long circleId) throws Exception {
+        CircleDTO.CircleDetailInfoResponse response = circleService.getCircle(circleId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     //유저가 그룹에서 나온다.
     @DeleteMapping("/{circleId}")
