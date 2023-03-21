@@ -159,6 +159,7 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
+    @Transactional
     public CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture) {
         Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
             log.error("Update circle name failed. circleId = {}", circleId);
@@ -168,8 +169,8 @@ public class CircleServiceImpl implements CircleService {
             circle.setName(request.getCircleName());
 
             // TODO : 예외 처리 필요함
-            Picture newPicture = s3Uploader.uploadAndSavePictures(Collections.singletonList(picture)).get(0);
-            circle.setImageUrl(newPicture.getUrl());
+            String imageUrl = s3Uploader.uploadAndSaveImage(picture);
+            circle.setImageUrl(imageUrl);
         }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
