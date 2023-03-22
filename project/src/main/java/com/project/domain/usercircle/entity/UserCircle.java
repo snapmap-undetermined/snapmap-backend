@@ -6,7 +6,6 @@ import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "user_circle")
@@ -14,7 +13,6 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "activated = 1")
 @SQLDelete(sql = "UPDATE user_circle SET activated = 0 where id = ?")
 public class UserCircle extends BaseTimeEntity {
 

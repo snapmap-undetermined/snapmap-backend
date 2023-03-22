@@ -4,6 +4,7 @@ import com.project.common.annotation.AuthUser;
 import com.project.common.annotation.Permission;
 import com.project.domain.circle.api.CircleService;
 import com.project.domain.circle.dto.CircleDTO;
+import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 
 @RestController
@@ -44,6 +47,7 @@ public class CircleController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     // 그룹 상세 조회
     @GetMapping("/{circleId}")
     @Permission
@@ -52,6 +56,7 @@ public class CircleController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     //유저가 그룹에서 나온다.
     @PatchMapping("/{circleId}/leave")
     @Permission
@@ -77,25 +82,43 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // 유저가 링크를 타고 들어올 경우, 링크값으로 써클을 찾고, 로그인을 완료했을 경우 그룹 초대를 하도록 한다.
+    @PostMapping("/invite-key/{circleKey}")
+    @Permission
+    private ResponseEntity<CircleDTO.InviteUserFromLinkResponse> inviteCircleFromLink(@AuthUser Users user, @PathVariable("circleKey") String circleKey) {
+        CircleDTO.InviteUserFromLinkResponse response = circleService.inviteUserFromLink(user, circleKey);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     // 유저가 그룹 초대를 수락한다.
     @PostMapping("/{circleId}/allow")
     @Permission
     private ResponseEntity<CircleDTO.AllowUserJoinResponse> allowUserJoin(@AuthUser Users user, @PathVariable Long circleId) {
         CircleDTO.AllowUserJoinResponse response = circleService.allowUserJoin(user, circleId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     // 유저가 그룹이름을 수정한다.
     @PatchMapping("/{circleId}")
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> updateCircle(@AuthUser Users user, @PathVariable Long circleId,
-                                                                            @Valid @RequestPart CircleDTO.UpdateCircleRequest request,
-                                                                            @RequestPart MultipartFile picture) {
+                                                                            @Valid @RequestPart(required = false) CircleDTO.UpdateCircleRequest request, @RequestPart(required = false) MultipartFile picture) {
         CircleDTO.CircleSimpleInfoResponse response = circleService.updateCircle(user, circleId, request, picture);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    // 방장인 유저가 방장 권한을 위임한다.
+    @PatchMapping("/{circleId}/master")
+    @Permission
+    private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> updateCircleMaster(@AuthUser Users user, @PathVariable Long circleId, @RequestBody CircleDTO.UpdateCircleMasterRequest request) {
+        CircleDTO.CircleWithJoinUserResponse response = circleService.updateCircleMaster(user, circleId, request.getUserId());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

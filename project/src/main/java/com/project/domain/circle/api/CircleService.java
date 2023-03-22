@@ -23,9 +23,12 @@ public interface CircleService {
 
     CircleDTO.InviteUserResponse inviteUser(Users user, Long circleId, CircleDTO.InviteUserRequest request);
 
+    CircleDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String circleKey);
+
     CircleDTO.AllowUserJoinResponse allowUserJoin(Users user, Long circleId);
 
     CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture);
 
+    CircleDTO.CircleWithJoinUserResponse updateCircleMaster(Users user, Long circleId, Long userId);
 
 }
