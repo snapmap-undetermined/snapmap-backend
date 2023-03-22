@@ -42,6 +42,9 @@ public class Pin extends BaseTimeEntity {
     @Builder.Default
     private List<Picture> pictures = new ArrayList<>();
 
+    @Column(columnDefinition = "TINYINT(1)")
+    private Boolean activated;
+
 
     public void setCircle(Circle circle) {
         this.circle = circle;
@@ -82,5 +85,9 @@ public class Pin extends BaseTimeEntity {
         }
         this.location = location;
         location.getPins().add(this);
+    }
+
+    public void setActivated() {
+        this.activated = false;
     }
 }

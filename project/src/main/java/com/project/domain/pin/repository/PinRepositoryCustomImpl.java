@@ -22,6 +22,7 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(pin)
                 .where(pin.circle.id.eq(circleId))
+                .where(pin.activated.eq(true))
                 .fetch();
     }
 }
