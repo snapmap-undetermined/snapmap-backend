@@ -71,12 +71,9 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.CircleDetailInfoResponse getCircle(Long circleId) {
+    public CircleDTO.CircleDetailInfoResponse getCircleDetail(Long circleId) {
 
-        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Get circle failed. circleId={}", circleId);
-            throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
-        });
+        Circle circle = getCircle(circleId);
 
         return new CircleDTO.CircleDetailInfoResponse(circle);
     }
@@ -84,11 +81,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     public CircleDTO.CircleWithJoinUserResponse getJoinedUserOfCircle(Long circleId) {
 
-        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Get circle failed. circleId={}", circleId);
-            throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
-        });
-//        circle.getUserCircleList().
+        Circle circle = getCircle(circleId);
         return new CircleDTO.CircleWithJoinUserResponse(circle);
     }
 
@@ -97,10 +90,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse leaveCircle(Users user, Long circleId) {
-        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Get circle failed. circleId={}", circleId);
-            throw new EntityNotFoundException("존재하지 않는 그룹입니다.");
-        });
+        Circle circle = getCircle(circleId);
         if (circle.getMaster().getId().equals(user.getId())) {
             throw new BusinessLogicException("방장 권한을 가진 유저는 그룹에서 나갈 수 없습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
         }
@@ -129,10 +119,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.InviteUserResponse inviteUser(Users user, Long circleId, CircleDTO.InviteUserRequest request) {
-        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Join circle failed. circleId = {}", circleId);
-            throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
-        });
+        Circle circle = getCircle(circleId);
 
         List<Long> invitedUserList = request.getInvitedUserList();
 
@@ -170,10 +157,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture) {
-        Circle circle = circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Update circle name failed. circleId = {}", circleId);
-            throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
-        });
+        Circle circle = getCircle(circleId);
         if (isMasterUser(circle, user.getId())) {
             circle.setName(request.getCircleName());
             circle.setDescription(request.getDescription());
@@ -191,7 +175,7 @@ public class CircleServiceImpl implements CircleService {
     @Override
     @Transactional
     public CircleDTO.CircleWithJoinUserResponse updateCircleMaster(Users user, Long circleId, Long userId) {
-        Circle circle = circleRepository.findById(circleId).orElseThrow();
+        Circle circle = getCircle(circleId);
         if (isMasterUser(circle, user.getId())) {
             Users u = userRepository.findById(userId).orElseThrow();
             circle.setMaster(u);
@@ -201,6 +185,13 @@ public class CircleServiceImpl implements CircleService {
 
     private boolean isMasterUser(Circle circle, Long userId) {
         return circle.getMaster().getId().equals(userId);
+    }
+
+    private Circle getCircle(Long circleId) {
+        return circleRepository.findById(circleId).orElseThrow(() -> {
+            log.error("Update circle name failed. circleId = {}", circleId);
+            throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
+        });
     }
 
 }

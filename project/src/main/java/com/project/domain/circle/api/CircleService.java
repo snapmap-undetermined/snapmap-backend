@@ -13,7 +13,7 @@ public interface CircleService {
 
     CircleDTO.CircleSimpleInfoListResponse getAllCircleByUser(Long userId);
 
-    CircleDTO.CircleDetailInfoResponse getCircle(Long circleId);
+    CircleDTO.CircleDetailInfoResponse getCircleDetail(Long circleId);
 
     CircleDTO.CircleWithJoinUserResponse getJoinedUserOfCircle(Long circleId) throws Exception;
 

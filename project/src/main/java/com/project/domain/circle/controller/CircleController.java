@@ -52,7 +52,7 @@ public class CircleController {
     @GetMapping("/{circleId}")
     @Permission
     private ResponseEntity<CircleDTO.CircleDetailInfoResponse> getCircle(@PathVariable Long circleId) throws Exception {
-        CircleDTO.CircleDetailInfoResponse response = circleService.getCircle(circleId);
+        CircleDTO.CircleDetailInfoResponse response = circleService.getCircleDetail(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
