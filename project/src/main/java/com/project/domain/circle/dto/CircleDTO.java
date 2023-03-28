@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class CircleDTO {
@@ -62,11 +63,7 @@ public class CircleDTO {
             this.userCount = circle.getUserCircleList().size();
             this.pinCount = circle.getPinList().size();
             this.pictureCount = circle.getPinList().stream().mapToInt(pl -> pl.getPictures().size()).sum();
-            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
-            circle.getUserCircleList().forEach((uc) -> {
-                userList.add(new UserDTO.UserSimpleInfoResponse(uc.getUser()));
-            });
-            this.joinedUserList = userList;
+            this.joinedUserList = circle.getUserCircleList().stream().map(uc -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).collect(Collectors.toList());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -156,11 +153,11 @@ public class CircleDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public InviteUserFromLinkResponse(Circle circle) {
-            this.circleId = circle.getId();
-            this.user = new UserDTO.UserSimpleInfoResponse(circle.getUserCircleList().get(0).getUser());
-            this.createdAt = circle.getUserCircleList().get(0).getCreatedAt();
-            this.updatedAt = circle.getUserCircleList().get(0).getModifiedAt();
+        public InviteUserFromLinkResponse(UserCircle userCircle) {
+            this.circleId = userCircle.getCircle().getId();
+            this.user = new UserDTO.UserSimpleInfoResponse(userCircle.getUser());
+            this.createdAt = userCircle.getCreatedAt();
+            this.updatedAt = userCircle.getModifiedAt();
         }
     }
 

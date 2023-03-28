@@ -140,9 +140,10 @@ public class CircleServiceImpl implements CircleService {
     @Override
     public CircleDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String circleKey) {
         Circle circle = circleRepository.findCircleByKey(circleKey);
-        userCircleRepository.save(UserCircle.builder().circle(circle).user(user).activated(false).build());
+        UserCircle userCircle = UserCircle.builder().circle(circle).user(user).activated(false).build();
+        userCircleRepository.save(userCircle);
 
-        return new CircleDTO.InviteUserFromLinkResponse(circle);
+        return new CircleDTO.InviteUserFromLinkResponse(userCircle);
     }
 
     // 유저가 초대요청을 수락
@@ -189,8 +190,8 @@ public class CircleServiceImpl implements CircleService {
 
     private Circle getCircle(Long circleId) {
         return circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Update circle name failed. circleId = {}", circleId);
-            throw new EntityNotFoundException(ErrorCode.CIRCLENAME_DUPLICATION.getMessage());
+            log.error("Get circle failed. circleId = {}", circleId);
+            throw new EntityNotFoundException("존재하지 않는 그룹 입니다.");
         });
     }
 

@@ -87,7 +87,8 @@ public class Pin extends BaseTimeEntity {
         location.getPins().add(this);
     }
 
-    public void setActivated() {
-        this.activated = false;
+    public void setActivated(Boolean status) {
+        status = false;
+        this.activated = status;
     }
 }
