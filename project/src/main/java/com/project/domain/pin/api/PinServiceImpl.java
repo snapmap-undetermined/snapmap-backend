@@ -122,6 +122,7 @@ public class PinServiceImpl implements PinService {
         if (isPinCreatedByUser(user, pin)) {
             pin.getCircle().removePin(pin); // 써클에서 해당 핀 삭제
             user.removePin(pin); // 유저에서 해당 핀 삭제
+            pin.setActivated(pin.getActivated());
         } else {
             throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
         }

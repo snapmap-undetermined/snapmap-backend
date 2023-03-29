@@ -23,7 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
-    
+
     @Value("${cloud.aws.snapmap-cloud-front-domain}")
     private String cloudFrontDomain;
 
@@ -49,7 +49,7 @@ public class S3Uploader {
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         result.put("originalName", uploadFile.getName());
-        result.put("uploadUrl", "https://"+cloudFrontDomain+"/"+ uploadImageUrl);
+        result.put("uploadUrl", "https://" + cloudFrontDomain + "/" + uploadImageUrl);
         return result;
     }
 
@@ -70,7 +70,7 @@ public class S3Uploader {
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         log.info("MultipartFile -> File converted : {} -> {}", file.getOriginalFilename(), convertFile.getName());
 
-        if(convertFile.createNewFile()) {
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
             }
@@ -88,5 +88,11 @@ public class S3Uploader {
             // Picture 생성
             return pictureRepository.save(Picture.builder().originalName(pictureName).url(uploadUrl).build());
         }).toList();
+    }
+
+    public String uploadAndSaveImage(MultipartFile picture) {
+        // S3에 사진 업로드
+        Map<String, String> result = upload(picture, "static");
+        return result.get("uploadUrl");
     }
 }

@@ -62,7 +62,7 @@ public class PinController {
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{pinId}")
+    @PostMapping("/{pinId}/inactive")
     @Permission
     public ResponseEntity<Long> deletePin(@AuthUser Users user, @PathVariable Long pinId) {
         pinService.deletePin(user, pinId);

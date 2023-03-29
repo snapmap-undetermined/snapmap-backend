@@ -5,7 +5,7 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "user_circle")
@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "activated = 1")
+@SQLDelete(sql = "UPDATE user_circle SET activated = 0 where id = ?")
 public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class UserCircle extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Circle circle;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(columnDefinition = "TINYINT(1)")
     private Boolean activated;
 
     public void addUserCircleToUserAndCircle(Users user, Circle circle) {
@@ -73,7 +73,8 @@ public class UserCircle extends BaseTimeEntity {
         this.circle = circle;
     }
 
-    public void setActivated() {
-        this.activated = true;
+    public void setActivated(Boolean status) {
+        status = true;
+        this.activated = status;
     }
 }

@@ -12,4 +12,6 @@ public interface CircleRepositoryCustom {
 
     List<Users> findAllUserByCircleId(Long circleId);
 
+    Circle findCircleByKey(String key);
+
 }

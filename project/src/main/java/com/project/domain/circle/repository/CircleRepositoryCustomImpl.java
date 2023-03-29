@@ -24,6 +24,7 @@ public class CircleRepositoryCustomImpl implements CircleRepositoryCustom {
                 .innerJoin(circle.userCircleList, userCircle)
                 .fetchJoin()
                 .where(userCircle.user.id.eq(userId))
+                .where(userCircle.activated.eq(true))
                 .distinct()
                 .fetch();
 
@@ -37,7 +38,16 @@ public class CircleRepositoryCustomImpl implements CircleRepositoryCustom {
                 .innerJoin(users.userCircleList, userCircle)
                 .fetchJoin()
                 .where(userCircle.circle.id.eq(circleId))
+                .where(userCircle.activated.eq(true))
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public Circle findCircleByKey(String key) {
+        return query
+                .selectFrom(circle)
+                .where(circle.circleKey.eq(key))
+                .fetchOne();
     }
 }
