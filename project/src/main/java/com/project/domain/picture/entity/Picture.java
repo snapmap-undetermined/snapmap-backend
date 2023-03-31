@@ -1,9 +1,13 @@
 package com.project.domain.picture.entity;
 
 import com.project.common.entity.BaseTimeEntity;
+import com.project.domain.comment.entity.PictureComment;
 import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "picture")
@@ -25,6 +29,9 @@ public class Picture extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Pin pin;
+
+    @OneToMany(mappedBy = "picture", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PictureComment> commentList = new ArrayList<>();
 
     public void setPin(Pin pin) {
         this.pin = pin;

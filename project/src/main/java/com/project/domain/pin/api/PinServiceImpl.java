@@ -8,6 +8,7 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
+import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.picture.repository.PictureRepository;
 import com.project.domain.pin.dto.PinDTO;
@@ -38,6 +39,7 @@ public class PinServiceImpl implements PinService {
     private final S3Uploader s3Uploader;
     private final LocationRepository locationRepository;
     private final TagRepository tagRepository;
+    private final PictureRepository pictureRepository;
 
 
     @Override
@@ -126,6 +128,16 @@ public class PinServiceImpl implements PinService {
         } else {
             throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
         }
+    }
+
+    @Override
+    public PictureDTO.PictureResponse getPictureDetail(Users user, Long pictureId) {
+
+        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> {
+            throw new EntityNotFoundException("존재하지 않는 그림 입니다.");
+        });
+
+        return new PictureDTO.PictureResponse(picture);
     }
 
     private boolean isPinCreatedByUser(Users user, Pin pin) {
