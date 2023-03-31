@@ -27,6 +27,7 @@ public class UserDTO {
                     .password(password)
                     .nickname(nickname)
                     .role(role)
+                    .activated(true)
                     .build();
         }
     }

@@ -8,6 +8,8 @@ import com.project.domain.pin.entity.Pin;
 import com.project.domain.usercircle.entity.UserCircle;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Where(clause = "activated = 1")
+@SQLDelete(sql = "UPDATE user SET activated = 0 where id = ?")
 public class Users extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +60,9 @@ public class Users extends BaseTimeEntity {
 
     @OneToOne
     private RefreshToken refreshToken;
+
+    @Column(columnDefinition = "TINYINT(1)")
+    private Boolean activated;
 
     public void addPin(Pin pin) {
         if (!this.pinList.contains(pin)) {

@@ -7,6 +7,7 @@ import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,10 @@ public class UserController {
     private ResponseEntity<UserDTO.UserSimpleInfoResponse> updateUserNickname(@AuthUser Users user, @RequestBody  UserDTO.UpdateUserRequest request) {
         UserDTO.UserSimpleInfoResponse response = userService.updateUser(user.getId(), request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("")
+    private void deleteUser(@AuthUser Users user) {
+        userService.deleteUser(user);
     }
 }
