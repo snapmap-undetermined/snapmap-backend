@@ -1,13 +1,8 @@
 package com.project.domain.friend.controller;
 
 import com.project.common.annotation.AuthUser;
-import com.project.common.exception.EntityNotFoundException;
-import com.project.common.exception.ErrorCode;
-import com.project.domain.circle.dto.CircleDTO;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.friend.api.FriendService;
 import com.project.domain.friend.dto.FriendDTO;
-import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,14 +33,14 @@ public class FriendController {
     }
 
     // 친구삭제
-    @PatchMapping("/{friendId}/")
+    @PatchMapping("/{friendId}")
     private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@PathVariable Long friendId) throws Exception {
         friendService.deleteFriend(friendId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 친구이름 수정
-    @PatchMapping("/{friendId}/info")
+    @PatchMapping("/{friendId}/name")
     private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
         FriendDTO.FriendResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -61,6 +61,11 @@ public class Circle extends BaseTimeEntity {
         this.name = circleName;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     public void setMaster(Users user) {
         this.master = user;
     }

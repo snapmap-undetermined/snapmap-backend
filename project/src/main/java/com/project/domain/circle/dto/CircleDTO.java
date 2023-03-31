@@ -6,8 +6,6 @@ import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,13 +36,9 @@ public class CircleDTO {
     public static class CircleSimpleInfoListResponse {
 
         private List<CircleSimpleInfoResponse> circleSimpleInfoResponseList;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
 
         public CircleSimpleInfoListResponse(List<CircleSimpleInfoResponse> circleSimpleInfoResponseList) {
             this.circleSimpleInfoResponseList = circleSimpleInfoResponseList;
-            this.createdAt = circleSimpleInfoResponseList.get(0).getCreatedAt();
-            this.updatedAt = circleSimpleInfoResponseList.get(0).getUpdatedAt();
         }
     }
 
@@ -54,22 +48,22 @@ public class CircleDTO {
         private String circleName;
         private String imageUrl;
         private String description;
-        private Integer userTotalCount;
-        private Integer pinTotalCount;
-        private Integer pictureTotalCount;
+        private Integer userCount;
+        private Integer pinCount;
+        private Integer pictureCount;
         private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public CircleDetailInfoResponse(List<Users> allUser, Circle circle) {
+        public CircleDetailInfoResponse(Circle circle) {
             this.circleId = circle.getId();
             this.circleName = circle.getName();
             this.imageUrl = circle.getImageUrl();
             this.description = circle.getDescription();
-            this.userTotalCount = circle.getUserCircleList().size();
-            this.pinTotalCount = circle.getPinList().size();
-            this.pictureTotalCount = circle.getPinList().stream().mapToInt(pl -> pl.getPictures().size()).sum();
-            this.joinedUserList = allUser.stream().map(UserDTO.UserSimpleInfoResponse::new).collect(Collectors.toList());
+            this.userCount = circle.getUserCircleList().size();
+            this.pinCount = circle.getPinList().size();
+            this.pictureCount = circle.getPinList().stream().mapToInt(pl -> pl.getPictures().size()).sum();
+            this.joinedUserList = circle.getUserCircleList().stream().map(uc -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).collect(Collectors.toList());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -96,8 +90,8 @@ public class CircleDTO {
     @Data
     public static class UpdateCircleRequest {
 
-        @NotBlank(message = "그룹 이름을 입력해주세요.")
         private String circleName;
+        private String description;
     }
 
     @Data
@@ -105,15 +99,21 @@ public class CircleDTO {
 
         private Long circleId;
         private String circleName;
+        private UserDTO.UserSimpleInfoResponse master;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
 
-        public CircleWithJoinUserResponse(List<Users> userList, Circle circle) {
-            this.joinedUserList = userList.stream().map(UserDTO.UserSimpleInfoResponse::new).collect(Collectors.toList());
+        public CircleWithJoinUserResponse(Circle circle) {
+            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
+            circle.getUserCircleList().forEach((uc) -> {
+                userList.add(new UserDTO.UserSimpleInfoResponse(uc.getUser()));
+            });
+            this.joinedUserList = userList;
             this.circleId = circle.getId();
             this.circleName = circle.getName();
+            this.master = new UserDTO.UserSimpleInfoResponse(circle.getMaster());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -147,15 +147,32 @@ public class CircleDTO {
     }
 
     @Data
+    public static class InviteUserFromLinkResponse {
+        private Long circleId;
+        private UserDTO.UserSimpleInfoResponse user;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public InviteUserFromLinkResponse(UserCircle userCircle) {
+            this.circleId = userCircle.getCircle().getId();
+            this.user = new UserDTO.UserSimpleInfoResponse(userCircle.getUser());
+            this.createdAt = userCircle.getCreatedAt();
+            this.updatedAt = userCircle.getModifiedAt();
+        }
+    }
+
+    @Data
     public static class BanUserRequest {
 
         @NotBlank(message = "유저 아이디를 입력해주세요.")
         private Long userId;
+    }
 
-        public BanUserRequest(Long userId) {
-            this.userId = userId;
-        }
+    @Data
+    public static class UpdateCircleMasterRequest {
 
+        @NotBlank(message = "유저 아이디를 입력해주세요.")
+        private Long userId;
     }
 
     @Data
