@@ -13,7 +13,6 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user_circle SET activated = 0 where id = ?")
 public class UserCircle extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
