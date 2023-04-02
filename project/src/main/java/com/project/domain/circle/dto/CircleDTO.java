@@ -1,7 +1,9 @@
 package com.project.domain.circle.dto;
 
 
+import com.project.common.exception.ErrorResponse;
 import com.project.domain.circle.entity.Circle;
+import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
@@ -52,6 +54,7 @@ public class CircleDTO {
         private Integer pinCount;
         private Integer pictureCount;
         private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
+        private PinDTO.PinDetailListResponse pinList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -64,6 +67,9 @@ public class CircleDTO {
             this.pinCount = circle.getPinList().size();
             this.pictureCount = circle.getPinList().stream().mapToInt(pl -> pl.getPictures().size()).sum();
             this.joinedUserList = circle.getUserCircleList().stream().map(uc -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).collect(Collectors.toList());
+            this.pinList = new PinDTO.PinDetailListResponse(circle.getPinList().stream()
+                    .map(PinDTO.PinDetailResponse::new)
+                    .collect(Collectors.toList()));
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }

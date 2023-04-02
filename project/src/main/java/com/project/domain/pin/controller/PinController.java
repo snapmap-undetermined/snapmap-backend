@@ -2,6 +2,7 @@ package com.project.domain.pin.controller;
 
 import com.project.common.annotation.AuthUser;
 import com.project.common.annotation.Permission;
+import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.pin.api.PinService;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.users.entity.Users;
@@ -68,4 +69,13 @@ public class PinController {
         pinService.deletePin(user, pinId);
         return new ResponseEntity<>(pinId, HttpStatus.OK);
     }
+
+    @GetMapping("/{pinId}/picture/{pictureId}")
+    @Permission
+    public ResponseEntity<PinDTO.PinWithDistinctPictureResponse> getPictureDetail(@AuthUser Users user, @PathVariable Long pictureId, @PathVariable Long pinId) {
+
+        PinDTO.PinWithDistinctPictureResponse response = pinService.getPictureDetail(user, pictureId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

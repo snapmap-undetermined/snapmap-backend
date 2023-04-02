@@ -1,5 +1,6 @@
 package com.project.domain.pin.api;
 
+import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.users.entity.Users;
 import org.locationtech.jts.io.ParseException;
@@ -19,4 +20,6 @@ public interface PinService {
     void deletePin(Users user, Long pinId);
 
     PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId);
+
+    PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId);
 }
