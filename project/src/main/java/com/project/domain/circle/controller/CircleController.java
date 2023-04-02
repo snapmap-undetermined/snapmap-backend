@@ -4,7 +4,6 @@ import com.project.common.annotation.AuthUser;
 import com.project.common.annotation.Permission;
 import com.project.domain.circle.api.CircleService;
 import com.project.domain.circle.dto.CircleDTO;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 
 @RestController
@@ -78,7 +75,6 @@ public class CircleController {
     @Permission
     private ResponseEntity<CircleDTO.InviteUserResponse> inviteCircle(@AuthUser Users user, @PathVariable Long circleId, @RequestBody @Valid CircleDTO.InviteUserRequest request) {
         CircleDTO.InviteUserResponse response = circleService.inviteUser(user, circleId, request);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -95,7 +91,7 @@ public class CircleController {
     @PostMapping("/{circleId}/allow")
     @Permission
     private ResponseEntity<CircleDTO.AllowUserJoinResponse> allowUserJoin(@AuthUser Users user, @PathVariable Long circleId) {
-        CircleDTO.AllowUserJoinResponse response = circleService.allowUserJoin(user, circleId);
+        CircleDTO.AllowUserJoinResponse response = circleService.acceptCircleInvitation(user, circleId);
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

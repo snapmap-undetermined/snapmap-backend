@@ -31,6 +31,7 @@ public class Picture extends BaseTimeEntity {
     private Pin pin;
 
     @OneToMany(mappedBy = "picture", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private List<PictureComment> commentList = new ArrayList<>();
 
     public void setPin(Pin pin) {

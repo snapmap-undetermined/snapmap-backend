@@ -33,16 +33,16 @@ public class FriendController {
     }
 
     // 친구삭제
-    @PatchMapping("/{friendId}")
-    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@PathVariable Long friendId) throws Exception {
-        friendService.deleteFriend(friendId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PatchMapping("/{mateId}")
+    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@AuthUser Users user, @PathVariable Long mateId) throws Exception {
+        FriendDTO.FriendResponse response = friendService.deleteFriend(user, mateId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 친구이름 수정
-    @PatchMapping("/{friendId}/name")
-    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@PathVariable Long friendId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
-        FriendDTO.FriendResponse response = friendService.updateFriendName(friendId, updateFriendNameRequest);
+    @PatchMapping("/{mateId}/name")
+    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@AuthUser Users user, @PathVariable Long mateId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+        FriendDTO.FriendResponse response = friendService.updateFriendName(user, mateId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

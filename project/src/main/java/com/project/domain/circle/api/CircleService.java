@@ -1,11 +1,8 @@
 package com.project.domain.circle.api;
 
 import com.project.domain.circle.dto.CircleDTO;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface CircleService {
 
@@ -25,7 +22,7 @@ public interface CircleService {
 
     CircleDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String circleKey);
 
-    CircleDTO.AllowUserJoinResponse allowUserJoin(Users user, Long circleId);
+    CircleDTO.AllowUserJoinResponse acceptCircleInvitation(Users user, Long circleId);
 
     CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture);
 

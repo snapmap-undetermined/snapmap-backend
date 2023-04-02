@@ -1,5 +1,6 @@
 package com.project.domain.circle.api;
 
+import com.project.common.annotation.AuthUser;
 import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -126,18 +128,18 @@ public class CircleServiceImpl implements CircleService {
     @Transactional
     public CircleDTO.InviteUserResponse inviteUser(Users user, Long circleId, CircleDTO.InviteUserRequest request) {
         Circle circle = getCircle(circleId);
-
         List<Long> invitedUserList = request.getInvitedUserList();
 
-        invitedUserList.forEach((userId) -> {
-            Users u = userRepository.findById(userId).orElseThrow(() -> {
-                log.error("Get user failed. userId={}", userId);
-                throw new EntityNotFoundException("존재하지 않는 유저입니다.");
-            });
+        for (Long userId : invitedUserList) {
+            Users u = getUser(userId);
+            Optional<UserCircle> userCircle = userCircleRepository.findByUserIdAndCircleId(u.getId(), circleId);
+            if (userCircle.isPresent()) {
+                continue;
+            }
             UserCircle uc = UserCircle.builder().user(u).circle(circle).activated(false).build(); // activated = false : 수락 이전 상태
-            uc.addUserCircleToUserAndCircle(u, circle);
+//            uc.addUserCircleToUserAndCircle(u, circle);
             userCircleRepository.save(uc);
-        });
+        }
 
         return new CircleDTO.InviteUserResponse(circle);
     }
@@ -152,12 +154,15 @@ public class CircleServiceImpl implements CircleService {
         return new CircleDTO.InviteUserFromLinkResponse(userCircle);
     }
 
-    // 유저가 초대요청을 수락
+    // 유저가 초대 요청을 수락
     @Override
     @Transactional
-    public CircleDTO.AllowUserJoinResponse allowUserJoin(Users user, Long circleId) {
+    public CircleDTO.AllowUserJoinResponse acceptCircleInvitation(Users user, Long circleId) {
+        Circle circle = getCircle(circleId);
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
         userCircle.setActivated(userCircle.getActivated());
+        userCircle.addUserCircleToUserAndCircle(user, circle);
+
         return new CircleDTO.AllowUserJoinResponse(user, userCircle);
     }
 
@@ -200,5 +205,7 @@ public class CircleServiceImpl implements CircleService {
             throw new EntityNotFoundException("존재하지 않는 그룹 입니다.");
         });
     }
-
+    private Users getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
+    }
 }

@@ -43,6 +43,5 @@ public class UserServiceImpl implements UserService {
 
     private Users getUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
-
     }
 }

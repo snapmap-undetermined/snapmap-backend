@@ -33,8 +33,6 @@ public class FriendServiceImpl implements FriendService {
     @Override
     @Transactional
     public FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
-
-        Friend friend = createFriendRequest.toEntity();
         Users mate = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 유저입니다.");
         });
@@ -47,37 +45,33 @@ public class FriendServiceImpl implements FriendService {
             throw new BusinessLogicException("이미 있는 친구관계 입니다.", ErrorCode.FRIEND_DUPLICATION);
         }
 
-        friend.setMate(mate);
-        friend.setMe(user);
-        friend.setFriendName(mate.getNickname());
-
+        Friend friend = Friend.builder().me(user).mate(mate).friendName(mate.getNickname()).build();
         friendRepository.save(friend);
-
         return new FriendDTO.FriendResponse(friend);
     }
 
     @Override
     @Transactional
-    public FriendDTO.FriendResponse deleteFriend(Long friendId) {
-
-        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
+    public FriendDTO.FriendResponse deleteFriend(Users me, Long mateId) {
+        Long myId = me.getId();
+        Friend friend = friendRepository.findByMeIdAndMateId(myId, mateId).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
         });
-        friend.setActivated();
 
+        friendRepository.delete(friend);
         return new FriendDTO.FriendResponse(friend);
     }
 
     @Override
     @Transactional
-    public FriendDTO.FriendResponse updateFriendName(Long friendId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
-        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> {
-            throw new EntityNotFoundException("존재하지 않는 친구관계 입니다.");
+    public FriendDTO.FriendResponse updateFriendName(Users me, Long mateId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
+        Long myId = me.getId();
+        Friend friend = friendRepository.findByMeIdAndMateId(myId, mateId).orElseThrow(() -> {
+            throw new EntityNotFoundException("존재하지 않는 친구 관계 입니다.");
         });
         String updateFriendName = updateFriendNameRequest.getFriendName();
         friend.setFriendName(updateFriendName);
 
         return new FriendDTO.FriendResponse(friend);
     }
-
 }

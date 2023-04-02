@@ -41,7 +41,6 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
 
     @Override
     public List<FriendDTO.FriendResponse> findAllFriendsOfUser(Long userId) {
-
         return query
                 .select(new QFriendDTO_FriendResponse(friend))
                 .from(friend)

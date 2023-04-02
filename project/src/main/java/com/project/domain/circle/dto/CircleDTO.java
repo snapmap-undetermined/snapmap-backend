@@ -1,7 +1,6 @@
 package com.project.domain.circle.dto;
 
 
-import com.project.common.exception.ErrorResponse;
 import com.project.domain.circle.entity.Circle;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.usercircle.entity.UserCircle;
@@ -23,12 +22,16 @@ public class CircleDTO {
     public static class CircleSimpleInfoResponse {
         private Long circleId;
         private String circleName;
+        private String circleImageUrl;
+        private Integer joinedUserCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public CircleSimpleInfoResponse(Circle circle) {
             this.circleId = circle.getId();
             this.circleName = circle.getName();
+            this.circleImageUrl = circle.getImageUrl();
+            this.joinedUserCount = circle.getUserCircleList().size();
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -36,7 +39,6 @@ public class CircleDTO {
 
     @Data
     public static class CircleSimpleInfoListResponse {
-
         private List<CircleSimpleInfoResponse> circleSimpleInfoResponseList;
 
         public CircleSimpleInfoListResponse(List<CircleSimpleInfoResponse> circleSimpleInfoResponseList) {
@@ -80,14 +82,14 @@ public class CircleDTO {
 
         @NotBlank(message = "그룹 이름을 입력해주세요.")
         private String circleName;
-
+        private String description;
         private List<Long> invitedUserList;
-
         private String imageUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png?w=1480&t=st=1679211933~exp=1679212533~hmac=b61bdb1145eb754a852d3c13ed5006de6ee4c0b4b0dd6c5f8575e7828f7ff977";
 
         public Circle toEntity() {
             return Circle.builder()
                     .name(circleName)
+                    .description(description)
                     .imageUrl(imageUrl)
                     .build();
         }
@@ -105,21 +107,25 @@ public class CircleDTO {
 
         private Long circleId;
         private String circleName;
+        private String description;
+        private String circleImageUrl;
         private UserDTO.UserSimpleInfoResponse master;
+        private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
-
         public CircleWithJoinUserResponse(Circle circle) {
-            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
-            circle.getUserCircleList().forEach((uc) -> {
-                userList.add(new UserDTO.UserSimpleInfoResponse(uc.getUser()));
-            });
-            this.joinedUserList = userList;
             this.circleId = circle.getId();
             this.circleName = circle.getName();
+            this.description = circle.getDescription();
+            this.circleImageUrl = circle.getImageUrl();
             this.master = new UserDTO.UserSimpleInfoResponse(circle.getMaster());
+            this.joinedUserList = circle.getUserCircleList().stream()
+                    .filter(UserCircle::getActivated)
+                    .map(UserCircle::getUser)
+                    .filter(user -> !user.equals(circle.getMaster()))
+                    .map(UserDTO.UserSimpleInfoResponse::new)
+                    .collect(Collectors.toList());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -135,18 +141,19 @@ public class CircleDTO {
     public static class InviteUserResponse {
 
         private Long circleId;
-        private List<UserDTO.UserSimpleInfoResponse> userList;
+//        private List<UserDTO.UserSimpleInfoResponse> userList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
 
         public InviteUserResponse(Circle circle) {
-            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
-            circle.getUserCircleList().forEach((userCircle) -> {
-                userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
-            });
+//            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
+//            circle.getUserCircleList().forEach((userCircle) -> {
+//                userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
+//            });
+//            this.userList = userList;
+
             this.circleId = circle.getId();
-            this.userList = userList;
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -183,17 +190,14 @@ public class CircleDTO {
 
     @Data
     public static class AllowUserJoinResponse {
-
         private Long userId;
         private Long circleId;
-        private String userNickname;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public AllowUserJoinResponse(Users user, UserCircle userCircle) {
             this.userId = user.getId();
             this.circleId = userCircle.getCircle().getId();
-            this.userNickname = user.getNickname();
             this.createdAt = userCircle.getCreatedAt();
             this.updatedAt = userCircle.getModifiedAt();
         }

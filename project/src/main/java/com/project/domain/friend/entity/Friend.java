@@ -12,7 +12,6 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "activated = 1")
 public class Friend extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +27,6 @@ public class Friend extends BaseTimeEntity {
     @Column(name = "friend_name")
     private String friendName;
 
-    @Column(columnDefinition = "TINYINT(1)")
-    private Boolean activated;
-
     public void setFriendName(String friendName) {
         this.friendName = friendName;
     }
@@ -41,9 +37,5 @@ public class Friend extends BaseTimeEntity {
 
     public void setMe(Users me) {
         this.me = me;
-    }
-
-    public void setActivated() {
-        this.activated = false;
     }
 }

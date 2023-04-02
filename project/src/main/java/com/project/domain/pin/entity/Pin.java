@@ -2,7 +2,6 @@ package com.project.domain.pin.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.domain.circle.entity.Circle;
-import com.project.domain.comment.entity.PictureComment;
 import com.project.domain.comment.entity.PinComment;
 import com.project.domain.location.entity.Location;
 import com.project.domain.picture.entity.Picture;
@@ -45,6 +44,7 @@ public class Pin extends BaseTimeEntity {
     private List<Picture> pictures = new ArrayList<>();
 
     @OneToMany(mappedBy = "pin", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private List<PinComment> commentList = new ArrayList<>();
 
     @Column(columnDefinition = "TINYINT(1)")
