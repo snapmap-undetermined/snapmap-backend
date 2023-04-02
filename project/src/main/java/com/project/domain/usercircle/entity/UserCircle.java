@@ -5,7 +5,6 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "user_circle")

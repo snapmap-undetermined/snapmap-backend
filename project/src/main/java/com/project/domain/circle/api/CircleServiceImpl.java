@@ -90,17 +90,20 @@ public class CircleServiceImpl implements CircleService {
     @Transactional
     public CircleDTO.CircleSimpleInfoResponse leaveCircle(Users user, Long circleId) {
         Circle circle = getCircle(circleId);
-        if (circle.getMaster().getId().equals(user.getId()) && circle.getUserCircleList().size() > 1) {
+        if (isMasterUser(circle, user.getId()) && circle.getUserCircleList().size() > 1) {
             throw new BusinessLogicException("방장 권한을 가진 유저는 그룹에서 나갈 수 없습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circle.getId()).orElseThrow();
-        userCircle.removeUserCircleFromUserAndCircle(user, circle);
-
         // 유저가 혼자 남았을 경우에 그룹을 나가게 되면 해당 그룹이 삭제된다.
         if (circle.getUserCircleList().size() == 1) {
+            UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circle.getId()).orElseThrow();
+            userCircle.removeUserCircleFromUserAndCircle(user, circle);
             circleRepository.delete(circle);
+        } else {
+            UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circle.getId()).orElseThrow();
+            userCircle.removeUserCircleFromUserAndCircle(user, circle);
         }
+
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
 
