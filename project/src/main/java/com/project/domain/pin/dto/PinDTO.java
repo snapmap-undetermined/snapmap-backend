@@ -1,7 +1,11 @@
 package com.project.domain.pin.dto;
 
+import com.project.domain.comment.dto.PictureCommentDTO;
+import com.project.domain.comment.dto.PinCommentDTO;
+import com.project.domain.comment.entity.PinComment;
 import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.picture.dto.PictureDTO;
+import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,15 +45,19 @@ public class PinDTO {
     @Data
     public static class PinDetailResponse {
         private Long id;
-        private List<PictureDTO.PictureResponse> pictureList;
+        private List<PinDTO.PinWithDistinctPictureResponse> pictureList;
         private LocationDTO location;
         private List<String> tags;
+        private PinCommentDTO.PinCommentListResponse commentList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public PinDetailResponse(Pin pin) {
             this.id = pin.getId();
-            this.pictureList = pin.getPictures().stream().map(PictureDTO.PictureResponse::new).collect(Collectors.toList());
+            this.pictureList = pin.getPictures().
+                    stream().map(PinDTO.PinWithDistinctPictureResponse::new).collect(Collectors.toList());
+            this.commentList = new PinCommentDTO.PinCommentListResponse(pin.getCommentList().
+                    stream().map(PinCommentDTO.PinCommentDetailResponse::new).collect(Collectors.toList()));
             this.location = new LocationDTO(pin.getLocation());
             this.tags = pin.getPinTags().stream()
                     .map((pinTag -> pinTag.getTag().getName())).toList();
@@ -59,7 +67,7 @@ public class PinDTO {
     }
 
     @Data
-    public static class PinDetailListResponse{
+    public static class PinDetailListResponse {
         private List<PinDetailResponse> pinDetailResponseList;
 
         public PinDetailListResponse(List<PinDetailResponse> pinDetailResponseList) {
@@ -67,5 +75,30 @@ public class PinDTO {
         }
 
     }
+
+    @Data
+    public static class PinWithDistinctPictureResponse {
+        private Long id;
+        private String uri;
+        private Long pinId;
+        private String pinName;
+        private String originalName;
+        private PictureCommentDTO.PictureCommentListResponse pictureCommentList;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        public PinWithDistinctPictureResponse(Picture picture) {
+            this.id = picture.getId();
+            this.uri = picture.getUrl();
+            this.pinId = picture.getPin().getId();
+            this.pinName = picture.getPin().getLocation().getName();
+            this.originalName = picture.getOriginalName();
+            this.pictureCommentList = new PictureCommentDTO.PictureCommentListResponse(picture.getCommentList().stream()
+                    .map(PictureCommentDTO.PictureCommentDetailResponse::new).collect(Collectors.toList()));
+            this.createdAt = picture.getCreatedAt();
+            this.updatedAt = picture.getModifiedAt();
+        }
+    }
+
 }
 

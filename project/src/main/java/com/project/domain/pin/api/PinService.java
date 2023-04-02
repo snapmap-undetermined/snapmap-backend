@@ -21,5 +21,5 @@ public interface PinService {
 
     PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId);
 
-    PictureDTO.PictureResponse getPictureDetail(Users user, Long pictureId);
+    PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId);
 }

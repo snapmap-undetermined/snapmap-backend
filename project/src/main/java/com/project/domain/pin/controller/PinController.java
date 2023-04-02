@@ -70,11 +70,11 @@ public class PinController {
         return new ResponseEntity<>(pinId, HttpStatus.OK);
     }
 
-    @GetMapping("/picture/{pictureId}")
+    @GetMapping("/{pinId}/picture/{pictureId}")
     @Permission
-    public ResponseEntity<PictureDTO.PictureResponse> getPictureDetail(@AuthUser Users user, @PathVariable Long pictureId) {
+    public ResponseEntity<PinDTO.PinWithDistinctPictureResponse> getPictureDetail(@AuthUser Users user, @PathVariable Long pictureId, @PathVariable Long pinId) {
 
-        PictureDTO.PictureResponse response = pinService.getPictureDetail(user, pictureId);
+        PinDTO.PinWithDistinctPictureResponse response = pinService.getPictureDetail(user, pictureId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

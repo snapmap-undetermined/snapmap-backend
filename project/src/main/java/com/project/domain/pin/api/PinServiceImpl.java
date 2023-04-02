@@ -131,13 +131,13 @@ public class PinServiceImpl implements PinService {
     }
 
     @Override
-    public PictureDTO.PictureResponse getPictureDetail(Users user, Long pictureId) {
+    public PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId) {
 
         Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> {
-            throw new EntityNotFoundException("존재하지 않는 그림 입니다.");
+            throw new EntityNotFoundException("존재하지 않는 사진 입니다.");
         });
 
-        return new PictureDTO.PictureResponse(picture);
+        return new PinDTO.PinWithDistinctPictureResponse(picture);
     }
 
     private boolean isPinCreatedByUser(Users user, Pin pin) {
