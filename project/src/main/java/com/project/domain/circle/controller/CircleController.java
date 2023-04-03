@@ -7,10 +7,13 @@ import com.project.domain.circle.dto.CircleDTO;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -88,12 +91,12 @@ public class CircleController {
     }
 
     // 유저가 그룹 초대를 수락한다.
-    @PostMapping("/{circleId}/allow")
+    @PostMapping("/{circleId}/accept")
     @Permission
-    private ResponseEntity<CircleDTO.AllowUserJoinResponse> allowUserJoin(@AuthUser Users user, @PathVariable Long circleId) {
-        CircleDTO.AllowUserJoinResponse response = circleService.acceptCircleInvitation(user, circleId);
+    private ResponseEntity<CircleDTO.acceptCircleInvitationResponse> acceptCircleInvitation(@AuthUser Users user, @PathVariable Long circleId) {
+        CircleDTO.acceptCircleInvitationResponse response = circleService.acceptCircleInvitation(user, circleId);
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 유저가 그룹이름을 수정한다.
@@ -115,6 +118,26 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // 그룹별로 아직 초대를 수락하지 않은 유저들 조회
+    @GetMapping("/{circleId}/not-accept-invite")
+    @Permission
+    private ResponseEntity<CircleDTO.NotAcceptCircleInviteUserResponse> getAllNotAcceptInviteUser(@AuthUser Users user, @PathVariable Long circleId) {
+        CircleDTO.NotAcceptCircleInviteUserResponse response = circleService.getAllNotAcceptCircleInviteUser(user, circleId);
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 아직 수락하지 않았을 경우 초대를 취소한다,
+    @PatchMapping("/{circleId}/cancle-invite-user/{cancelUserId}")
+    @Permission
+    private ResponseEntity<CircleDTO.acceptCircleInvitationResponse> cancelCircleInvitation(
+            @AuthUser Users user,
+            @PathVariable Long circleId,
+            @PathVariable Long cancelUserId
+    ) {
+        CircleDTO.acceptCircleInvitationResponse response = circleService.cancelCircleInvitation(user, circleId, cancelUserId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

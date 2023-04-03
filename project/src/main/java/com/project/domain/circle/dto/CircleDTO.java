@@ -4,14 +4,13 @@ package com.project.domain.circle.dto;
 import com.project.domain.circle.entity.Circle;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.usercircle.entity.UserCircle;
-import com.project.domain.users.dto.UserDTO;
+import com.project.domain.users.dto.UserDTO.UserSimpleInfoResponse;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,7 @@ public class CircleDTO {
         private Integer userCount;
         private Integer pinCount;
         private Integer pictureCount;
-        private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
+        private List<UserSimpleInfoResponse> joinedUserList;
         private PinDTO.PinDetailListResponse pinList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -68,7 +67,7 @@ public class CircleDTO {
             this.userCount = circle.getUserCircleList().size();
             this.pinCount = circle.getPinList().size();
             this.pictureCount = circle.getPinList().stream().mapToInt(pl -> pl.getPictures().size()).sum();
-            this.joinedUserList = circle.getUserCircleList().stream().map(uc -> new UserDTO.UserSimpleInfoResponse(uc.getUser())).collect(Collectors.toList());
+            this.joinedUserList = circle.getUserCircleList().stream().map(uc -> new UserSimpleInfoResponse(uc.getUser())).collect(Collectors.toList());
             this.pinList = new PinDTO.PinDetailListResponse(circle.getPinList().stream()
                     .map(PinDTO.PinDetailResponse::new)
                     .collect(Collectors.toList()));
@@ -109,8 +108,8 @@ public class CircleDTO {
         private String circleName;
         private String description;
         private String circleImageUrl;
-        private UserDTO.UserSimpleInfoResponse master;
-        private List<UserDTO.UserSimpleInfoResponse> joinedUserList;
+        private UserSimpleInfoResponse master;
+        private List<UserSimpleInfoResponse> joinedUserList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -119,12 +118,12 @@ public class CircleDTO {
             this.circleName = circle.getName();
             this.description = circle.getDescription();
             this.circleImageUrl = circle.getImageUrl();
-            this.master = new UserDTO.UserSimpleInfoResponse(circle.getMaster());
+            this.master = new UserSimpleInfoResponse(circle.getMaster());
             this.joinedUserList = circle.getUserCircleList().stream()
                     .filter(UserCircle::getActivated)
                     .map(UserCircle::getUser)
                     .filter(user -> !user.equals(circle.getMaster()))
-                    .map(UserDTO.UserSimpleInfoResponse::new)
+                    .map(UserSimpleInfoResponse::new)
                     .collect(Collectors.toList());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
@@ -141,19 +140,21 @@ public class CircleDTO {
     public static class InviteUserResponse {
 
         private Long circleId;
-//        private List<UserDTO.UserSimpleInfoResponse> userList;
+        private Long userId;
+        private String userNickname;
+        private List<UserSimpleInfoResponse> userList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
 
-        public InviteUserResponse(Circle circle) {
-//            List<UserDTO.UserSimpleInfoResponse> userList = new ArrayList<>();
-//            circle.getUserCircleList().forEach((userCircle) -> {
-//                userList.add(new UserDTO.UserSimpleInfoResponse(userCircle.getUser()));
-//            });
-//            this.userList = userList;
-
+        public InviteUserResponse(Circle circle, Users user) {
             this.circleId = circle.getId();
+            this.userId = user.getId();
+            this.userNickname = user.getNickname();
+            this.userList = circle.getUserCircleList().stream()
+                    .filter(userCircle -> !userCircle.getActivated())
+                    .map((uc) -> new UserSimpleInfoResponse(uc.getUser()))
+                    .collect(Collectors.toList());
             this.createdAt = circle.getCreatedAt();
             this.updatedAt = circle.getModifiedAt();
         }
@@ -162,13 +163,13 @@ public class CircleDTO {
     @Data
     public static class InviteUserFromLinkResponse {
         private Long circleId;
-        private UserDTO.UserSimpleInfoResponse user;
+        private UserSimpleInfoResponse user;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
         public InviteUserFromLinkResponse(UserCircle userCircle) {
             this.circleId = userCircle.getCircle().getId();
-            this.user = new UserDTO.UserSimpleInfoResponse(userCircle.getUser());
+            this.user = new UserSimpleInfoResponse(userCircle.getUser());
             this.createdAt = userCircle.getCreatedAt();
             this.updatedAt = userCircle.getModifiedAt();
         }
@@ -189,17 +190,34 @@ public class CircleDTO {
     }
 
     @Data
-    public static class AllowUserJoinResponse {
+    public static class acceptCircleInvitationResponse {
         private Long userId;
         private Long circleId;
+        private Boolean activated;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public AllowUserJoinResponse(Users user, UserCircle userCircle) {
+        public acceptCircleInvitationResponse(Users user, UserCircle userCircle) {
             this.userId = user.getId();
             this.circleId = userCircle.getCircle().getId();
+            this.activated = userCircle.getActivated();
             this.createdAt = userCircle.getCreatedAt();
             this.updatedAt = userCircle.getModifiedAt();
         }
     }
+
+    @Data
+    public static class NotAcceptCircleInviteUserResponse {
+
+        private List<UserSimpleInfoResponse> userList;
+
+        public NotAcceptCircleInviteUserResponse(Circle circle) {
+
+            this.userList = circle.getUserCircleList().stream()
+                    .filter(userCircle -> !userCircle.getActivated())
+                    .map((uc) -> new UserSimpleInfoResponse(uc.getUser()))
+                    .collect(Collectors.toList());
+        }
+    }
+
 }

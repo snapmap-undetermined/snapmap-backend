@@ -10,6 +10,7 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.usercircle.repository.UserCircleRepository;
+import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -137,11 +138,10 @@ public class CircleServiceImpl implements CircleService {
                 continue;
             }
             UserCircle uc = UserCircle.builder().user(u).circle(circle).activated(false).build(); // activated = false : 수락 이전 상태
-//            uc.addUserCircleToUserAndCircle(u, circle);
             userCircleRepository.save(uc);
         }
 
-        return new CircleDTO.InviteUserResponse(circle);
+        return new CircleDTO.InviteUserResponse(circle, user);
     }
 
     // 앱 설치 후 유저가 링크를 타고 들어올 경우, 로그인을 완료했을 경우 그룹 초대를 자동으로 한다.
@@ -157,13 +157,25 @@ public class CircleServiceImpl implements CircleService {
     // 유저가 초대 요청을 수락
     @Override
     @Transactional
-    public CircleDTO.AllowUserJoinResponse acceptCircleInvitation(Users user, Long circleId) {
+    public CircleDTO.acceptCircleInvitationResponse acceptCircleInvitation(Users user, Long circleId) {
         Circle circle = getCircle(circleId);
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(user.getId(), circleId).orElseThrow();
         userCircle.setActivated(userCircle.getActivated());
         userCircle.addUserCircleToUserAndCircle(user, circle);
 
-        return new CircleDTO.AllowUserJoinResponse(user, userCircle);
+        return new CircleDTO.acceptCircleInvitationResponse(user, userCircle);
+    }
+
+    @Override
+    public CircleDTO.acceptCircleInvitationResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId) {
+        Circle circle = getCircle(circleId);
+        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(cancelUserId, circleId).orElseThrow();
+
+        // 요청을 보내는 유저가 해당 그룹에 속해있어야 초대 취소가 가능하다.
+        if (circle.getUserCircleList().stream().map(UserCircle::getUser).toList().contains(user)) {
+            userCircle.setActivated(userCircle.getActivated());
+        }
+        return new CircleDTO.acceptCircleInvitationResponse(user, userCircle);
     }
 
     @Override
@@ -195,6 +207,12 @@ public class CircleServiceImpl implements CircleService {
         return new CircleDTO.CircleWithJoinUserResponse(circle);
     }
 
+    @Override
+    public CircleDTO.NotAcceptCircleInviteUserResponse getAllNotAcceptCircleInviteUser(Users user, Long circleId) {
+        Circle circle = getCircle(circleId);
+        return new CircleDTO.NotAcceptCircleInviteUserResponse(circle);
+    }
+
     private boolean isMasterUser(Circle circle, Long userId) {
         return circle.getMaster().getId().equals(userId);
     }
@@ -205,6 +223,7 @@ public class CircleServiceImpl implements CircleService {
             throw new EntityNotFoundException("존재하지 않는 그룹 입니다.");
         });
     }
+
     private Users getUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
     }

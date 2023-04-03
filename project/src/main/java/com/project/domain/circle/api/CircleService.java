@@ -22,10 +22,14 @@ public interface CircleService {
 
     CircleDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String circleKey);
 
-    CircleDTO.AllowUserJoinResponse acceptCircleInvitation(Users user, Long circleId);
+    CircleDTO.acceptCircleInvitationResponse acceptCircleInvitation(Users user, Long circleId);
+
+    CircleDTO.acceptCircleInvitationResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId);
 
     CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture);
 
     CircleDTO.CircleWithJoinUserResponse updateCircleMaster(Users user, Long circleId, Long userId);
+
+    CircleDTO.NotAcceptCircleInviteUserResponse getAllNotAcceptCircleInviteUser(Users user, Long circleId);
 
 }

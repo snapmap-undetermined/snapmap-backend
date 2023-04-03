@@ -4,7 +4,9 @@ import com.project.domain.friend.entity.Friend;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -36,6 +38,9 @@ public class FriendDTO {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UpdateFriendNameRequest {
 
         @NotBlank(message = "친구 이름을 입력하세요.")
@@ -43,6 +48,9 @@ public class FriendDTO {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateFriendRequest {
         private Long friendUserId;
     }
