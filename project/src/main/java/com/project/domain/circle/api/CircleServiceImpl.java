@@ -167,15 +167,20 @@ public class CircleServiceImpl implements CircleService {
     }
 
     @Override
-    public CircleDTO.acceptCircleInvitationResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId) {
+    @Transactional
+    public CircleDTO.cancelInviteCircleResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId) {
         Circle circle = getCircle(circleId);
-        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(cancelUserId, circleId).orElseThrow();
-
+        UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(cancelUserId, circleId).orElseThrow(()->{
+            throw new EntityNotFoundException("존재하지 않는 그룹-유저 관계 입니다.");
+        });
         // 요청을 보내는 유저가 해당 그룹에 속해있어야 초대 취소가 가능하다.
-        if (circle.getUserCircleList().stream().map(UserCircle::getUser).toList().contains(user)) {
-            userCircle.setActivated(userCircle.getActivated());
+        if (circle.getUserCircleList().stream()
+                .filter(UserCircle::getActivated)
+                .map(UserCircle::getUser).toList().contains(user)) {
+            userCircle.removeUserCircleFromUserAndCircle(user, circle);
         }
-        return new CircleDTO.acceptCircleInvitationResponse(user, userCircle);
+
+        return new CircleDTO.cancelInviteCircleResponse(user, circle);
     }
 
     @Override

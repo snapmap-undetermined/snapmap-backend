@@ -72,6 +72,7 @@ public class UserCircle extends BaseTimeEntity {
     }
 
     public void setActivated(Boolean status) {
-        this.activated = !status;
+        status = true;
+        this.activated = status;
     }
 }

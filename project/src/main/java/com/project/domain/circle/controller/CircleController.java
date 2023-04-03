@@ -128,14 +128,14 @@ public class CircleController {
     }
 
     // 아직 수락하지 않았을 경우 초대를 취소한다,
-    @PatchMapping("/{circleId}/cancle-invite-user/{cancelUserId}")
+    @PatchMapping("/{circleId}/cancel-invite-user/{cancelUserId}")
     @Permission
-    private ResponseEntity<CircleDTO.acceptCircleInvitationResponse> cancelCircleInvitation(
+    private ResponseEntity<CircleDTO.cancelInviteCircleResponse> cancelCircleInvitation(
             @AuthUser Users user,
             @PathVariable Long circleId,
             @PathVariable Long cancelUserId
     ) {
-        CircleDTO.acceptCircleInvitationResponse response = circleService.cancelCircleInvitation(user, circleId, cancelUserId);
+        CircleDTO.cancelInviteCircleResponse response = circleService.cancelCircleInvitation(user, circleId, cancelUserId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

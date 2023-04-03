@@ -198,7 +198,7 @@ public class CircleDTO {
         private LocalDateTime updatedAt;
 
         public acceptCircleInvitationResponse(Users user, UserCircle userCircle) {
-            this.userId = user.getId();
+            this.userId = userCircle.getUser().getId();
             this.circleId = userCircle.getCircle().getId();
             this.activated = userCircle.getActivated();
             this.createdAt = userCircle.getCreatedAt();
@@ -217,6 +217,20 @@ public class CircleDTO {
                     .filter(userCircle -> !userCircle.getActivated())
                     .map((uc) -> new UserSimpleInfoResponse(uc.getUser()))
                     .collect(Collectors.toList());
+        }
+    }
+
+    @Data
+    public static class cancelInviteCircleResponse {
+        private Long userId;
+        private Long circleId;
+        private LocalDateTime updatedAt;
+
+        public cancelInviteCircleResponse(Users user, Circle circle) {
+            this.userId = user.getId();
+            this.circleId = circle.getId();
+            this.updatedAt = LocalDateTime.now();
+
         }
     }
 

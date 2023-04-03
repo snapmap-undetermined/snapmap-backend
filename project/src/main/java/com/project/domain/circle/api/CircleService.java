@@ -24,7 +24,7 @@ public interface CircleService {
 
     CircleDTO.acceptCircleInvitationResponse acceptCircleInvitation(Users user, Long circleId);
 
-    CircleDTO.acceptCircleInvitationResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId);
+    CircleDTO.cancelInviteCircleResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId);
 
     CircleDTO.CircleSimpleInfoResponse updateCircle(Users user, Long circleId, CircleDTO.UpdateCircleRequest request, MultipartFile picture);
 
