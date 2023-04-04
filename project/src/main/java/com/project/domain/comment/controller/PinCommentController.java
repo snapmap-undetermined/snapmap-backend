@@ -1,6 +1,7 @@
 package com.project.domain.comment.controller;
 
 import com.project.common.annotation.AuthUser;
+import com.project.common.annotation.Permission;
 import com.project.domain.comment.api.PinCommentService;
 import com.project.domain.comment.dto.PictureCommentDTO;
 import com.project.domain.comment.dto.PinCommentDTO;
@@ -23,12 +24,14 @@ public class PinCommentController {
     private final PinCommentService pinCommentService;
 
     @PostMapping("")
+    @Permission
     public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> createPinComment(@AuthUser Users user, @RequestBody PinCommentDTO.CreatePinCommentRequest request) {
         PinCommentDTO.PinCommentDetailResponse response = pinCommentService.createPinComment(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{pinId}")
+    @Permission
     public ResponseEntity<PinCommentDTO.PinCommentListResponse> getPinCommentByPinId(@PathVariable Long pinId) {
         List<PinCommentDTO.PinCommentDetailResponse> pinCommentDetailResponseList = pinCommentService.getPinCommentByPinId(pinId);
 
@@ -38,6 +41,7 @@ public class PinCommentController {
     }
 
     @DeleteMapping("/{pinCommentId}")
+    @Permission
     public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinComment(@PathVariable Long pinCommentId) {
         pinCommentService.deletePinComment(pinCommentId);
 
@@ -45,6 +49,7 @@ public class PinCommentController {
     }
 
     @DeleteMapping("/status/{pinCommentId}")
+    @Permission
     public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinCommentWithStatus(@PathVariable Long pinCommentId) {
         pinCommentService.deletePinCommentWithStatus(pinCommentId);
 
@@ -52,6 +57,7 @@ public class PinCommentController {
     }
 
     @PatchMapping("/{pinCommentId}")
+    @Permission
     public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> updatePinComment(@PathVariable Long pinCommentId, @RequestBody PinCommentDTO.UpdatePinCommentRequest request) {
         PinCommentDTO.PinCommentDetailResponse response = pinCommentService.updatePinComment(pinCommentId, request);
 

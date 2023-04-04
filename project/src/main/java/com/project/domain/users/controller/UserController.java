@@ -1,6 +1,7 @@
 package com.project.domain.users.controller;
 
 import com.project.common.annotation.AuthUser;
+import com.project.common.annotation.Permission;
 import com.project.domain.friend.dto.FriendDTO;
 import com.project.domain.users.api.interfaces.UserService;
 import com.project.domain.users.dto.UserDTO;
@@ -39,6 +40,7 @@ public class UserController {
 
     // user 조회(검색)
     @GetMapping("")
+    @Permission
     private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@RequestParam String userNickname) throws Exception {
 
         UserDTO.UserSimpleInfoResponse response = userService.getUserByNickname(userNickname);
@@ -46,12 +48,14 @@ public class UserController {
     }
 
     @PatchMapping("")
+    @Permission
     private ResponseEntity<UserDTO.UserSimpleInfoResponse> updateUserNickname(@AuthUser Users user, @RequestBody  UserDTO.UpdateUserRequest request) {
         UserDTO.UserSimpleInfoResponse response = userService.updateUser(user.getId(), request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("")
+    @Permission
     private void deleteUser(@AuthUser Users user) {
         userService.deleteUser(user);
     }

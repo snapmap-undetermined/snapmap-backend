@@ -1,6 +1,7 @@
 package com.project.domain.comment.controller;
 
 import com.project.common.annotation.AuthUser;
+import com.project.common.annotation.Permission;
 import com.project.domain.comment.api.PictureCommentService;
 import com.project.domain.comment.dto.PictureCommentDTO;
 import com.project.domain.users.entity.Users;
@@ -19,12 +20,14 @@ public class PictureCommentController {
     private final PictureCommentService pictureCommentService;
 
     @PostMapping("")
+    @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> createPictureComment(@AuthUser Users user, @RequestBody PictureCommentDTO.CreatePictureCommentRequest request) {
         PictureCommentDTO.PictureCommentDetailResponse response = pictureCommentService.createPictureComment(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{pictureId}")
+    @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentListResponse> getPictureCommentByPictureId(@PathVariable Long pictureId) {
         List<PictureCommentDTO.PictureCommentDetailResponse> pictureCommentDetailResponseList = pictureCommentService.getPictureCommentByPictureId(pictureId);
 
@@ -34,6 +37,7 @@ public class PictureCommentController {
     }
 
     @DeleteMapping("/{pictureCommentId}")
+    @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureComment(@PathVariable Long pictureCommentId) {
         pictureCommentService.deletePictureComment(pictureCommentId);
 
@@ -41,6 +45,7 @@ public class PictureCommentController {
     }
 
     @DeleteMapping("/status/{pictureCommentId}")
+    @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureCommentWithStatus(@PathVariable Long pictureCommentId) {
         pictureCommentService.deletePictureCommentWithStatus(pictureCommentId);
 
@@ -48,6 +53,7 @@ public class PictureCommentController {
     }
 
     @PatchMapping("/{pictureCommentId}")
+    @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> updatePictureComment(@PathVariable Long pictureCommentId, @RequestBody PictureCommentDTO.UpdatePictureCommentRequest request) {
         PictureCommentDTO.PictureCommentDetailResponse response = pictureCommentService.updatePictureComment(pictureCommentId, request);
 
