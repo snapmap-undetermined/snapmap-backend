@@ -48,6 +48,7 @@ public class PinDTO {
         private List<PinDTO.PinWithDistinctPictureResponse> pictureList;
         private LocationDTO location;
         private List<String> tags;
+        private Integer commentCount;
         private PinCommentDTO.PinCommentListResponse commentList;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -61,6 +62,7 @@ public class PinDTO {
             this.location = new LocationDTO(pin.getLocation());
             this.tags = pin.getPinTags().stream()
                     .map((pinTag -> pinTag.getTag().getName())).toList();
+            this.commentCount = pin.getCommentList().size();
             this.createdAt = pin.getCreatedAt();
             this.updatedAt = pin.getModifiedAt();
         }
@@ -84,6 +86,7 @@ public class PinDTO {
         private String pinName;
         private String originalName;
         private PictureCommentDTO.PictureCommentListResponse pictureCommentList;
+        private Integer pictureCommentCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -95,6 +98,7 @@ public class PinDTO {
             this.originalName = picture.getOriginalName();
             this.pictureCommentList = new PictureCommentDTO.PictureCommentListResponse(picture.getCommentList().stream()
                     .map(PictureCommentDTO.PictureCommentDetailResponse::new).collect(Collectors.toList()));
+            this.pictureCommentCount = picture.getCommentList().size();
             this.createdAt = picture.getCreatedAt();
             this.updatedAt = picture.getModifiedAt();
         }
