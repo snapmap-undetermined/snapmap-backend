@@ -28,18 +28,17 @@ public class ExceptionManager {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error("handleMethodArgumentNotValidException", e);
+        log.error("[handleMethodArgumentNotValidException]", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
      * @ModelAttribute binding error 발생시 BindException 발생
-     * ref https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-modelattrib-method-args
      */
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<ErrorResponse> handleBindException(BindException e) {
-        log.error("handleBindException", e);
+        log.error("[handleBindException]", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -50,7 +49,7 @@ public class ExceptionManager {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        log.error("handleMethodArgumentTypeMismatchException", e);
+        log.error("[handleMethodArgumentTypeMismatchException]", e);
         final ErrorResponse response = ErrorResponse.of(e);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -60,7 +59,7 @@ public class ExceptionManager {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.error("handleHttpRequestMethodNotSupportedException", e);
+        log.error("[handleHttpRequestMethodNotSupportedException]", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -70,14 +69,14 @@ public class ExceptionManager {
      */
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
-        log.error("handleAccessDeniedException", e);
+        log.error("[handleAccessDeniedException]", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.ACCESS_DENIED);
         return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.ACCESS_DENIED.getStatus()));
     }
 
     @ExceptionHandler(BusinessLogicException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessLogicException(final BusinessLogicException e) {
-        log.error("handleBusinessLogicException", e);
+        log.error("[handleBusinessLogicException]", e);
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
@@ -86,7 +85,7 @@ public class ExceptionManager {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("handleEntityNotFoundException", e);
+        log.error("[handleException]", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
