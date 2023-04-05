@@ -1,5 +1,7 @@
 package com.project.domain.location.dto;
 
+import com.project.common.exception.ErrorCode;
+import com.project.common.exception.InvalidValueException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -24,7 +26,7 @@ public class PointDTO {
         try {
             return (Point) new WKTReader().read(pointWKT);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new InvalidValueException("WKTReader reads point failed.", ErrorCode.INVALID_INPUT_VALUE);
         }
     }
 }

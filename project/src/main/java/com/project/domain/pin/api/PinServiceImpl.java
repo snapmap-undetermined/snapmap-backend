@@ -8,7 +8,6 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
-import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.picture.repository.PictureRepository;
 import com.project.domain.pin.dto.PinDTO;
@@ -126,7 +125,7 @@ public class PinServiceImpl implements PinService {
             user.removePin(pin); // 유저에서 해당 핀 삭제
             pin.setActivated(pin.getActivated());
         } else {
-            throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
+            throw new BusinessLogicException("Pin access failed..", ErrorCode.ACCESS_DENIED);
         }
     }
 
@@ -134,7 +133,7 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId) {
 
         Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> {
-            throw new EntityNotFoundException("존재하지 않는 사진 입니다.");
+            throw new EntityNotFoundException("Picture does not exists.");
         });
 
         return new PinDTO.PinWithDistinctPictureResponse(picture);
@@ -157,29 +156,29 @@ public class PinServiceImpl implements PinService {
 
     private void checkPinAccessibility(Users user, List<Circle> userJoinCircles, Pin pin) {
         if (!isPinCreatedByUser(user, pin) && !isPinCreatedByCircle(userJoinCircles, pin)) {
-            throw new BusinessLogicException("해당 핀에 대한 접근 권한이 없습니다.", ErrorCode.HANDLE_ACCESS_DENIED);
+            throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
         }
     }
 
     private void validatePictureInput(List<MultipartFile> pictures) {
         if (pictures == null || pictures.isEmpty()) {
-            throw new BusinessLogicException("핀에 저장할 사진이 존재하지 않습니다.",ErrorCode.INVALID_INPUT_VALUE);
+            throw new BusinessLogicException("No available pictures for creating pin.",ErrorCode.INVALID_INPUT_VALUE);
         }
     }
 
     private void validateUserMembershipOnCircle(Users user, Circle circle) {
         if(userCircleRepository.findByUserIdAndCircleId(user.getId(), circle.getId()).isEmpty()){
-            throw new EntityNotFoundException("가입하지 않은 써클입니다.");
+            throw new BusinessLogicException("Access denied. Not joined group.", ErrorCode.ACCESS_DENIED);
         }
     }
 
     private Circle getCircle(Long circleId) {
         return circleRepository.findById(circleId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 써클입니다."));
+                () -> new EntityNotFoundException("Group does not exists."));
     }
 
     private Pin getPin(Long pinId) {
         return pinRepository.findById(pinId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 핀입니다."));
+                () -> new EntityNotFoundException("Pin does not exists."));
     }
 }

@@ -1,6 +1,5 @@
 package com.project.domain.circle.api;
 
-import com.project.common.annotation.AuthUser;
 import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
@@ -10,7 +9,6 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.circle.repository.CircleRepository;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.usercircle.repository.UserCircleRepository;
-import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -61,12 +59,10 @@ public class CircleServiceImpl implements CircleService {
     @Override
     public CircleDTO.CircleSimpleInfoListResponse getAllCircleByUser(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            log.error("Get circle list by user failed. userId={}", userId);
-            throw new EntityNotFoundException("존재하지 않는 유저입니다.");
+            throw new EntityNotFoundException("User does not exist.");
         }
 
         List<Circle> circleList = circleRepository.findAllCircleByUserId(userId);
-
         List<CircleDTO.CircleSimpleInfoResponse> response = circleList.stream().map(CircleDTO.CircleSimpleInfoResponse::new).collect(Collectors.toList());
 
         return new CircleDTO.CircleSimpleInfoListResponse(response);
@@ -75,15 +71,12 @@ public class CircleServiceImpl implements CircleService {
 
     @Override
     public CircleDTO.CircleDetailInfoResponse getCircleDetail(Long circleId) {
-
         Circle circle = getCircle(circleId);
-
         return new CircleDTO.CircleDetailInfoResponse(circle);
     }
 
     @Override
     public CircleDTO.CircleWithJoinUserResponse getJoinedUserOfCircle(Long circleId) {
-
         Circle circle = getCircle(circleId);
         return new CircleDTO.CircleWithJoinUserResponse(circle);
     }
@@ -94,7 +87,7 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.CircleSimpleInfoResponse leaveCircle(Users user, Long circleId) {
         Circle circle = getCircle(circleId);
         if (isMasterUser(circle, user.getId()) && circle.getUserCircleList().size() > 1) {
-            throw new BusinessLogicException("방장 권한을 가진 유저는 그룹에서 나갈 수 없습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new BusinessLogicException("Manager cannot leave group", ErrorCode.CIRCLE_MANAGER_ERROR);
         }
 
         // 유저가 혼자 남았을 경우에 그룹을 나가게 되면 해당 그룹이 삭제된다.
@@ -171,7 +164,7 @@ public class CircleServiceImpl implements CircleService {
     public CircleDTO.cancelInviteCircleResponse cancelCircleInvitation(Users user, Long circleId, Long cancelUserId) {
         Circle circle = getCircle(circleId);
         UserCircle userCircle = userCircleRepository.findByUserIdAndCircleId(cancelUserId, circleId).orElseThrow(() -> {
-            throw new EntityNotFoundException("존재하지 않는 그룹-유저 관계 입니다.");
+            throw new EntityNotFoundException("User does not exists.");
         });
         // 요청을 보내는 유저가 해당 그룹에 속해있어야 초대 취소가 가능하다.
         if (circle.getUserCircleList().stream()
@@ -195,7 +188,7 @@ public class CircleServiceImpl implements CircleService {
                 circle.setImageUrl(imageUrl);
             }
         } else {
-            throw new BusinessLogicException("방장만 그룹 설정을 수정할 수 있습니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new BusinessLogicException("Only the manager can modify group settings.", ErrorCode.CIRCLE_MANAGER_ERROR);
         }
         return new CircleDTO.CircleSimpleInfoResponse(circle);
     }
@@ -209,7 +202,7 @@ public class CircleServiceImpl implements CircleService {
             Users u = userRepository.findById(userId).orElseThrow();
             // 위임하려는 유저가 해당 그룹에 속해 있어야 한다.
             if (!isUserInCircle(u, circleId)) {
-                throw new BusinessLogicException("방장 권한을 위임하려는 유저는 해당 그룹에 속해 있어야 합니다.", ErrorCode.INTERNAL_SERVER_ERROR);
+                throw new EntityNotFoundException("User manager delegated does not exists", ErrorCode.CIRCLE_MANAGER_ERROR);
             }
             circle.setMaster(u);
         }
@@ -228,13 +221,14 @@ public class CircleServiceImpl implements CircleService {
 
     private Circle getCircle(Long circleId) {
         return circleRepository.findById(circleId).orElseThrow(() -> {
-            log.error("Get circle failed. circleId = {}", circleId);
-            throw new EntityNotFoundException("존재하지 않는 그룹 입니다.");
+            throw new EntityNotFoundException("Group does not exists.");
         });
     }
 
     private Users getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
+        return userRepository.findById(userId).orElseThrow(() -> {
+            throw new EntityNotFoundException("User does not exists.");
+        });
     }
 
     private boolean isUserInCircle(Users user, Long circleId) {
