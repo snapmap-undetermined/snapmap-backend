@@ -5,17 +5,21 @@ import com.project.common.annotation.Permission;
 import com.project.domain.circle.api.CircleService;
 import com.project.domain.circle.dto.CircleDTO;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
-
+@Tag(name = "circle", description = "그룹 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/circle")
@@ -23,7 +27,17 @@ public class CircleController {
 
     private final CircleService circleService;
 
-    //그룹을 생성한다.
+    @Operation(summary = "그룹 생성 API", description = "그룹을 생성한다.", responses = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "그룹 생성 성공",
+                    content = @Content(schema = @Schema(implementation = CircleDTO.CircleSimpleInfoResponse.class))),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "그룹 생성 실패",
+                    content = @Content(schema = @Schema(implementation = Exception.class)))
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> createCircle(@AuthUser Users user, @Valid @RequestBody CircleDTO.CreateCircleRequest createCircleRequest) throws Exception {
@@ -31,18 +45,40 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //유저별로 그룹을 조회한다.
+    @Operation(summary = "유저별 그룹 조회 API", description = "유저별로 그룹을 조회한다.", responses = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "유저별 그룹 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CircleDTO.CircleSimpleInfoListResponse.class))),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "유저별 그룹 조회 실패",
+                    content = @Content(schema = @Schema(implementation = Exception.class)))
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
-    @Permission
+    @Permission()
     private ResponseEntity<CircleDTO.CircleSimpleInfoListResponse> getAllCircleByUser(@AuthUser Users user) {
         CircleDTO.CircleSimpleInfoListResponse response = circleService.getAllCircleByUser(user.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //유저가 그룹을 선택해서 그룹원들을 조회한다.
+    @Operation(summary = "그룹별 유저 조회", description = "그룹별 유저 리스트를 조회한다.", responses = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "그룹별 유저 리스트 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CircleDTO.CircleWithJoinUserResponse.class))),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "그룹별 유저 리스트 조회 실패",
+                    content = @Content(schema = @Schema(implementation = Exception.class)))
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{circleId}/users")
     @Permission
-    private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(@PathVariable Long circleId) throws Exception {
+    private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(
+            @Parameter(description = "circle 의 id")
+            @PathVariable Long circleId) throws Exception {
         CircleDTO.CircleWithJoinUserResponse response = circleService.getJoinedUserOfCircle(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

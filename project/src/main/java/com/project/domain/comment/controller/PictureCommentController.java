@@ -5,6 +5,7 @@ import com.project.common.annotation.Permission;
 import com.project.domain.comment.api.PictureCommentService;
 import com.project.domain.comment.dto.PictureCommentDTO;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "picture-comment",description = "사진 댓글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/picture-comment")

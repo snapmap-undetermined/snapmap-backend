@@ -8,6 +8,7 @@ import com.project.domain.comment.dto.PinCommentDTO;
 import com.project.domain.friend.dto.FriendDTO;
 import com.project.domain.pin.api.PinService;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "pin-comment",description = "핀 댓글 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/pin-comment")
@@ -30,7 +32,7 @@ public class PinCommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{pinId}")
+    @GetMapping("/pin/{pinId}")
     @Permission
     public ResponseEntity<PinCommentDTO.PinCommentListResponse> getPinCommentByPinId(@PathVariable Long pinId) {
         List<PinCommentDTO.PinCommentDetailResponse> pinCommentDetailResponseList = pinCommentService.getPinCommentByPinId(pinId);

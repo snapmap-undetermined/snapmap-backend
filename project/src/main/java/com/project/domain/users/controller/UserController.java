@@ -7,6 +7,7 @@ import com.project.domain.users.api.interfaces.UserService;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "user",description = "유저 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -48,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("")
-    @Permission
+//    @Permission
     private ResponseEntity<UserDTO.UserSimpleInfoResponse> updateUserNickname(@AuthUser Users user, @RequestBody  UserDTO.UpdateUserRequest request) {
         UserDTO.UserSimpleInfoResponse response = userService.updateUser(user.getId(), request);
         return new ResponseEntity<>(response, HttpStatus.OK);

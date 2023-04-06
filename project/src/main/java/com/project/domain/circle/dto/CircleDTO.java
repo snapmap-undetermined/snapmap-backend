@@ -6,6 +6,7 @@ import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO.UserSimpleInfoResponse;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -80,9 +81,13 @@ public class CircleDTO {
     public static class CreateCircleRequest {
 
         @NotBlank(message = "그룹 이름을 입력해주세요.")
+        @Schema(description = "그룹 이름" , example = "TestCircle")
         private String circleName;
+        @Schema(description = "그룹 설명" , example = "TestCircleDesription")
         private String description;
+        @Schema(description = "초대할 유저 리스트", example = "[]")
         private List<Long> invitedUserList;
+        @Schema(description = "그룹 대표 이미지" ,defaultValue = "https://cdn-icons-png.flaticon.com/512/149/149071.png?w=1480&t=st=1679211933~exp=1679212533~hmac=b61bdb1145eb754a852d3c13ed5006de6ee4c0b4b0dd6c5f8575e7828f7ff977")
         private String imageUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png?w=1480&t=st=1679211933~exp=1679212533~hmac=b61bdb1145eb754a852d3c13ed5006de6ee4c0b4b0dd6c5f8575e7828f7ff977";
 
         public Circle toEntity() {

@@ -5,11 +5,13 @@ import com.project.common.annotation.Permission;
 import com.project.domain.friend.api.FriendService;
 import com.project.domain.friend.dto.FriendDTO;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "friend",description = "유저 친구 기능 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/friend")

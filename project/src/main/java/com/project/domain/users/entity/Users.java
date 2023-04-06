@@ -6,7 +6,9 @@ import com.project.domain.circle.entity.Circle;
 import com.project.domain.friend.entity.Friend;
 import com.project.domain.pin.entity.Pin;
 import com.project.domain.usercircle.entity.UserCircle;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -21,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Where(clause = "activated = 1")
+@Schema(description = "유저")
 @SQLDelete(sql = "UPDATE user SET activated = 0 where id = ?")
 public class Users extends BaseTimeEntity {
 

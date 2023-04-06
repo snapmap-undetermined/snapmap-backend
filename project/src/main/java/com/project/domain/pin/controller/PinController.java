@@ -6,6 +6,7 @@ import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.pin.api.PinService;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.users.entity.Users;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
+@Tag(name = "pin",description = "핀 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/pin")
