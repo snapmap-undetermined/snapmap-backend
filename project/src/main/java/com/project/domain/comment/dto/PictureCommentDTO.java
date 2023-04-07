@@ -3,8 +3,7 @@ package com.project.domain.comment.dto;
 import com.project.domain.comment.entity.PictureComment;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.users.entity.Users;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
@@ -37,11 +36,10 @@ public class PictureCommentDTO {
     @Data
     public static class CreatePictureCommentRequest {
 
-        @NotNull
+        @NotBlank(message = "사진의 아이디를 입력해주세요.")
         private Long pictureId;
-        @NotNull
+        @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
-
         private Long parentCommentOrder;
 
         public PictureComment toEntity(Users user, Picture picture) {
@@ -67,6 +65,7 @@ public class PictureCommentDTO {
 
     @Data
     public static class UpdatePictureCommentRequest {
+        @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
     }
 

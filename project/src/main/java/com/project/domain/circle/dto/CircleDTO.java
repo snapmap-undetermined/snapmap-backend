@@ -7,6 +7,7 @@ import com.project.domain.usercircle.entity.UserCircle;
 import com.project.domain.users.dto.UserDTO.UserSimpleInfoResponse;
 import com.project.domain.users.entity.Users;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -96,7 +97,7 @@ public class CircleDTO {
 
     @Data
     public static class UpdateCircleRequest {
-
+        @NotBlank(message = "그룹 이름을 입력해주세요.")
         private String circleName;
         private String description;
     }
@@ -132,7 +133,7 @@ public class CircleDTO {
 
     @Data
     public static class InviteUserRequest {
-
+        @Size(min = 1, message = "한 명 이상의 유저를 선택해야 합니다.")
         private List<Long> invitedUserList;
     }
 
