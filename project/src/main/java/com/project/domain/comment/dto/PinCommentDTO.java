@@ -3,8 +3,7 @@ package com.project.domain.comment.dto;
 import com.project.domain.comment.entity.PinComment;
 import com.project.domain.pin.entity.Pin;
 import com.project.domain.users.entity.Users;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
@@ -37,9 +36,9 @@ public class PinCommentDTO {
     @Data
     public static class CreatePinCommentRequest {
 
-        @NotNull
+        @NotBlank(message = "핀 아이디를 입력해주세요.")
         private Long pinId;
-        @NotNull
+        @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
 
         private Long parentCommentOrder;
@@ -67,6 +66,7 @@ public class PinCommentDTO {
 
     @Data
     public static class UpdatePinCommentRequest {
+        @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
     }
 }

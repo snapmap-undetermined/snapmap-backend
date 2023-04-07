@@ -7,6 +7,7 @@ import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +40,7 @@ public class PinDTO {
     @Data
     @Builder
     public static class PinUpdateRequest {
+        @NotNull(message = "위치 정보가 필요합니다.")
         private LocationDTO location;
     }
 

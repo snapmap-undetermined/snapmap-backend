@@ -43,7 +43,7 @@ public class FriendDTO {
     @AllArgsConstructor
     public static class UpdateFriendNameRequest {
 
-        @NotBlank(message = "친구 이름을 입력하세요.")
+        @NotBlank(message = "친구 이름을 입력해 주세요.")
         private String friendName;
     }
 
@@ -52,6 +52,7 @@ public class FriendDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateFriendRequest {
+        @NotBlank(message = "친구 아이디를 입력해 주세요.")
         private Long friendUserId;
     }
 }
