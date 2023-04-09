@@ -25,11 +25,11 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest){
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()){
-            throw new InvalidValueException("이미 가입된 이메일입니다.", ErrorCode.EMAIL_DUPLICATION);
+            throw new InvalidValueException("Already registered email.", ErrorCode.EMAIL_DUPLICATION);
         }
 
         if (userRepository.findByNickname(signUpRequest.getNickname()).isPresent()) {
-            throw new InvalidValueException("이미 존재하는 닉네임입니다.", ErrorCode.NICKNAME_DUPLICATION);
+            throw new InvalidValueException("Already existing nickname.", ErrorCode.NICKNAME_DUPLICATION);
         }
 
         signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
@@ -47,10 +47,10 @@ public class AuthServiceImpl implements AuthService {
         String password = loginRequest.getPassword();
 
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
-                new InvalidValueException("이메일 혹은 비밀번호를 확인해주세요.", ErrorCode.LOGIN_INPUT_INVALID));
+                new InvalidValueException("Email or password is invalid.", ErrorCode.LOGIN_INPUT_INVALID));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new InvalidValueException("이메일 혹은 비밀번호를 확인해주세요.", ErrorCode.LOGIN_INPUT_INVALID);
+            throw new InvalidValueException("Email or password is invalid.", ErrorCode.LOGIN_INPUT_INVALID);
         }
 
         // 토큰 발급
@@ -58,6 +58,4 @@ public class AuthServiceImpl implements AuthService {
 
         return new UserDTO.LoginResponse(user, tokenDTO.getAccessToken(), tokenDTO.getRefreshToken());
     }
-
-
 }

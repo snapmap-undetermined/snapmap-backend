@@ -90,6 +90,7 @@ public class UserDTO {
 
     @Data
     public static class UpdateUserRequest{
+        @NotBlank(message = "닉네임을 입력해주세요.")
         private String nickname;
         private String profileImage;
     }

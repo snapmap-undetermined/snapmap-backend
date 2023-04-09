@@ -33,13 +33,8 @@ public class S3Uploader {
     private final PictureRepository pictureRepository;
 
     public Map<String, String> upload(MultipartFile multipartFile, String dirName) {
-        File uploadFile = null;
-        try {
-            uploadFile = convert(multipartFile)
-                    .orElseThrow(() -> new BusinessLogicException("MultipartFile -> File로 전환이 실패했습니다.", ErrorCode.HANDLE_PICTURE_UPLOAD));
-        } catch (IOException e) {
-            throw new BusinessLogicException("MultipartFile -> File로 전환이 실패했습니다.", ErrorCode.HANDLE_PICTURE_UPLOAD);
-        }
+        File uploadFile = convert(multipartFile).orElseThrow(() ->
+                new BusinessLogicException("Convert MultipartFile to File Failed.", ErrorCode.IMAGE_PROCESSING_ERROR));
         return upload(uploadFile, dirName);
     }
 
@@ -66,15 +61,19 @@ public class S3Uploader {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
+    private Optional<File> convert(MultipartFile file) {
         File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         log.info("MultipartFile -> File converted : {} -> {}", file.getOriginalFilename(), convertFile.getName());
 
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+        try {
+            if (convertFile.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    fos.write(file.getBytes());
+                }
+                return Optional.of(convertFile);
             }
-            return Optional.of(convertFile);
+        } catch (IOException e) {
+            throw new BusinessLogicException("Convert MultipartFile to File Failed.", ErrorCode.INTERNAL_SERVER_ERROR);
         }
         return Optional.empty();
     }
