@@ -2,7 +2,7 @@ name: Java CI with Gradle
 env:
   S3_BUCKET_NAME: pinnit-dep
   AWS_REGION: ap-northeast-2
-  APPLICATION_NAME: pinnit-ec2-deploy
+  APPLICATION_NAME: pinnit-codedeploy
   DEPLOYMENT_GROUP_NAME: pinnit
 on:
   push:
