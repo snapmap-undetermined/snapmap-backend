@@ -1,12 +1,12 @@
-!/bin/bash
-BUILD_JAR=$(ls /home/ec2-user/action/build/libs/pinnit-0.0.1-SNAPSHOT.jar)
+#!/bin/bash
+
+BUILD_JAR=$(ls /home/ec2-user/action/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 
 echo "> 현재 시간: $(date)" >> /home/ec2-user/action/deploy.log
-
 echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/action/deploy.log
-
 echo "> build 파일 복사" >> /home/ec2-user/action/deploy.log
+
 DEPLOY_PATH=/home/ec2-user/action/
 cp $BUILD_JAR $DEPLOY_PATH
 
@@ -22,7 +22,6 @@ else
   sleep 5
 fi
 
-
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-echo "> DEPLOY_JAR 배포"    >> /home/ec2-user/action/deploy.log
-sudo nohup java -jar $DEPLOY_JAR >> /home/ec2-user/deploy.log 2>/home/ec2-user/action/deploy_err.log &
+echo "> DEPLOY_JAR 배포" >> /home/ec2-user/action/deploy.log
+sudo nohup java -jar $DEPLOY_JAR >/dev/null 2>&1 &
