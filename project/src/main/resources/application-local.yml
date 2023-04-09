@@ -42,4 +42,4 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-    snapmap-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
+    pinnit-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net

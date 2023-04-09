@@ -24,7 +24,7 @@ import java.util.*;
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${cloud.aws.snapmap-cloud-front-domain}")
+    @Value("${cloud.aws.pinnit-cloud-front-domain}")
     private String cloudFrontDomain;
 
     @Value("${cloud.aws.s3.bucket}")
