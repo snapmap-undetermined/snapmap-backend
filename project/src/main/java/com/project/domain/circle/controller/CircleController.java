@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "circle", description = "그룹 API")
+@Tag(name = "그룹 API", description = "Group Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/circle")
@@ -27,16 +27,14 @@ public class CircleController {
 
     private final CircleService circleService;
 
-    @Operation(summary = "그룹 생성 API", description = "그룹을 생성한다.", responses = {
-            @ApiResponse(
+    @Operation(
+            summary = "그룹 생성",
+            description = "그룹을 생성하고 생성된 그룹 정보를 반환 한다.",
+            responses = {@ApiResponse(
                     responseCode = "200",
                     description = "그룹 생성 성공",
                     content = @Content(schema = @Schema(implementation = CircleDTO.CircleSimpleInfoResponse.class))),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "그룹 생성 실패",
-                    content = @Content(schema = @Schema(implementation = Exception.class)))
-    })
+            })
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
     @Permission
@@ -45,16 +43,14 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "유저별 그룹 조회 API", description = "유저별로 그룹을 조회한다.", responses = {
-            @ApiResponse(
+    @Operation(
+            summary = "가입한 그룹 조회",
+            description = "유저 자신이 가입한 그룹 리스트를 반환 한다.",
+            responses = {@ApiResponse(
                     responseCode = "200",
-                    description = "유저별 그룹 조회 성공",
+                    description = "그룹 조회 성공",
                     content = @Content(schema = @Schema(implementation = CircleDTO.CircleSimpleInfoListResponse.class))),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "유저별 그룹 조회 실패",
-                    content = @Content(schema = @Schema(implementation = Exception.class)))
-    })
+            })
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
     @Permission()
@@ -63,28 +59,34 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "그룹별 유저 조회", description = "그룹별 유저 리스트를 조회한다.", responses = {
-            @ApiResponse(
+    @Operation(
+            summary = "그룹에 참여하고 있는 유저리스트 조회",
+                description = "그룹 id로 해당 그룹에 속해 있는 유저 리스트를 반환한다.",
+            responses = {@ApiResponse(
                     responseCode = "200",
                     description = "그룹별 유저 리스트 조회 성공",
                     content = @Content(schema = @Schema(implementation = CircleDTO.CircleWithJoinUserResponse.class))),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "그룹별 유저 리스트 조회 실패",
-                    content = @Content(schema = @Schema(implementation = Exception.class)))
-    })
+            })
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{circleId}/users")
     @Permission
     private ResponseEntity<CircleDTO.CircleWithJoinUserResponse> getUserListByCircle(
-            @Parameter(description = "circle 의 id")
+            @Parameter(description = "그룹 id")
             @PathVariable Long circleId) throws Exception {
         CircleDTO.CircleWithJoinUserResponse response = circleService.getJoinedUserOfCircle(circleId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 그룹 상세 조회
+    @Operation(
+            summary = "그룹 상세 정보 조회.",
+            description = "그룹 id로 해당 그룹 상세 정보를 반환해 준다.",
+            responses = {@ApiResponse(
+                    responseCode = "200",
+                    description = "그룹 상세 조회 성공",
+                    content = @Content(schema = @Schema(implementation = CircleDTO.CircleWithJoinUserResponse.class))),
+            })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{circleId}")
     @Permission
     private ResponseEntity<CircleDTO.CircleDetailInfoResponse> getCircle(@PathVariable Long circleId) throws Exception {
@@ -93,7 +95,15 @@ public class CircleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //유저가 그룹에서 나온다.
+    @Operation(
+            summary = "유저가 그룹에서 탈퇴한다.",
+            description = "PathVariable로 circleId를 받고 AuthUser로 유저를 받은뒤 해당 유저가 그룹에서 탈퇴한다.",
+            responses = {@ApiResponse(
+                    responseCode = "200",
+                    description = "유저 그룹 탈퇴 성공",
+                    content = @Content(schema = @Schema(implementation = CircleDTO.CircleWithJoinUserResponse.class))),
+            })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{circleId}/leave")
     @Permission
     private ResponseEntity<CircleDTO.CircleSimpleInfoResponse> leaveCircle(@AuthUser Users user, @PathVariable Long circleId) throws Exception {
