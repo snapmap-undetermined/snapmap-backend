@@ -1,7 +1,9 @@
 name: Java CI with Gradle
 env:
   S3_BUCKET_NAME: pinnit-dep
-  
+  AWS_REGION: ap-northeast-2
+  APPLICATION_NAME: pinnit-codedeploy
+  DEPLOYMENT_GROUP_NAME: pinnit
 on:
   push:
     branches: [ "develop" ]
@@ -28,14 +30,6 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew clean build -x test
         
-    # 하위 디렉토리 생성
-    - name: Make Directory
-      run: mkdir deploy
-
-      # JAR 파일 복사
-    - name: Copy Jar File
-      run: cp ./build/libs/*.jar ./deploy/
-        
         
     # build한 후 프로젝트를 압축한다.
     - name: Make zip file
@@ -53,3 +47,11 @@ jobs:
     - name: Upload to S3
       run: aws s3 cp --region ap-northeast-2 ./pinnit-deploy.zip s3://$S3_BUCKET_NAME/pinnit-deploy.zip 
       
+    # CodeDeploy 배포 실행
+    - name: Deploy to EC2 instances with AWS CodeDeploy
+      run: |
+        aws deploy create-deployment \
+          --application-name "${{ env.APPLICATION_NAME }}" \
+          --deployment-group-name "${{ env.DEPLOYMENT_GROUP_NAME }}" \
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=pinnit-deploy.zip \
+          --region ${{ env.AWS_REGION }}

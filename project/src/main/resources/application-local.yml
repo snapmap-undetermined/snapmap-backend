@@ -61,3 +61,4 @@ springdoc:
         path: /swagger/api-docs
         # 스웨거 api문서를 사용할지 여부
         enabled: true
+pinnit-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
