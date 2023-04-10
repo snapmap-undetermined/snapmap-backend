@@ -1,8 +1,6 @@
 package com.project.domain.pin.api;
 
 import com.project.common.exception.BusinessLogicException;
-import com.project.domain.circle.entity.Circle;
-import com.project.domain.group.entity.Groups;
 import com.project.domain.group.repository.GroupRepository;
 import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.location.dto.PointDTO;

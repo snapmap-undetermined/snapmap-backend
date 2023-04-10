@@ -1,7 +1,7 @@
 package com.project.domain.group.dto;
 
 
-import com.project.domain.group.entity.Groups;
+import com.project.domain.group.entity.GroupData;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.usergroup.entity.UserGroup;
 import com.project.domain.users.dto.UserDTO.UserSimpleInfoResponse;
@@ -27,7 +27,7 @@ public class GroupDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public GroupSimpleInfoResponse(Groups group) {
+        public GroupSimpleInfoResponse(GroupData group) {
             this.groupId = group.getId();
             this.groupName = group.getName();
             this.groupImageUrl = group.getImageUrl();
@@ -60,7 +60,7 @@ public class GroupDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public GroupDetailInfoResponse(Groups group) {
+        public GroupDetailInfoResponse(GroupData group) {
             this.groupId = group.getId();
             this.groupName = group.getName();
             this.imageUrl = group.getImageUrl();
@@ -86,8 +86,8 @@ public class GroupDTO {
         private List<Long> invitedUserList;
         private String imageUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png?w=1480&t=st=1679211933~exp=1679212533~hmac=b61bdb1145eb754a852d3c13ed5006de6ee4c0b4b0dd6c5f8575e7828f7ff977";
 
-        public Groups toEntity() {
-            return Groups.builder()
+        public GroupData toEntity() {
+            return GroupData.builder()
                     .name(groupName)
                     .description(description)
                     .imageUrl(imageUrl)
@@ -114,7 +114,7 @@ public class GroupDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public GroupWithJoinUserResponse(Groups group) {
+        public GroupWithJoinUserResponse(GroupData group) {
             this.groupId = group.getId();
             this.groupName = group.getName();
             this.description = group.getDescription();
@@ -148,7 +148,7 @@ public class GroupDTO {
         private LocalDateTime updatedAt;
 
 
-        public InviteUserResponse(Groups group, Users user) {
+        public InviteUserResponse(GroupData group, Users user) {
             this.groupId = group.getId();
             this.userId = user.getId();
             this.userNickname = user.getNickname();
@@ -212,7 +212,7 @@ public class GroupDTO {
 
         private List<UserSimpleInfoResponse> userList;
 
-        public NotAcceptGroupInviteUserResponse(Groups group) {
+        public NotAcceptGroupInviteUserResponse(GroupData group) {
 
             this.userList = group.getUserGroupList().stream()
                     .filter(userGroup -> !userGroup.getActivated())
@@ -227,7 +227,7 @@ public class GroupDTO {
         private Long groupId;
         private LocalDateTime updatedAt;
 
-        public cancelInviteGroupResponse(Users user, Groups group) {
+        public cancelInviteGroupResponse(Users user, GroupData group) {
             this.userId = user.getId();
             this.groupId = group.getId();
             this.updatedAt = LocalDateTime.now();

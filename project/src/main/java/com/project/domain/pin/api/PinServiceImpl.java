@@ -4,7 +4,7 @@ import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.handler.S3Uploader;
-import com.project.domain.group.entity.Groups;
+import com.project.domain.group.entity.GroupData;
 import com.project.domain.group.repository.GroupRepository;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
@@ -44,7 +44,7 @@ public class PinServiceImpl implements PinService {
     @Override
     @Transactional
     public PinDTO.PinDetailResponse createPin(Users user, Long groupId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         validatePictureInput(pictures);
         validateUserMembershipOnGroup(user, group);
 
@@ -73,7 +73,7 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
-        List<Groups> userJoinGroups = groupRepository.findAllGroupByUserId(user.getId());
+        List<GroupData> userJoinGroups = groupRepository.findAllGroupByUserId(user.getId());
         checkPinAccessibility(user, userJoinGroups, pin);
 
         return new PinDTO.PinDetailResponse(pin);
@@ -144,8 +144,8 @@ public class PinServiceImpl implements PinService {
         return myPins.contains(pin);
     }
 
-    private boolean isPinCreatedByGroup(List<Groups> userJoinGroups, Pin pin) {
-        for (Groups group : userJoinGroups) {
+    private boolean isPinCreatedByGroup(List<GroupData> userJoinGroups, Pin pin) {
+        for (GroupData group : userJoinGroups) {
             List<Pin> pinsByGroup = pinRepository.findAllByGroupId(group.getId());
             if (pinsByGroup.contains(pin)) {
                 return true;
@@ -154,7 +154,7 @@ public class PinServiceImpl implements PinService {
         return false;
     }
 
-    private void checkPinAccessibility(Users user, List<Groups> userJoinGroups, Pin pin) {
+    private void checkPinAccessibility(Users user, List<GroupData> userJoinGroups, Pin pin) {
         if (!isPinCreatedByUser(user, pin) && !isPinCreatedByGroup(userJoinGroups, pin)) {
             throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
         }
@@ -166,13 +166,13 @@ public class PinServiceImpl implements PinService {
         }
     }
 
-    private void validateUserMembershipOnGroup(Users user, Groups group) {
+    private void validateUserMembershipOnGroup(Users user, GroupData group) {
         if (userGroupRepository.findByUserIdAndGroupId(user.getId(), group.getId()).isEmpty()) {
             throw new BusinessLogicException("Access denied. Not joined group.", ErrorCode.ACCESS_DENIED);
         }
     }
 
-    private Groups getGroup(Long groupId) {
+    private GroupData getGroup(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(
                 () -> new EntityNotFoundException("Group does not exists."));
     }

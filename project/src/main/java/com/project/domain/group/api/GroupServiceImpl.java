@@ -5,7 +5,7 @@ import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.handler.S3Uploader;
 import com.project.domain.group.dto.GroupDTO;
-import com.project.domain.group.entity.Groups;
+import com.project.domain.group.entity.GroupData;
 import com.project.domain.group.repository.GroupRepository;
 import com.project.domain.usergroup.entity.UserGroup;
 import com.project.domain.usergroup.repository.UserGroupRepository;
@@ -35,7 +35,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.GroupSimpleInfoResponse createGroup(Users user, GroupDTO.CreateGroupRequest request) {
-        Groups group = request.toEntity();
+        GroupData group = request.toEntity();
         group.setGroupKey(group.generateGroupKey());
         group.setMaster(user);
 
@@ -62,7 +62,7 @@ public class GroupServiceImpl implements GroupService {
             throw new EntityNotFoundException("User does not exist.");
         }
 
-        List<Groups> groupList = groupRepository.findAllGroupByUserId(userId);
+        List<GroupData> groupList = groupRepository.findAllGroupByUserId(userId);
         List<GroupDTO.GroupSimpleInfoResponse> response = groupList.stream().map(GroupDTO.GroupSimpleInfoResponse::new).collect(Collectors.toList());
 
         return new GroupDTO.GroupSimpleInfoListResponse(response);
@@ -71,13 +71,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDTO.GroupDetailInfoResponse getGroupDetail(Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         return new GroupDTO.GroupDetailInfoResponse(group);
     }
 
     @Override
     public GroupDTO.GroupWithJoinUserResponse getJoinedUserOfGroup(Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         return new GroupDTO.GroupWithJoinUserResponse(group);
     }
 
@@ -85,7 +85,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.GroupSimpleInfoResponse leaveGroup(Users user, Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         if (isMasterUser(group, user.getId()) && group.getUserGroupList().size() > 1) {
             throw new BusinessLogicException("Manager cannot leave group", ErrorCode.CIRCLE_MANAGER_ERROR);
         }
@@ -108,7 +108,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public GroupDTO.GroupSimpleInfoResponse banUserFromGroup(Users user, Long groupId, GroupDTO.BanUserRequest banUserRequest) {
 
-        Groups group = groupRepository.findById(groupId).orElseThrow();
+        GroupData group = groupRepository.findById(groupId).orElseThrow();
         // 방장 권한일 경우
         if (isMasterUser(group, user.getId())) {
             UserGroup userGroup = userGroupRepository.findByUserIdAndGroupId(banUserRequest.getUserId(), groupId).orElseThrow();
@@ -121,7 +121,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.InviteUserResponse inviteUser(Users user, Long groupId, GroupDTO.InviteUserRequest request) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         List<Long> invitedUserList = request.getInvitedUserList();
 
         for (Long userId : invitedUserList) {
@@ -140,7 +140,7 @@ public class GroupServiceImpl implements GroupService {
     // 앱 설치 후 유저가 링크를 타고 들어올 경우, 로그인을 완료했을 경우 그룹 초대를 자동으로 한다.
     @Override
     public GroupDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String groupKey) {
-        Groups group = groupRepository.findGroupByKey(groupKey);
+        GroupData group = groupRepository.findGroupByKey(groupKey);
         UserGroup userGroup = UserGroup.builder().group(group).user(user).activated(false).build();
         userGroupRepository.save(userGroup);
 
@@ -151,7 +151,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.acceptGroupInvitationResponse acceptGroupInvitation(Users user, Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         UserGroup userGroup = userGroupRepository.findByUserIdAndGroupId(user.getId(), groupId).orElseThrow();
         userGroup.setActivated(userGroup.getActivated());
         userGroup.addUserGroupToUserAndGroup(user, group);
@@ -162,7 +162,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.cancelInviteGroupResponse cancelGroupInvitation(Users user, Long groupId, Long cancelUserId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         UserGroup userGroup = userGroupRepository.findByUserIdAndGroupId(cancelUserId, groupId).orElseThrow(() -> {
             throw new EntityNotFoundException("User does not exists.");
         });
@@ -179,7 +179,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.GroupSimpleInfoResponse updateGroup(Users user, Long groupId, GroupDTO.UpdateGroupRequest request, MultipartFile picture) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         if (isMasterUser(group, user.getId())) {
             group.setName(request.getGroupName());
             group.setDescription(request.getDescription());
@@ -197,7 +197,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO.GroupWithJoinUserResponse updateGroupMaster(Users user, Long groupId, Long userId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         if (isMasterUser(group, user.getId())) {
             Users u = userRepository.findById(userId).orElseThrow();
             // 위임하려는 유저가 해당 그룹에 속해 있어야 한다.
@@ -211,15 +211,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDTO.NotAcceptGroupInviteUserResponse getAllNotAcceptGroupInviteUser(Users user, Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         return new GroupDTO.NotAcceptGroupInviteUserResponse(group);
     }
 
-    private boolean isMasterUser(Groups group, Long userId) {
+    private boolean isMasterUser(GroupData group, Long userId) {
         return group.getMaster().getId().equals(userId);
     }
 
-    private Groups getGroup(Long groupId) {
+    private GroupData getGroup(Long groupId) {
         return groupRepository.findById(groupId).orElseThrow(() -> {
             throw new EntityNotFoundException("Group does not exists.");
         });
@@ -232,7 +232,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private boolean isUserInGroup(Users user, Long groupId) {
-        Groups group = getGroup(groupId);
+        GroupData group = getGroup(groupId);
         return group.getUserGroupList().stream()
                 .map(UserGroup::getUser).toList().contains(user);
     }

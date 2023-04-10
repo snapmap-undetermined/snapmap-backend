@@ -1,13 +1,13 @@
 package com.project.domain.group.repository;
 
-import com.project.domain.group.entity.Groups;
+import com.project.domain.group.entity.GroupData;
 import com.project.domain.users.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.project.domain.group.entity.QGroups.groups;
+import static com.project.domain.group.entity.QGroupData.groupData;
 import static com.project.domain.usergroup.entity.QUserGroup.userGroup;
 import static com.project.domain.users.entity.QUsers.users;
 
@@ -18,10 +18,10 @@ public class GroupRepositoryCustomImpl implements GroupRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<Groups> findAllGroupByUserId(Long userId) {
+    public List<GroupData> findAllGroupByUserId(Long userId) {
         return query
-                .selectFrom(groups)
-                .innerJoin(groups.userGroupList, userGroup)
+                .selectFrom(groupData)
+                .innerJoin(groupData.userGroupList, userGroup)
                 .fetchJoin()
                 .where(userGroup.user.id.eq(userId))
                 .where(userGroup.activated.eq(true))
@@ -44,10 +44,10 @@ public class GroupRepositoryCustomImpl implements GroupRepositoryCustom {
     }
 
     @Override
-    public Groups findGroupByKey(String key) {
+    public GroupData findGroupByKey(String key) {
         return query
-                .selectFrom(groups)
-                .where(groups.groupKey.eq(key))
+                .selectFrom(groupData)
+                .where(groupData.groupKey.eq(key))
                 .fetchOne();
     }
 }

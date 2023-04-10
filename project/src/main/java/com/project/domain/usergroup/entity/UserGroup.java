@@ -1,7 +1,7 @@
 package com.project.domain.usergroup.entity;
 
 import com.project.common.entity.BaseTimeEntity;
-import com.project.domain.group.entity.Groups;
+import com.project.domain.group.entity.GroupData;
 import com.project.domain.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,19 +22,19 @@ public class UserGroup extends BaseTimeEntity {
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Groups group;
+    private GroupData group;
 
     @Column(columnDefinition = "TINYINT(1)")
     private Boolean activated;
 
-    public void addUserGroupToUserAndGroup(Users user, Groups group) {
+    public void addUserGroupToUserAndGroup(Users user, GroupData group) {
         addUserGroupToUser(user);
         addUserGroupToGroup(group);
         setUser(user);
         setGroup(group);
     }
 
-    public void removeUserGroupFromUserAndGroup(Users user, Groups group) {
+    public void removeUserGroupFromUserAndGroup(Users user, GroupData group) {
         removeUserGroupFromGroup(group);
         removeUserGroupFromUser(user);
         setUser(null);
@@ -53,13 +53,13 @@ public class UserGroup extends BaseTimeEntity {
 
     }
 
-    private void addUserGroupToGroup(Groups group) {
+    private void addUserGroupToGroup(GroupData group) {
         if(!group.getUserGroupList().contains(this)){
             group.getUserGroupList().add(this);
         }
     }
 
-    private void removeUserGroupFromGroup(Groups group) {
+    private void removeUserGroupFromGroup(GroupData group) {
         group.getUserGroupList().remove(this);
     }
 
@@ -67,7 +67,7 @@ public class UserGroup extends BaseTimeEntity {
         this.user = user;
     }
 
-    public void setGroup(Groups group) {
+    public void setGroup(GroupData group) {
         this.group = group;
     }
 

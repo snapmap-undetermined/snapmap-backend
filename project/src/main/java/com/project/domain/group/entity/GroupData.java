@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Random;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "group_data")
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-public class Groups extends BaseTimeEntity {
+public class GroupData extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
