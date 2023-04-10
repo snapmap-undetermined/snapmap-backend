@@ -17,11 +17,11 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Pin> findAllByCircleId(Long circleId) {
+    public List<Pin> findAllByGroupId(Long groupId) {
 
         return jpaQueryFactory
                 .selectFrom(pin)
-                .where(pin.circle.id.eq(circleId))
+                .where(pin.group.id.eq(groupId))
                 .where(pin.activated.eq(true))
                 .fetch();
     }

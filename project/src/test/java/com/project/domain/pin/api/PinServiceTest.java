@@ -2,13 +2,14 @@ package com.project.domain.pin.api;
 
 import com.project.common.exception.BusinessLogicException;
 import com.project.domain.circle.entity.Circle;
-import com.project.domain.circle.repository.CircleRepository;
+import com.project.domain.group.entity.Groups;
+import com.project.domain.group.repository.GroupRepository;
 import com.project.domain.location.dto.LocationDTO;
 import com.project.domain.location.dto.PointDTO;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.pin.repository.PinRepository;
-import com.project.domain.usercircle.entity.UserCircle;
-import com.project.domain.usercircle.repository.UserCircleRepository;
+import com.project.domain.usergroup.entity.UserGroup;
+import com.project.domain.usergroup.repository.UserGroupRepository;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -31,16 +32,16 @@ import java.util.List;
 class PinServiceTest {
 
     private final UserRepository userRepository;
-    private final CircleRepository circleRepository;
-    private final UserCircleRepository userCircleRepository;
+    private final GroupRepository groupRepository;
+    private final UserGroupRepository userGroupRepository;
     private final PinService pinService;
     private final PinRepository pinRepository;
 
     @Autowired
-    public PinServiceTest(UserRepository userRepository, CircleRepository circleRepository, UserCircleRepository userCircleRepository, PinServiceImpl pinService, PinRepository pinRepository) {
+    public PinServiceTest(UserRepository userRepository, GroupRepository groupRepository, UserGroupRepository userGroupRepository, PinServiceImpl pinService, PinRepository pinRepository) {
         this.userRepository = userRepository;
-        this.circleRepository = circleRepository;
-        this.userCircleRepository = userCircleRepository;
+        this.groupRepository = groupRepository;
+        this.userGroupRepository = userGroupRepository;
         this.pinService = pinService;
         this.pinRepository = pinRepository;
     }
@@ -54,15 +55,15 @@ class PinServiceTest {
         return userRepository.save(user);
     }
 
-    private Circle generateSimpleCircle(String name) {
-        Circle circle = Circle.builder().name(name).build();
-        return circleRepository.save(circle);
+    private Groups generateSimpleCircle(String name) {
+        Groups group = Groups.builder().name(name).build();
+        return groupRepository.save(group);
     }
 
 
-    private void userJoinCircle(Users user, Circle circle) {
-        circleRepository.save(circle);
-        userCircleRepository.save(UserCircle.builder().user(user).circle(circle).activated(true).build());
+    private void userJoinCircle(Users user, Groups group) {
+        groupRepository.save(group);
+        userGroupRepository.save(UserGroup.builder().user(user).group(group).activated(true).build());
     }
 
     private List<String> generateTagNames(String... tagNames) {

@@ -1,7 +1,7 @@
 package com.project.domain.pin.entity;
 
 import com.project.common.entity.BaseTimeEntity;
-import com.project.domain.circle.entity.Circle;
+import com.project.domain.group.entity.Groups;
 import com.project.domain.comment.entity.PinComment;
 import com.project.domain.location.entity.Location;
 import com.project.domain.picture.entity.Picture;
@@ -29,7 +29,7 @@ public class Pin extends BaseTimeEntity {
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Circle circle;
+    private Groups group;
 
     // 하나의 장소에 대응되는 여러 개의 핀이 존재 가능하다.
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,8 +51,8 @@ public class Pin extends BaseTimeEntity {
     private Boolean activated;
 
 
-    public void setCircle(Circle circle) {
-        this.circle = circle;
+    public void setGroup(Groups group) {
+        this.group = group;
     }
 
     public void addPicture(Picture picture) {

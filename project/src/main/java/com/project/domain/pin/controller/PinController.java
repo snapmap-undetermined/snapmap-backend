@@ -23,20 +23,20 @@ public class PinController {
     private final PinService pinService;
 
 
-    @PostMapping("/{circleId}")
+    @PostMapping("/{groupId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @PathVariable Long circleId,
+    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @PathVariable Long groupId,
                                                               @RequestPart PinDTO.PinCreateRequest request,
                                                               @RequestPart List<MultipartFile> pictures) {
 
-        PinDTO.PinDetailResponse pin = pinService.createPin(user, circleId, request, pictures);
+        PinDTO.PinDetailResponse pin = pinService.createPin(user, groupId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @GetMapping("/circle/{circleId}")
+    @GetMapping("/group/{groupId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
-        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByCircle(circleId);
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByGroup(@AuthUser Users user, @PathVariable Long groupId) {
+        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByGroup(groupId);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface PinService {
-    PinDTO.PinDetailResponse createPin(Users user, Long circleId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures);
+    PinDTO.PinDetailResponse createPin(Users user, Long groupId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures);
 
     PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId);
 
@@ -19,7 +19,7 @@ public interface PinService {
 
     void deletePin(Users user, Long pinId);
 
-    PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId);
+    PinDTO.PinDetailListResponse getAllPinsByGroup(Long groupId);
 
     PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId);
 }

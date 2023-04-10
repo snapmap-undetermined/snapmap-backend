@@ -13,7 +13,6 @@ import lombok.*;
 public class RefreshToken extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "refresh_token_id")
     private Long id;
 
     @Column
