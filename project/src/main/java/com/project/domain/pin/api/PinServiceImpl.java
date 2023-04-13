@@ -4,8 +4,8 @@ import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.handler.S3Uploader;
-import com.project.domain.circle.entity.Circle;
-import com.project.domain.circle.repository.CircleRepository;
+import com.project.domain.pocket.entity.Pocket;
+import com.project.domain.pocket.repository.PocketRepository;
 import com.project.domain.location.entity.Location;
 import com.project.domain.location.repository.LocationRepository;
 import com.project.domain.picture.entity.Picture;
@@ -16,7 +16,7 @@ import com.project.domain.pin.repository.PinRepository;
 import com.project.domain.pintag.entity.PinTag;
 import com.project.domain.tag.entity.Tag;
 import com.project.domain.tag.repository.TagRepository;
-import com.project.domain.usercircle.repository.UserCircleRepository;
+import com.project.domain.userpocket.repository.UserPocketRepository;
 import com.project.domain.users.entity.Users;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ import java.util.*;
 public class PinServiceImpl implements PinService {
 
     private final PinRepository pinRepository;
-    private final CircleRepository circleRepository;
-    private final UserCircleRepository userCircleRepository;
+    private final PocketRepository pocketRepository;
+    private final UserPocketRepository userPocketRepository;
     private final S3Uploader s3Uploader;
     private final LocationRepository locationRepository;
     private final TagRepository tagRepository;
@@ -43,14 +43,14 @@ public class PinServiceImpl implements PinService {
 
     @Override
     @Transactional
-    public PinDTO.PinDetailResponse createPin(Users user, Long circleId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
-        Circle circle = getCircle(circleId);
+    public PinDTO.PinDetailResponse createPin(Users user, Long pocketId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
+        Pocket pocket = getPocket(pocketId);
         validatePictureInput(pictures);
-        validateUserMembershipOnCircle(user, circle);
+        validateUserMembershipOnPocket(user, pocket);
 
         Pin pin = request.toEntity();
         user.addPin(pin); // 유저에 핀 추가
-        circle.addPin(pin); // 그룹에 핀 추가
+        pocket.addPin(pin); // 그룹에 핀 추가
 
         locationRepository.save(pin.getLocation());
 
@@ -73,16 +73,16 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
-        List<Circle> userJoinCircles = circleRepository.findAllCircleByUserId(user.getId());
-        checkPinAccessibility(user, userJoinCircles, pin);
+        List<Pocket> userJoinPockets = pocketRepository.findAllPocketByUserId(user.getId());
+        checkPinAccessibility(user, userJoinPockets, pin);
 
         return new PinDTO.PinDetailResponse(pin);
     }
 
     @Override
-    public PinDTO.PinDetailListResponse getAllPinsByCircle(Long circleId) {
+    public PinDTO.PinDetailListResponse getAllPinsByPocket(Long pocketId) {
         // Pin을 모두 조회하고, 각 Pin에 존재하는 사진을 가져온다.
-        List<Pin> allPins = pinRepository.findAllByCircleId(circleId);
+        List<Pin> allPins = pinRepository.findAllByPocketId(pocketId);
         List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map(PinDTO.PinDetailResponse::new).toList();
         return new PinDTO.PinDetailListResponse(pinDetailResponseList);
     }
@@ -121,7 +121,7 @@ public class PinServiceImpl implements PinService {
     public void deletePin(Users user, Long pinId) {
         Pin pin = getPin(pinId);
         if (isPinCreatedByUser(user, pin)) {
-            pin.getCircle().removePin(pin); // 써클에서 해당 핀 삭제
+            pin.getPocket().removePin(pin); // 써클에서 해당 핀 삭제
             user.removePin(pin); // 유저에서 해당 핀 삭제
             pin.setActivated(pin.getActivated());
         } else {
@@ -144,18 +144,18 @@ public class PinServiceImpl implements PinService {
         return myPins.contains(pin);
     }
 
-    private boolean isPinCreatedByCircle(List<Circle> userJoinCircles, Pin pin) {
-        for (Circle circle : userJoinCircles) {
-            List<Pin> pinsByCircle = pinRepository.findAllByCircleId(circle.getId());
-            if (pinsByCircle.contains(pin)) {
+    private boolean isPinCreatedByPocket(List<Pocket> userJoinPockets, Pin pin) {
+        for (Pocket pocket : userJoinPockets) {
+            List<Pin> pinsByPocket = pinRepository.findAllByPocketId(pocket.getId());
+            if (pinsByPocket.contains(pin)) {
                 return true;
             }
         }
         return false;
     }
 
-    private void checkPinAccessibility(Users user, List<Circle> userJoinCircles, Pin pin) {
-        if (!isPinCreatedByUser(user, pin) && !isPinCreatedByCircle(userJoinCircles, pin)) {
+    private void checkPinAccessibility(Users user, List<Pocket> userJoinPockets, Pin pin) {
+        if (!isPinCreatedByUser(user, pin) && !isPinCreatedByPocket(userJoinPockets, pin)) {
             throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
         }
     }
@@ -166,14 +166,14 @@ public class PinServiceImpl implements PinService {
         }
     }
 
-    private void validateUserMembershipOnCircle(Users user, Circle circle) {
-        if(userCircleRepository.findByUserIdAndCircleId(user.getId(), circle.getId()).isEmpty()){
+    private void validateUserMembershipOnPocket(Users user, Pocket pocket) {
+        if(userPocketRepository.findByUserIdAndPocketId(user.getId(), pocket.getId()).isEmpty()){
             throw new BusinessLogicException("Access denied. Not joined group.", ErrorCode.ACCESS_DENIED);
         }
     }
 
-    private Circle getCircle(Long circleId) {
-        return circleRepository.findById(circleId).orElseThrow(
+    private Pocket getPocket(Long pocketId) {
+        return pocketRepository.findById(pocketId).orElseThrow(
                 () -> new EntityNotFoundException("Group does not exists."));
     }
 

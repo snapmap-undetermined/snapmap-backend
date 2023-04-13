@@ -2,10 +2,9 @@ package com.project.domain.users.entity;
 
 import com.project.common.entity.BaseTimeEntity;
 import com.project.common.entity.Role;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.friend.entity.Friend;
 import com.project.domain.pin.entity.Pin;
-import com.project.domain.usercircle.entity.UserCircle;
+import com.project.domain.userpocket.entity.UserPocket;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -56,7 +55,7 @@ public class Users extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     @Builder.Default
-    private List<UserCircle> userCircleList = new ArrayList<>();
+    private List<UserPocket> userPocketList = new ArrayList<>();
 
     @OneToOne
     private RefreshToken refreshToken;

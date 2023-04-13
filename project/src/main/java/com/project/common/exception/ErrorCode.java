@@ -23,8 +23,8 @@ public enum ErrorCode {
     NICKNAME_DUPLICATION(400, "M002", "이미 존재하는 닉네임입니다."),
     LOGIN_INPUT_INVALID(400, "M003", "이메일 혹은 비밀번호를 확인해주세요."),
 
-    // Circle
-    CIRCLE_MANAGER_ERROR(400, "C002", "그룹의 방장 관련 오류가 발생했습니다."),
+    // Pocket
+    POCKET_MANAGER_ERROR(400, "C002", "포켓의 방장 관련 오류가 발생했습니다."),
 
     // Friend
     FRIEND_DUPLICATION(400,"F001","이미 존재하는 친구 관계 입니다."),

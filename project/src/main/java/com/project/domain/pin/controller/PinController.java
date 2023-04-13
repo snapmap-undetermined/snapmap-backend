@@ -2,7 +2,6 @@ package com.project.domain.pin.controller;
 
 import com.project.common.annotation.AuthUser;
 import com.project.common.annotation.Permission;
-import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.pin.api.PinService;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.users.entity.Users;
@@ -23,20 +22,20 @@ public class PinController {
     private final PinService pinService;
 
 
-    @PostMapping("/{circleId}")
+    @PostMapping("/{pocketId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @PathVariable Long circleId,
+    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @PathVariable Long pocketId,
                                                               @RequestPart PinDTO.PinCreateRequest request,
                                                               @RequestPart List<MultipartFile> pictures) {
 
-        PinDTO.PinDetailResponse pin = pinService.createPin(user, circleId, request, pictures);
+        PinDTO.PinDetailResponse pin = pinService.createPin(user, pocketId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @GetMapping("/circle/{circleId}")
+    @GetMapping("/pocket/{pocketId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByCircle(@AuthUser Users user, @PathVariable Long circleId) {
-        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByCircle(circleId);
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByPocket(@AuthUser Users user, @PathVariable Long pocketId) {
+        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByPocket(pocketId);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
