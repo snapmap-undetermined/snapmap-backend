@@ -1,7 +1,6 @@
 package com.project.domain.users.api;
 
 import com.project.common.exception.EntityNotFoundException;
-import com.project.domain.circle.entity.Circle;
 import com.project.domain.users.api.interfaces.UserService;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
