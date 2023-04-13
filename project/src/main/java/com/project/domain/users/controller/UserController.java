@@ -9,6 +9,7 @@ import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.entity.Users;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +21,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public class UserController {
     private final UserService userService;
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원가입 성공", content = @Content(schema = @Schema(implementation = UserDTO.SignUpResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.SignUpResponse.class)))})
     @Operation(summary = "회원가입", description = "회원가입을 한다.")
     @PostMapping("/signUp")
     private ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception {
@@ -43,7 +45,7 @@ public class UserController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(schema = @Schema(implementation = UserDTO.LoginResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.LoginResponse.class)))})
     @Operation(summary = "로그인", description = "로그인을 한다.")
     @PostMapping("/login")
     private ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest loginRequest) throws Exception {
@@ -52,12 +54,12 @@ public class UserController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "검색을 통한 유저 조회 성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
     @Operation(summary = "유저 조회", description = "검색을 통해서 유저를 조회 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
     @Permission
-    private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@RequestParam String userNickname) throws Exception {
+    private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@Parameter(description = "유저의 nickname") @RequestParam String userNickname) throws Exception {
 
         UserDTO.UserSimpleInfoResponse response = userService.getUserByNickname(userNickname);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -65,7 +67,7 @@ public class UserController {
 
     @PatchMapping("")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "유저 정보 수정 성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
     @Operation(summary = "유저 수정", description = "유저의 정보를 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission
@@ -76,7 +78,7 @@ public class UserController {
 
     @DeleteMapping("")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "유저 탈퇴 성공", content = @Content(schema = @Schema(implementation = void.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class)))})
     @Operation(summary = "유저 탈퇴", description = "유저가 탈퇴한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission

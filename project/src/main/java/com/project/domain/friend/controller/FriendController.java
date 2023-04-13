@@ -29,7 +29,7 @@ public class FriendController {
     private final FriendService friendService;
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "친구 리스트 조회 성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendListResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendListResponse.class)))})
     @Operation(summary = "친구 리스트 조회", description = "자신의 친구 리스트를 조회 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
@@ -42,7 +42,7 @@ public class FriendController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "친구 추가 성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
     @Operation(summary = "친구 추가", description = "친구를 추가 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
@@ -53,23 +53,23 @@ public class FriendController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "친구 삭제 성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
     @Operation(summary = "친구 삭제", description = "친구를 삭제 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{mateId}")
     @Permission
-    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@AuthUser Users user, @Parameter(description = "mate 의 id") @PathVariable Long mateId) throws Exception {
+    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@AuthUser Users user, @Parameter(description = "친구의 id") @PathVariable Long mateId) throws Exception {
         FriendDTO.FriendResponse response = friendService.deleteFriend(user, mateId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "친구 이름 수정 성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendResponse.class)))})
     @Operation(summary = "친구 이름 수정", description = "친구 이름을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{mateId}/name")
     @Permission
-    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@AuthUser Users user, @Parameter(description = "mate 의 id") @PathVariable Long mateId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@AuthUser Users user, @Parameter(description = "친구의 id") @PathVariable Long mateId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
         FriendDTO.FriendResponse response = friendService.updateFriendName(user, mateId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
