@@ -43,3 +43,19 @@ cloud:
     stack:
       auto: false
     pinnit-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
+
+springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: none
+  paths-to-match:
+    - /api/**
