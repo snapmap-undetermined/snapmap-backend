@@ -48,7 +48,7 @@ public class PinCommentController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinCommentDTO.PinCommentListResponse.class)))})
     @Operation(summary = "핀 댓글 리스트 조회", description = "핀에 속한 핀 댓글 리스트를 조회 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/{pinId}")
+    @GetMapping("/pin/{pinId}")
     @Permission
     public ResponseEntity<PinCommentDTO.PinCommentListResponse> getPinCommentByPinId(@Parameter(description = "핀의 id") @PathVariable Long pinId) {
         List<PinCommentDTO.PinCommentDetailResponse> pinCommentDetailResponseList = pinCommentService.getPinCommentByPinId(pinId);
@@ -74,7 +74,7 @@ public class PinCommentController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinCommentDTO.PinCommentDetailResponse.class)))})
     @Operation(summary = "핀 댓글 상태 삭제", description = "핀 댓글 상태 삭제를 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @DeleteMapping("/status/{pinCommentId}")
+    @PostMapping("/{pinCommentId}/status")
     @Permission
     public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinCommentWithStatus(@Parameter(description = "핀 댓글의 id") @PathVariable Long pinCommentId) {
         pinCommentService.deletePinCommentWithStatus(pinCommentId);

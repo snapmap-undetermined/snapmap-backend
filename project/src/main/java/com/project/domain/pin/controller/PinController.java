@@ -32,9 +32,9 @@ public class PinController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
-    @Operation(summary = "핀 생성", description = "pocket id를 이용하여 핀을 생성한다.")
+    @Operation(summary = "핀 생성", description = "핀을 생성한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PostMapping("/{pocketId}")
+    @PostMapping("/pocket/{pocketId}")
     @Permission
     public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user,
                                                               @Parameter(description = "포켓의 id")
