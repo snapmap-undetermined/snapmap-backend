@@ -44,7 +44,7 @@ public class PictureCommentController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PictureCommentDTO.PictureCommentListResponse.class)))})
     @Operation(summary = "사진 댓글 리스트 조회", description = "사진에 속한 사진 댓글 리스트를 조회 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/{pictureId}")
+    @GetMapping("/picture/{pictureId}")
     @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentListResponse> getPictureCommentByPictureId(@Parameter(description = "사진의 id") @PathVariable Long pictureId) {
         List<PictureCommentDTO.PictureCommentDetailResponse> pictureCommentDetailResponseList = pictureCommentService.getPictureCommentByPictureId(pictureId);
@@ -70,7 +70,7 @@ public class PictureCommentController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PictureCommentDTO.PictureCommentDetailResponse.class)))})
     @Operation(summary = "사진 댓글 상태 삭제", description = "사진 댓글 상태 삭제를 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @DeleteMapping("/status/{pictureCommentId}")
+    @PostMapping("/{pictureCommentId}/status")
     @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureCommentWithStatus(@Parameter(description = "사진 댓글의 id") @PathVariable Long pictureCommentId) {
         pictureCommentService.deletePictureCommentWithStatus(pictureCommentId);

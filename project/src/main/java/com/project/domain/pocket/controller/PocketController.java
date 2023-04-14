@@ -141,7 +141,7 @@ public class PocketController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
-    @Operation(summary = "포켓 이름 수정", description = "포켓 이름을 수정한다.")
+    @Operation(summary = "포켓 수정", description = "포켓을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pocketId}")
     @Permission
@@ -169,7 +169,7 @@ public class PocketController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.NotAcceptPocketInviteUserResponse.class)))})
     @Operation(summary = "포켓별 초대를 수락하지 않은 유저 조회", description = "포켓별로 초대를 수락하지 않은 유저 리스트를 조회 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/{pocketId}/not-accept-invite")
+    @GetMapping("/{pocketId}/not-accept-invite-users")
     @Permission
     private ResponseEntity<PocketDTO.NotAcceptPocketInviteUserResponse> getAllNotAcceptInviteUser(@AuthUser Users user, @Parameter(description = "포켓의 id") @PathVariable Long pocketId) {
         PocketDTO.NotAcceptPocketInviteUserResponse response = pocketService.getAllNotAcceptPocketInviteUser(user, pocketId);
@@ -181,7 +181,7 @@ public class PocketController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.cancelInvitePocketResponse.class)))})
     @Operation(summary = "초대 취소", description = "초대를 수락하지 않았을 경우에 초대를 취소 한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PatchMapping("/{pocketId}/cancel-invite-user/{cancelUserId}")
+    @PatchMapping("/{pocketId}/cancel-invite-users/{cancelUserId}")
     @Permission
     private ResponseEntity<PocketDTO.cancelInvitePocketResponse> cancelPocketInvitation(
             @AuthUser Users user,
