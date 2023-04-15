@@ -50,7 +50,7 @@ public class PinServiceImpl implements PinService {
 
         Pin pin = request.toEntity();
         user.addPin(pin); // 유저에 핀 추가
-        pocket.addPin(pin); // 그룹에 핀 추가
+        pocket.addPin(pin); // 포켓에 핀 추가
 
         locationRepository.save(pin.getLocation());
 
