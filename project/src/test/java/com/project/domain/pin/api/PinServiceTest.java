@@ -62,7 +62,7 @@ class PinServiceTest {
 
     private void userJoinCircle(Users user, Pocket pocket) {
         pocketRepository.save(pocket);
-        userPocketRepository.save(UserPocket.builder().user(user).pocket(pocket).activated(true).build());
+        userPocketRepository.save(UserPocket.builder().user(user).pocket(pocket).build());
     }
 
     private List<String> generateTagNames(String... tagNames) {

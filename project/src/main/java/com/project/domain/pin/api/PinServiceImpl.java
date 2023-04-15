@@ -123,7 +123,6 @@ public class PinServiceImpl implements PinService {
         if (isPinCreatedByUser(user, pin)) {
             pin.getPocket().removePin(pin); // 써클에서 해당 핀 삭제
             user.removePin(pin); // 유저에서 해당 핀 삭제
-            pin.setActivated(pin.getActivated());
         } else {
             throw new BusinessLogicException("Pin access failed..", ErrorCode.ACCESS_DENIED);
         }

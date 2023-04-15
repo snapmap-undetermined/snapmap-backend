@@ -1,13 +1,16 @@
 package com.project.domain.pin.repository;
 
 import com.project.domain.pin.entity.Pin;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 import static com.project.domain.pin.entity.QPin.pin;
+import static com.project.domain.pocket.entity.QPocket.pocket;
 
 
 @Repository
@@ -22,7 +25,6 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(pin)
                 .where(pin.pocket.id.eq(pocketId))
-                .where(pin.activated.eq(true))
                 .fetch();
     }
 }

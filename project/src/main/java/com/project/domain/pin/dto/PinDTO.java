@@ -30,7 +30,6 @@ public class PinDTO {
         public Pin toEntity() {
             return Pin.builder()
                     .location(location.toEntity())
-                    .activated(true)
                     .build();
         }
     }

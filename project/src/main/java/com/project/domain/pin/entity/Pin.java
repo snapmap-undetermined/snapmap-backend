@@ -47,10 +47,6 @@ public class Pin extends BaseTimeEntity {
     @Builder.Default
     private List<PinComment> commentList = new ArrayList<>();
 
-    @Column(columnDefinition = "TINYINT(1)")
-    private Boolean activated;
-
-
     public void setPocket(Pocket pocket) {
         this.pocket = pocket;
     }
@@ -90,10 +86,5 @@ public class Pin extends BaseTimeEntity {
         }
         this.location = location;
         location.getPins().add(this);
-    }
-
-    public void setActivated(Boolean status) {
-        status = false;
-        this.activated = status;
     }
 }
