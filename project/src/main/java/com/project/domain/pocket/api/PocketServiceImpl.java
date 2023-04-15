@@ -42,7 +42,7 @@ public class PocketServiceImpl implements PocketService {
         UserPocket userPocket = UserPocket.builder().user(user).activated(true).pocket(pocket).build();
         userPocket.addUserPocketToUserAndPocket(user, pocket);
 
-        // 그룹 생성 시, 친구를 같이 초대하는 경우 처리
+        // 포켓 생성 시, 친구를 같이 초대하는 경우 처리
         if (request.getInvitedUserList() != null && !request.getInvitedUserList().isEmpty()) {
             request.getInvitedUserList().forEach((userId) -> {
                 Users u = userRepository.findById(userId).orElseThrow();
@@ -90,7 +90,7 @@ public class PocketServiceImpl implements PocketService {
             throw new BusinessLogicException("Manager cannot leave group", ErrorCode.POCKET_MANAGER_ERROR);
         }
 
-        // 유저가 혼자 남았을 경우에 그룹을 나가게 되면 해당 그룹이 삭제된다.
+        // 유저가 혼자 남았을 경우에 포켓을 나가게 되면 해당 포켓이 삭제된다.
         if (pocket.getUserPocketList().size() == 1) {
             UserPocket userPocket = userPocketRepository.findByUserIdAndPocketId(user.getId(), pocket.getId()).orElseThrow();
             userPocket.removeUserPocketFromUserAndPocket(user, pocket);
@@ -117,7 +117,7 @@ public class PocketServiceImpl implements PocketService {
         return new PocketDTO.PocketSimpleInfoResponse(pocket);
     }
 
-    // 그룹에 유저를 초대
+    // 포켓에 유저를 초대
     @Override
     @Transactional
     public PocketDTO.InviteUserResponse inviteUser(Users user, Long pocketId, PocketDTO.InviteUserRequest request) {
@@ -137,7 +137,7 @@ public class PocketServiceImpl implements PocketService {
         return new PocketDTO.InviteUserResponse(pocket, user);
     }
 
-    // 앱 설치 후 유저가 링크를 타고 들어올 경우, 로그인을 완료했을 경우 그룹 초대를 자동으로 한다.
+    // 앱 설치 후 유저가 링크를 타고 들어올 경우, 로그인을 완료했을 경우 포켓 초대를 자동으로 한다.
     @Override
     public PocketDTO.InviteUserFromLinkResponse inviteUserFromLink(Users user, String pocketKey) {
         Pocket pocket = pocketRepository.findPocketByKey(pocketKey);
@@ -166,7 +166,7 @@ public class PocketServiceImpl implements PocketService {
         UserPocket userPocket = userPocketRepository.findByUserIdAndPocketId(cancelUserId, pocketId).orElseThrow(() -> {
             throw new EntityNotFoundException("User does not exists.");
         });
-        // 요청을 보내는 유저가 해당 그룹에 속해있어야 초대 취소가 가능하다.
+        // 요청을 보내는 유저가 해당 포켓에 속해있어야 초대 취소가 가능하다.
         if (pocket.getUserPocketList().stream()
                 .filter(UserPocket::getActivated)
                 .map(UserPocket::getUser).toList().contains(user)) {
@@ -200,7 +200,7 @@ public class PocketServiceImpl implements PocketService {
         Pocket pocket = getPocket(pocketId);
         if (isMasterUser(pocket, user.getId())) {
             Users u = userRepository.findById(userId).orElseThrow();
-            // 위임하려는 유저가 해당 그룹에 속해 있어야 한다.
+            // 위임하려는 유저가 해당 포켓에 속해 있어야 한다.
             if (!isUserInPocket(u, pocketId)) {
                 throw new EntityNotFoundException("User manager delegated does not exists", ErrorCode.POCKET_MANAGER_ERROR);
             }

@@ -80,7 +80,7 @@ public class PocketDTO {
     @Data
     public static class CreatePocketRequest {
 
-        @NotBlank(message = "그룹 이름을 입력해주세요.")
+        @NotBlank(message = "포켓 이름을 입력해주세요.")
         private String pocketName;
         private String description;
         private List<Long> invitedUserList;
@@ -97,7 +97,7 @@ public class PocketDTO {
 
     @Data
     public static class UpdatePocketRequest {
-        @NotBlank(message = "그룹 이름을 입력해주세요.")
+        @NotBlank(message = "포켓 이름을 입력해주세요.")
         private String pocketName;
         private String description;
     }

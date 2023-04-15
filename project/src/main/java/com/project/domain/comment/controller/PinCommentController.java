@@ -46,11 +46,11 @@ public class PinCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinCommentDTO.PinCommentListResponse.class)))})
-    @Operation(summary = "핀 댓글 리스트 조회", description = "핀에 속한 핀 댓글 리스트를 조회 한다.")
+    @Operation(summary = "핀 댓글 리스트 조회", description = "핀에 속한 댓글 리스트를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/pin/{pinId}")
     @Permission
-    public ResponseEntity<PinCommentDTO.PinCommentListResponse> getPinCommentByPinId(@Parameter(description = "핀의 id") @PathVariable Long pinId) {
+    public ResponseEntity<PinCommentDTO.PinCommentListResponse> getPinCommentByPinId(@Parameter(description = "핀의 ID") @PathVariable Long pinId) {
         List<PinCommentDTO.PinCommentDetailResponse> pinCommentDetailResponseList = pinCommentService.getPinCommentByPinId(pinId);
 
         PinCommentDTO.PinCommentListResponse response = new PinCommentDTO.PinCommentListResponse(pinCommentDetailResponseList);
@@ -60,11 +60,11 @@ public class PinCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinCommentDTO.PinCommentDetailResponse.class)))})
-    @Operation(summary = "핀 댓글 삭제", description = "핀 댓글을 삭제 한다.")
+    @Operation(summary = "핀 댓글 삭제", description = "자신이 작성한 댓글 중 최상위 댓글이 아닐 경구, 영구 삭제한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{pinCommentId}")
     @Permission
-    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinComment(@Parameter(description = "핀 댓글의 id") @PathVariable Long pinCommentId) {
+    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinComment(@Parameter(description = "핀 댓글의 ID") @PathVariable Long pinCommentId) {
         pinCommentService.deletePinComment(pinCommentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -72,11 +72,11 @@ public class PinCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinCommentDTO.PinCommentDetailResponse.class)))})
-    @Operation(summary = "핀 댓글 상태 삭제", description = "핀 댓글 상태 삭제를 한다.")
+    @Operation(summary = "상태 기반 핀 댓글 삭제", description = "자신이 작성한 댓글 중 최상위 댓글일 경구, 자식 댓글의 보존을 위해 댓글의 상태값을 삭제 상태로 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pinCommentId}/status")
     @Permission
-    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinCommentWithStatus(@Parameter(description = "핀 댓글의 id") @PathVariable Long pinCommentId) {
+    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> deletePinCommentWithStatus(@Parameter(description = "핀 댓글의 ID") @PathVariable Long pinCommentId) {
         pinCommentService.deletePinCommentWithStatus(pinCommentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -88,7 +88,7 @@ public class PinCommentController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pinCommentId}")
     @Permission
-    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> updatePinComment(@Parameter(description = "핀 댓글의 id") @PathVariable Long pinCommentId, @RequestBody PinCommentDTO.UpdatePinCommentRequest request) {
+    public ResponseEntity<PinCommentDTO.PinCommentDetailResponse> updatePinComment(@Parameter(description = "핀 댓글의 ID") @PathVariable Long pinCommentId, @RequestBody PinCommentDTO.UpdatePinCommentRequest request) {
         PinCommentDTO.PinCommentDetailResponse response = pinCommentService.updatePinComment(pinCommentId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -42,11 +42,11 @@ public class PictureCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PictureCommentDTO.PictureCommentListResponse.class)))})
-    @Operation(summary = "사진 댓글 리스트 조회", description = "사진에 속한 사진 댓글 리스트를 조회 한다.")
+    @Operation(summary = "사진 댓글 리스트 조회", description = "사진에 속한 댓글 리스트를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/picture/{pictureId}")
     @Permission
-    public ResponseEntity<PictureCommentDTO.PictureCommentListResponse> getPictureCommentByPictureId(@Parameter(description = "사진의 id") @PathVariable Long pictureId) {
+    public ResponseEntity<PictureCommentDTO.PictureCommentListResponse> getPictureCommentByPictureId(@Parameter(description = "사진의 ID") @PathVariable Long pictureId) {
         List<PictureCommentDTO.PictureCommentDetailResponse> pictureCommentDetailResponseList = pictureCommentService.getPictureCommentByPictureId(pictureId);
 
         PictureCommentDTO.PictureCommentListResponse response = new PictureCommentDTO.PictureCommentListResponse(pictureCommentDetailResponseList);
@@ -56,11 +56,11 @@ public class PictureCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PictureCommentDTO.PictureCommentDetailResponse.class)))})
-    @Operation(summary = "사진 댓글 삭제", description = "사진 댓글을 삭제 한다.")
+    @Operation(summary = "사진 댓글 삭제", description = "자신이 작성한 댓글 중 최상위 댓글이 아닐 경구, 영구 삭제한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{pictureCommentId}")
     @Permission
-    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureComment(@Parameter(description = "사진 댓글의 id") @PathVariable Long pictureCommentId) {
+    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureComment(@Parameter(description = "사진 댓글의 ID") @PathVariable Long pictureCommentId) {
         pictureCommentService.deletePictureComment(pictureCommentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -68,11 +68,11 @@ public class PictureCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PictureCommentDTO.PictureCommentDetailResponse.class)))})
-    @Operation(summary = "사진 댓글 상태 삭제", description = "사진 댓글 상태 삭제를 한다.")
+    @Operation(summary = "상태 기반 사진 댓글 삭제", description = "자신이 작성한 댓글 중 최상위 댓글일 경구, 자식 댓글의 보존을 위해 댓글의 상태값을 삭제 상태로 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pictureCommentId}/status")
     @Permission
-    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureCommentWithStatus(@Parameter(description = "사진 댓글의 id") @PathVariable Long pictureCommentId) {
+    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> deletePictureCommentWithStatus(@Parameter(description = "사진 댓글의 ID") @PathVariable Long pictureCommentId) {
         pictureCommentService.deletePictureCommentWithStatus(pictureCommentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -80,11 +80,11 @@ public class PictureCommentController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
-    @Operation(summary = "사진 댓글 수정", description = "사진 댓글을 수정한다.")
+    @Operation(summary = "사진 댓글 수정", description = "자신이 작성한 특정 댓글을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pictureCommentId}")
     @Permission
-    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> updatePictureComment(@Parameter(description = "사진 댓글의 id") @PathVariable Long pictureCommentId, @RequestBody PictureCommentDTO.UpdatePictureCommentRequest request) {
+    public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> updatePictureComment(@Parameter(description = "사진 댓글의 ID") @PathVariable Long pictureCommentId, @RequestBody PictureCommentDTO.UpdatePictureCommentRequest request) {
         PictureCommentDTO.PictureCommentDetailResponse response = pictureCommentService.updatePictureComment(pictureCommentId, request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
