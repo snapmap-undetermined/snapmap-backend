@@ -3,6 +3,8 @@ package com.project.domain.pin.api;
 import com.project.domain.pin.dto.PinDTO;
 import com.project.domain.users.entity.Users;
 import org.locationtech.jts.io.ParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface PinService {
 
     void deletePin(Users user, Long pinId);
 
-    PinDTO.PinDetailListResponse getAllPinsByPocket(Long pocketId);
+    Page<PinDTO.PinDetailResponse> getAllPinsByPocket(Long pocketId, Pageable pageable);
 
     PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId);
 }

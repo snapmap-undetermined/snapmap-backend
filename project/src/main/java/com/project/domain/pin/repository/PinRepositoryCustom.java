@@ -1,10 +1,10 @@
 package com.project.domain.pin.repository;
 
 import com.project.domain.pin.entity.Pin;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PinRepositoryCustom {
-    List<Pin> findAllByPocketId(Long pocketId);
+    Page<Pin> findAllByPocketId(Long pocketId, Pageable pageable);
 
 }
