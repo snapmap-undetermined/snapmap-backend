@@ -2,9 +2,7 @@ package com.project.domain.pin.dto;
 
 import com.project.domain.comment.dto.PictureCommentDTO;
 import com.project.domain.comment.dto.PinCommentDTO;
-import com.project.domain.comment.entity.PinComment;
 import com.project.domain.location.dto.LocationDTO;
-import com.project.domain.picture.dto.PictureDTO;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.pin.entity.Pin;
 import jakarta.validation.constraints.NotNull;
@@ -57,13 +55,10 @@ public class PinDTO {
 
         public PinDetailResponse(Pin pin) {
             this.id = pin.getId();
-            this.pictureList = pin.getPictures().
-                    stream().map(PinDTO.PinWithDistinctPictureResponse::new).collect(Collectors.toList());
-            this.commentList = new PinCommentDTO.PinCommentListResponse(pin.getCommentList().
-                    stream().map(PinCommentDTO.PinCommentDetailResponse::new).collect(Collectors.toList()));
+            this.pictureList = pin.getPictures().stream().map(PinDTO.PinWithDistinctPictureResponse::new).collect(Collectors.toList());
+            this.commentList = new PinCommentDTO.PinCommentListResponse(pin.getCommentList().stream().map(PinCommentDTO.PinCommentDetailResponse::new).collect(Collectors.toList()));
             this.location = new LocationDTO(pin.getLocation());
-            this.tags = pin.getPinTags().stream()
-                    .map((pinTag -> pinTag.getTag().getName())).toList();
+            this.tags = pin.getPinTags().stream().map((pinTag -> pinTag.getTag().getName())).toList();
             this.commentCount = pin.getCommentList().size();
             this.createdAt = pin.getCreatedAt();
             this.updatedAt = pin.getModifiedAt();
@@ -98,8 +93,7 @@ public class PinDTO {
             this.pinId = picture.getPin().getId();
             this.pinName = picture.getPin().getLocation().getName();
             this.originalName = picture.getOriginalName();
-            this.pictureCommentList = new PictureCommentDTO.PictureCommentListResponse(picture.getCommentList().stream()
-                    .map(PictureCommentDTO.PictureCommentDetailResponse::new).collect(Collectors.toList()));
+            this.pictureCommentList = new PictureCommentDTO.PictureCommentListResponse(picture.getCommentList().stream().map(PictureCommentDTO.PictureCommentDetailResponse::new).collect(Collectors.toList()));
             this.pictureCommentCount = picture.getCommentList().size();
             this.createdAt = picture.getCreatedAt();
             this.updatedAt = picture.getModifiedAt();

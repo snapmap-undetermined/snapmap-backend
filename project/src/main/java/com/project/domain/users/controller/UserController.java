@@ -30,8 +30,7 @@ public class UserController {
     private final AuthService authService;
     private final UserService userService;
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.SignUpResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.SignUpResponse.class)))})
     @Operation(summary = "회원가입", description = "이메일을 통해 회원가입을 한다.")
     @PostMapping("/signUp")
     private ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception {
@@ -39,8 +38,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.LoginResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.LoginResponse.class)))})
     @Operation(summary = "로그인", description = "이메일, 비밀번호 기반으로 로그인을 한다.")
     @PostMapping("/login")
     private ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest loginRequest) throws Exception {
@@ -48,21 +46,19 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
     @Operation(summary = "유저 조회", description = "닉네임을 통해 특정 유저를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
     @Permission
-    private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@Parameter(description = "유저의 nickname") @RequestParam String userNickname) throws Exception {
+    private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@Parameter(description = "유저의 nickname") @RequestParam String userNickname) {
 
         UserDTO.UserSimpleInfoResponse response = userService.getUserByNickname(userNickname);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PatchMapping("")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})
     @Operation(summary = "유저 수정", description = "유저의 닉네임, 프로필 이미지 등을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission
@@ -72,8 +68,7 @@ public class UserController {
     }
 
     @DeleteMapping("")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class)))})
     @Operation(summary = "회원 탈퇴", description = "서비스에서 영구적으로 탈퇴한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission

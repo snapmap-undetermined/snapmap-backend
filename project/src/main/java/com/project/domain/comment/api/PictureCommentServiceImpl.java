@@ -22,9 +22,9 @@ public class PictureCommentServiceImpl implements PictureCommentService {
     private final PictureCommentRepository pictureCommentRepository;
 
     @Override
-    public PictureCommentDTO.PictureCommentDetailResponse createPictureComment(Users user, PictureCommentDTO.CreatePictureCommentRequest request) {
+    public PictureCommentDTO.PictureCommentDetailResponse createPictureComment(Users user, Long pictureId, PictureCommentDTO.CreatePictureCommentRequest request) {
 
-        Picture picture = pictureRepository.findById(request.getPictureId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사진 입니다."));
+        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사진 입니다."));
         PictureComment pictureComment = request.toEntity(user, picture);
 
         pictureComment.setCommentOrder(pictureCommentRepository.getLastPictureCommentOrder(picture.getId()) + 1);

@@ -35,9 +35,6 @@ public class PinCommentDTO {
 
     @Data
     public static class CreatePinCommentRequest {
-
-        @NotBlank(message = "핀 아이디를 입력해주세요.")
-        private Long pinId;
         @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
 

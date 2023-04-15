@@ -23,9 +23,9 @@ public class PinCommentServiceImpl implements PinCommentService {
 
     @Override
     @Transactional
-    public PinCommentDTO.PinCommentDetailResponse createPinComment(Users user, PinCommentDTO.CreatePinCommentRequest request) {
+    public PinCommentDTO.PinCommentDetailResponse createPinComment(Users user, Long pinId, PinCommentDTO.CreatePinCommentRequest request) {
 
-        Pin pin = pinRepository.findById(request.getPinId()).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 핀 입니다."));
+        Pin pin = pinRepository.findById(pinId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 핀 입니다."));
         PinComment pinComment = request.toEntity(user, pin);
 
         pinComment.setCommentOrder(pinCommentRepository.getLastPinCommentOrder(pin.getId()) + 1);

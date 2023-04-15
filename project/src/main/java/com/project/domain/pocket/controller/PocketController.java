@@ -28,8 +28,7 @@ public class PocketController {
 
     private final PocketService pocketService;
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
     @Operation(summary = "신규 포켓 생성", description = "새로운 포켓을 생성한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
@@ -39,8 +38,7 @@ public class PocketController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoListResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoListResponse.class)))})
     @Operation(summary = "자신이 속한 포켓 리스트 조회", description = "자신이 속해 있는 포켓 리스트의 기본 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
@@ -50,13 +48,12 @@ public class PocketController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketWithJoinUserResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketWithJoinUserResponse.class)))})
     @Operation(summary = "포켓에 속한 유저 리스트 조회", description = "특정 포켓에 속한 유저 리스트를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{pocketId}/users")
     @Permission
-    private ResponseEntity<PocketDTO.PocketWithJoinUserResponse> getUserListByPocket(@Parameter(description = "포켓의 ID") @PathVariable Long pocketId) throws Exception {
+    private ResponseEntity<PocketDTO.PocketWithJoinUserResponse> getUserListByPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) throws Exception {
         PocketDTO.PocketWithJoinUserResponse response = pocketService.getJoinedUserOfPocket(pocketId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -68,14 +65,13 @@ public class PocketController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{pocketId}")
     @Permission
-    private ResponseEntity<PocketDTO.PocketDetailInfoResponse> getPocket(@Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
+    private ResponseEntity<PocketDTO.PocketDetailInfoResponse> getPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
         PocketDTO.PocketDetailInfoResponse response = pocketService.getPocketDetail(pocketId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
     @Operation(summary = "포켓 나가기", description = "해당 포켓에서 나간다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pocketId}/leave")
@@ -85,36 +81,27 @@ public class PocketController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
     @Operation(summary = "포켓 내 유저 강제 퇴장", description = "자신이 방장 권한일 경우, 특정 유저를 포켓에서 강제 퇴장시킨다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pocketId}/ban")
     @Permission
-    private ResponseEntity<PocketDTO.PocketSimpleInfoResponse> banUserFromPocket(
-            @AuthUser Users user,
-            @Parameter(description = "포켓의 ID") @PathVariable Long pocketId,
-            @RequestBody PocketDTO.BanUserRequest banUserRequest) {
+    private ResponseEntity<PocketDTO.PocketSimpleInfoResponse> banUserFromPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @RequestBody PocketDTO.BanUserRequest banUserRequest) {
         PocketDTO.PocketSimpleInfoResponse response = pocketService.banUserFromPocket(user, pocketId, banUserRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.InviteUserResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.InviteUserResponse.class)))})
     @Operation(summary = "유저 ID를 통해 직접 포켓 초대", description = "유저 ID를 기반으로 포켓에 초대한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pocketId}/invite")
     @Permission
-    private ResponseEntity<PocketDTO.InviteUserResponse> invitePocket(
-            @AuthUser Users user,
-            @Parameter(description = "포켓의 ID") @PathVariable Long pocketId,
-            @RequestBody @Valid PocketDTO.InviteUserRequest request) {
+    private ResponseEntity<PocketDTO.InviteUserResponse> invitePocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @RequestBody @Valid PocketDTO.InviteUserRequest request) {
         PocketDTO.InviteUserResponse response = pocketService.inviteUser(user, pocketId, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.InviteUserFromLinkResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.InviteUserFromLinkResponse.class)))})
     @Operation(summary = "링크를 통해 포켓 초대", description = "PocketKey 기반 링크를 통해 유저를 포켓에 초대한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/invite-key/{pocketKey}")
@@ -125,67 +112,52 @@ public class PocketController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.acceptPocketInvitationResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.acceptPocketInvitationResponse.class)))})
     @Operation(summary = "포켓 초대 수락", description = "요청받은 포켓 초대를 수락한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pocketId}/accept")
     @Permission
     private ResponseEntity<PocketDTO.acceptPocketInvitationResponse> acceptPocketInvitation(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
         PocketDTO.acceptPocketInvitationResponse response = pocketService.acceptPocketInvitation(user, pocketId);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketSimpleInfoResponse.class)))})
     @Operation(summary = "포켓 정보 수정", description = "포켓의 이름과 설명을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pocketId}")
     @Permission
-    private ResponseEntity<PocketDTO.PocketSimpleInfoResponse> updatePocket(@AuthUser Users user,
-                                                                            @Parameter(description = "포켓의 ID") @PathVariable Long pocketId,
-                                                                            @Valid @RequestPart(required = false) PocketDTO.UpdatePocketRequest request, @RequestPart(required = false) MultipartFile picture) {
+    private ResponseEntity<PocketDTO.PocketSimpleInfoResponse> updatePocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @Valid @RequestPart(required = false) PocketDTO.UpdatePocketRequest request, @RequestPart(required = false) MultipartFile picture) {
         PocketDTO.PocketSimpleInfoResponse response = pocketService.updatePocket(user, pocketId, request, picture);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketWithJoinUserResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.PocketWithJoinUserResponse.class)))})
     @Operation(summary = "포켓 내 방장 권한 위임", description = "자신의 방장 권한을 포켓 내 다른 유저에게 위임한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pocketId}/master")
     @Permission
     private ResponseEntity<PocketDTO.PocketWithJoinUserResponse> updatePocketMaster(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @RequestBody PocketDTO.UpdatePocketMasterRequest request) {
         PocketDTO.PocketWithJoinUserResponse response = pocketService.updatePocketMaster(user, pocketId, request.getUserId());
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.NotAcceptPocketInviteUserResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.NotAcceptPocketInviteUserResponse.class)))})
     @Operation(summary = "초대를 수락하지 않은 유저 조회", description = "포켓 별 자신의 초대를 수락하지 않은 유저 리스트를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/{pocketId}/not-accept-invite-users")
+    @GetMapping("/{pocketId}/not-accepted/all")
     @Permission
     private ResponseEntity<PocketDTO.NotAcceptPocketInviteUserResponse> getAllNotAcceptInviteUser(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
         PocketDTO.NotAcceptPocketInviteUserResponse response = pocketService.getAllNotAcceptPocketInviteUser(user, pocketId);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.cancelInvitePocketResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PocketDTO.cancelInvitePocketResponse.class)))})
     @Operation(summary = "초대 취소", description = "아직 포켓 초대를 수락하지 않은 경우, 초대를 취소 할 수 있다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PatchMapping("/{pocketId}/cancel-invite-users/{cancelUserId}")
+    @PatchMapping("/{pocketId}/invite/cancel/{cancelUserId}")
     @Permission
-    private ResponseEntity<PocketDTO.cancelInvitePocketResponse> cancelPocketInvitation(
-            @AuthUser Users user,
-            @Parameter(description = "포켓의 ID") @PathVariable Long pocketId,
-            @Parameter(description = "초대를 취소할 유저의 ID") @PathVariable Long cancelUserId
-    ) {
+    private ResponseEntity<PocketDTO.cancelInvitePocketResponse> cancelPocketInvitation(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @Parameter(description = "초대를 취소할 유저의 ID") @PathVariable Long cancelUserId) {
         PocketDTO.cancelInvitePocketResponse response = pocketService.cancelPocketInvitation(user, pocketId, cancelUserId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

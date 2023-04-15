@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PinCommentService {
 
-    PinCommentDTO.PinCommentDetailResponse createPinComment(Users user, PinCommentDTO.CreatePinCommentRequest request);
+    PinCommentDTO.PinCommentDetailResponse createPinComment(Users user, Long pinId, PinCommentDTO.CreatePinCommentRequest request);
 
     List<PinCommentDTO.PinCommentDetailResponse> getPinCommentByPinId(Long pinId);
 

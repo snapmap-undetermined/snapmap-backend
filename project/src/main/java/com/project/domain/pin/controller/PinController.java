@@ -29,35 +29,28 @@ public class PinController {
 
     private final PinService pinService;
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "신규 핀 생성", description = "새로운 핀을 생성한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/pocket/{pocketId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user,
-                                                              @Parameter(description = "포켓의 ID")
-                                                              @PathVariable Long pocketId,
-                                                              @RequestPart PinDTO.PinCreateRequest request,
-                                                              @RequestPart List<MultipartFile> pictures) {
+    public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @RequestPart PinDTO.PinCreateRequest request, @RequestPart List<MultipartFile> pictures) {
 
         PinDTO.PinDetailResponse pin = pinService.createPin(user, pocketId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailListResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailListResponse.class)))})
     @Operation(summary = "특정 포켓에 속한 핀 전체 조회", description = "특정 포켓에 속한 모든 핀의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/pocket/{pocketId}")
+    @GetMapping("/pocket/{pocketId}/all")
     @Permission
     public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
         PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByPocket(pocketId);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "특정 핀 상세 정보 조회", description = "특정 핀의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{pinId}")
@@ -67,33 +60,27 @@ public class PinController {
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "자신이 생성한 핀 조회", description = "자신이 생성한 모든 핀의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/me")
+    @GetMapping("/me/all")
     @Permission
     public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByMe(@AuthUser Users user) {
         PinDTO.PinDetailListResponse pinList = pinService.getAllPinByMe(user);
         return new ResponseEntity<>(pinList, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "핀 수정", description = "특정 핀을 위치 정보, 사진 등을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{pinId}")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailResponse> updatePin(@AuthUser Users user,
-                                                              @Parameter(description = "핀의 ID") @PathVariable Long pinId,
-                                                              @RequestPart PinDTO.PinUpdateRequest request,
-                                                              @RequestPart List<MultipartFile> pictures) throws Exception {
+    public ResponseEntity<PinDTO.PinDetailResponse> updatePin(@AuthUser Users user, @Parameter(description = "핀의 ID") @PathVariable Long pinId, @RequestPart PinDTO.PinUpdateRequest request, @RequestPart List<MultipartFile> pictures) throws Exception {
         PinDTO.PinDetailResponse pin = pinService.updatePin(user, pinId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = Long.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = Long.class)))})
     @Operation(summary = "핀 삭제", description = "특정 핀을 삭제한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{pinId}/inactive")
@@ -103,17 +90,12 @@ public class PinController {
         return new ResponseEntity<>(pinId, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinWithDistinctPictureResponse.class)))})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinWithDistinctPictureResponse.class)))})
     @Operation(summary = "핀 내 사진의 상세 정보 조회", description = "핀 내 개별 사진의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{pinId}/picture/{pictureId}")
     @Permission
-    public ResponseEntity<PinDTO.PinWithDistinctPictureResponse> getPictureDetail(
-            @AuthUser Users user,
-            @Parameter(description = "사진의 ID") @PathVariable Long pictureId,
-            @Parameter(description = "핀의 ID") @PathVariable Long pinId) {
-
+    public ResponseEntity<PinDTO.PinWithDistinctPictureResponse> getPictureDetail(@AuthUser Users user, @Parameter(description = "사진의 ID") @PathVariable Long pictureId, @Parameter(description = "핀의 ID") @PathVariable Long pinId) {
         PinDTO.PinWithDistinctPictureResponse response = pinService.getPictureDetail(user, pictureId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

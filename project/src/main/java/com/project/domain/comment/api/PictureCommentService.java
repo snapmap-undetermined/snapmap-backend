@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PictureCommentService {
 
-    PictureCommentDTO.PictureCommentDetailResponse createPictureComment(Users user, PictureCommentDTO.CreatePictureCommentRequest request);
+    PictureCommentDTO.PictureCommentDetailResponse createPictureComment(Users user, Long pictureId, PictureCommentDTO.CreatePictureCommentRequest request);
 
     List<PictureCommentDTO.PictureCommentDetailResponse> getPictureCommentByPictureId(Long pictureId);
 

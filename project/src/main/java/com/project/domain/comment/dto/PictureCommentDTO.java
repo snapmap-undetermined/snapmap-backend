@@ -35,9 +35,6 @@ public class PictureCommentDTO {
 
     @Data
     public static class CreatePictureCommentRequest {
-
-        @NotBlank(message = "사진의 아이디를 입력해주세요.")
-        private Long pictureId;
         @NotBlank(message = "최소 한 글자 이상을 입력해야 합니다.")
         private String text;
         private Long parentCommentOrder;
