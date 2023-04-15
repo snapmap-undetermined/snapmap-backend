@@ -2,11 +2,13 @@ package com.project.domain.pin.repository;
 
 import com.project.domain.pin.entity.Pin;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -29,7 +31,12 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(content, pageable, content.size());
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(pin.count())
+                .from(pin)
+                .where(isPocketIdEquals(pocketId));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
 
     }
 
