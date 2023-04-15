@@ -27,6 +27,7 @@ public class PinRepositoryCustomImpl implements PinRepositoryCustom {
         List<Pin> content = jpaQueryFactory
                 .selectFrom(pin)
                 .where(isPocketIdEquals(pocketId))
+                .orderBy(pin.createdAt.desc()) // 최신 순 정렬
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
