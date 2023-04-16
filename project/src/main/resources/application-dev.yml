@@ -41,3 +41,9 @@ cloud:
     stack:
       auto: false
     pinnit-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
+
+logging:
+  file:
+    name: /home/action/log/pinnit-%d{yyyyMMdd}.log
+  level:
+    root: INFO
