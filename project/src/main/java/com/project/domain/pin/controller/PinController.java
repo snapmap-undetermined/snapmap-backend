@@ -14,6 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +48,10 @@ public class PinController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/pocket/{pocketId}/all")
     @Permission
-    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId) {
-        PinDTO.PinDetailListResponse pinList = pinService.getAllPinsByPocket(pocketId);
-        return new ResponseEntity<>(pinList, HttpStatus.OK);
+    public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByPocket(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @PageableDefault(size = 20) Pageable pageable) {
+        Page<PinDTO.PinDetailResponse> pageResult = pinService.getAllPinsByPocket(pocketId, pageable);
+        return new ResponseEntity<>(new PinDTO.PinDetailListResponse(pageResult.getContent(), pageResult), HttpStatus.OK);
+
     }
 
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})

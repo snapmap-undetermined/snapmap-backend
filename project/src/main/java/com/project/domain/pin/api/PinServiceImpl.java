@@ -22,6 +22,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.io.ParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,18 +76,17 @@ public class PinServiceImpl implements PinService {
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
 
-        List<Pocket> userJoinPockets = pocketRepository.findAllPocketByUserId(user.getId());
-        checkPinAccessibility(user, userJoinPockets, pin);
-
+        checkPinAccessibility(user, pin);
         return new PinDTO.PinDetailResponse(pin);
     }
 
     @Override
-    public PinDTO.PinDetailListResponse getAllPinsByPocket(Long pocketId) {
+    public Page<PinDTO.PinDetailResponse> getAllPinsByPocket(Long pocketId, Pageable pageable) {
         // Pin을 모두 조회하고, 각 Pin에 존재하는 사진을 가져온다.
-        List<Pin> allPins = pinRepository.findAllByPocketId(pocketId);
-        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.stream().map(PinDTO.PinDetailResponse::new).toList();
-        return new PinDTO.PinDetailListResponse(pinDetailResponseList);
+        Page<Pin> allPins = pinRepository.findAllByPocketId(pocketId, pageable);
+        List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.getContent().stream().map(PinDTO.PinDetailResponse::new).toList();
+
+        return new PageImpl<>(pinDetailResponseList, pageable, allPins.getTotalElements());
     }
 
     @Override
@@ -143,18 +145,8 @@ public class PinServiceImpl implements PinService {
         return myPins.contains(pin);
     }
 
-    private boolean isPinCreatedByPocket(List<Pocket> userJoinPockets, Pin pin) {
-        for (Pocket pocket : userJoinPockets) {
-            List<Pin> pinsByPocket = pinRepository.findAllByPocketId(pocket.getId());
-            if (pinsByPocket.contains(pin)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void checkPinAccessibility(Users user, List<Pocket> userJoinPockets, Pin pin) {
-        if (!isPinCreatedByUser(user, pin) && !isPinCreatedByPocket(userJoinPockets, pin)) {
+    private void checkPinAccessibility(Users user, Pin pin) {
+        if (!isPinCreatedByUser(user, pin)) {
             throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
         }
     }

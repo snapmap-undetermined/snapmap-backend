@@ -1,5 +1,6 @@
 package com.project.domain.pin.dto;
 
+import com.project.common.entity.PagingResponse;
 import com.project.domain.comment.dto.PictureCommentDTO;
 import com.project.domain.comment.dto.PinCommentDTO;
 import com.project.domain.location.dto.LocationDTO;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -67,11 +69,16 @@ public class PinDTO {
     @Data
     public static class PinDetailListResponse {
         private List<PinDetailResponse> pinDetailResponseList;
+        private PagingResponse pagingResponse;
 
         public PinDetailListResponse(List<PinDetailResponse> pinDetailResponseList) {
             this.pinDetailResponseList = pinDetailResponseList;
         }
 
+        public PinDetailListResponse(List<PinDetailResponse> pinDetailListResponse, Page page){
+            this.pinDetailResponseList = pinDetailResponseList;
+            this.pagingResponse = new PagingResponse(page);
+        }
     }
 
     @Data
