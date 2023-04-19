@@ -8,4 +8,7 @@ public interface AuthService {
 
     UserDTO.LoginResponse login(UserDTO.LoginRequest loginRequest) throws Exception;
 
+    void authEmail(UserDTO.EmailRequest emailRequest) throws Exception;
+
+    Boolean validateAuthEmail(UserDTO.ValidateEmailRequest validateEmailRequest) throws Exception;
 }

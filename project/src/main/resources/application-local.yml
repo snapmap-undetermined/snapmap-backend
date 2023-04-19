@@ -31,6 +31,21 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username : pinnit@naver.com
+    password : 1q2w3e4r!
+    properties:
+      mail.smtp.auth : true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+
+  data:
+    redis:
+      host : 127.0.0.1
+      port : 6379
+
 cloud:
   aws:
     credentials:

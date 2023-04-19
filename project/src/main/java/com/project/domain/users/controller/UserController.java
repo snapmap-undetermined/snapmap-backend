@@ -75,4 +75,10 @@ public class UserController {
     private void deleteUser(@AuthUser Users user) {
         userService.deleteUser(user);
     }
+
+    @PostMapping("/email")
+    public ResponseEntity<Void> authEmail (@RequestBody @Valid UserDTO.EmailRequest request) throws Exception {
+        authService.authEmail(request);
+        return ResponseEntity.ok().build();
+    }
 }

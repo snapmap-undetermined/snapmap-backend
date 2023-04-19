@@ -3,6 +3,7 @@ package com.project.domain.users.dto;
 import com.project.domain.users.entity.Users;
 import com.project.common.entity.Role;
 import com.project.common.message.Message;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -93,6 +94,21 @@ public class UserDTO {
         @NotBlank(message = "닉네임을 입력해주세요.")
         private String nickname;
         private String profileImage;
+    }
+
+    @Data
+    public static class EmailRequest {
+
+        @Email
+        @NotBlank(message = "이메일을 입력해주세요.")
+        private String email;
+    }
+
+    @Data
+    public static class ValidateEmailRequest {
+
+        @NotBlank(message = "인증번호를 입력해주세요")
+        private String authEmailKey;
     }
 
 }
