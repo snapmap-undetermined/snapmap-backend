@@ -23,6 +23,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Checkout 
+      uses: actions/checkout@v1
+      with:
+        token: ${{ secrets.ACTION_TOKEN }}
+        submodules: true
+      
     - name: Grant execute Permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle

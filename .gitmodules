@@ -1,3 +1,4 @@
 [submodule "project/submodule-config"]
 	path = project/submodule-config
 	url = https://github.com/team-pinnit/submodule-config
+	branch = develop
