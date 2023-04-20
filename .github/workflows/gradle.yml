@@ -24,7 +24,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Checkout 
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
       with:
         token: $ 
         submodules: true
