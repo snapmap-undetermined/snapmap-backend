@@ -105,7 +105,7 @@ public class UserDTO {
     }
 
     @Data
-    public static class ValidateEmailRequest {
+    public static class EmailValidateCodeRequest {
 
         @NotBlank(message = "인증번호를 입력해주세요")
         private String authEmailKey;

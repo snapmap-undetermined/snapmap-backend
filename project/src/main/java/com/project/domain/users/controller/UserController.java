@@ -77,8 +77,14 @@ public class UserController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<Void> authEmail (@RequestBody @Valid UserDTO.EmailRequest request) throws Exception {
-        authService.authEmail(request);
+    public ResponseEntity<Void> sendAuthEmail(@RequestBody @Valid UserDTO.EmailRequest request) throws Exception {
+        authService.sendAuthEmail(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/email/validate")
+    public ResponseEntity<Boolean> validateAuthEmail(@RequestBody @Valid UserDTO.EmailValidateCodeRequest request) {
+        Boolean response = authService.validateAuthEmail(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

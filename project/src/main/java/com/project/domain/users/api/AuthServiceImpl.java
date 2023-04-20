@@ -30,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final JavaMailSender javaMailSender;
     private final RedisHandler redisHandler;
 
+    private static final Long expireTime = 60 * 5L;
+
     @Override
     @Transactional
     public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest) {
@@ -69,37 +71,35 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void authEmail(UserDTO.EmailRequest emailRequest) throws Exception {
+    public void sendAuthEmail(UserDTO.EmailRequest emailRequest) throws Exception {
 
         Random random = new Random();
         String authEmailKey = String.valueOf(random.nextInt(888888) + 111111);
+        String email = emailRequest.getEmail();
 
-        sendAuthEmail(emailRequest.getEmail(), authEmailKey);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessage message = messageHelper(mimeMessage, email, authEmailKey);
+
+        javaMailSender.send(message);
+        redisHandler.setDataExpire(authEmailKey, email, expireTime);
     }
 
     @Override
-    public Boolean validateAuthEmail(UserDTO.ValidateEmailRequest validateEmailRequest) throws Exception {
+    public Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest) {
 
         return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getData(validateEmailRequest.getAuthEmailKey()));
     }
 
-    private void sendAuthEmail(String email, String authEmailKey) {
-        String emailTitle = "[Pinnit]회원가입을 위한 인증번호 안내";
-        String text = "Pinnit 에 오신 걸 환영합니다! <br/> 회원 가입을 위한 인증번호는 " + authEmailKey + "입니다. <br/>";
+    private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {
 
+        String emailTitle = "[Pinnit] 회원가입을 위한 인증번호 안내";
+        String text = "Pinnit 에 오신 걸 환영합니다! 회원 가입을 위한 인증번호는 " + authEmailKey + "입니다. <br/>";
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+        helper.setTo(email);
+        helper.setSubject(emailTitle);
+        helper.setText(text, true);
+        helper.setFrom("pinnit@naver.com");
 
-        try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
-            helper.setTo(email);
-            helper.setSubject(emailTitle);
-            helper.setText(text, true);
-            helper.setFrom("pinnit@naver.com");
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        redisHandler.setDataExpire(authEmailKey, email, 60 * 5L);
-
+        return mimeMessage;
     }
 }
