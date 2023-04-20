@@ -26,7 +26,7 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@v1
       with:
-        token: $ 
+        token: ${{ secrets.ACTION_TOKEN }}
         submodules: true
       
     - name: Grant execute Permission for gradlew
