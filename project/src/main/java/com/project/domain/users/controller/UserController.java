@@ -75,4 +75,16 @@ public class UserController {
     private void deleteUser(@AuthUser Users user) {
         userService.deleteUser(user);
     }
+
+    @PostMapping("/email")
+    public ResponseEntity<Void> sendAuthEmail(@RequestBody @Valid UserDTO.EmailRequest request) throws Exception {
+        authService.sendAuthEmail(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/email/validate")
+    public ResponseEntity<Boolean> validateAuthEmail(@RequestBody @Valid UserDTO.EmailValidateCodeRequest request) {
+        Boolean response = authService.validateAuthEmail(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
