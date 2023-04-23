@@ -10,8 +10,8 @@ spring:
       header: Authorization
       prefix : Bearer
       # HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용
-      # echo 'jsh-springboot-and-jwt-tutorial-this-is-for-generating-jwt-secretkey-base64'|base64
-      secret: anNoLXNwcmluZ2Jvb3QtYW5kLWp3dC10dXRvcmlhbC10aGlzLWlzLWZvci1nZW5lcmF0aW5nLWp3dC1zZWNyZXRrZXktYmFzZTY0Cg==
+      # echo 'this-is-for-generating-jwt-secretKey-base64-for-pinnit-project'|base64
+      secret: dGhpcy1pcy1mb3ItZ2VuZXJhdGluZy1qd3Qtc2VjcmV0S2V5LWJhc2U2NC1mb3ItcGlubml0LXByb2plY3QK
       access-token-expired-at: 3600000
       refresh-token-expired-at: 604800000
 
@@ -29,6 +29,21 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username : pinnit@naver.com
+    password : 1q2w3e4r!
+    properties:
+      mail.smtp.auth : true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+
+  data:
+    redis:
+      host : 127.0.0.1
+      port : 6379
+
 cloud:
   aws:
     credentials:
@@ -40,4 +55,20 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-    snapmap-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
+    pinnit-cloud-front-domain: d3b7b3nw9cqnmc.cloudfront.net
+
+springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: none
+  paths-to-match:
+    - /api/**
