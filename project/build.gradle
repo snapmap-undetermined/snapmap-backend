@@ -76,13 +76,13 @@ tasks.named('test') {
 
 task copyPrivate(type: Copy) {
 	copy {
-		from '.main/submodule-config'
+		from './submodule-config/main'
 		include "*.yml"
 		into 'src/main/resources'
 	}
 	copy {
-		from '.test/submodule-config'
-		include "*.yml"
+		from './submodule-config/test'
+		include "application-dev.yml"
 		into 'src/test/resources'
 	}
 }
