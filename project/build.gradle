@@ -82,7 +82,7 @@ task copyPrivate(type: Copy) {
 	}
 	copy {
 		from './submodule-config/test'
-		include "*.yml"
+		include "application.yml"
 		into 'src/test/resources'
 	}
 }
