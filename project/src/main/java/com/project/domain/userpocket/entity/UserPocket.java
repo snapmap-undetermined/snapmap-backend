@@ -24,7 +24,6 @@ public class UserPocket extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Pocket pocket;
 
-    @Column(columnDefinition = "TINYINT(1)")
     private Boolean activated;
 
     public void addUserPocketToUserAndPocket(Users user, Pocket pocket) {

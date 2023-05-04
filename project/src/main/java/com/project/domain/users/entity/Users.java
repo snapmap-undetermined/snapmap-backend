@@ -60,7 +60,6 @@ public class Users extends BaseTimeEntity {
     @OneToOne
     private RefreshToken refreshToken;
 
-    @Column(columnDefinition = "TINYINT(1)")
     private Boolean activated;
 
     public void addPin(Pin pin) {
