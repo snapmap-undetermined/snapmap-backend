@@ -28,15 +28,17 @@ class FriendRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-//
-//    @BeforeEach()
-//    public void initUser() {
-//        user1 = Users.builder().email("skc@test.com").password("123").nickname("skc").activated(true).phoneNumber("01000000000").build();
-//        user2 = Users.builder().email("jsh@test.com").password("123").nickname("jsh").activated(true).phoneNumber("01011111111").build();
-//
-//        userRepository.save(user1);
-//        userRepository.save(user2);
-//    }
+    Users user1;
+    Users user2;
+
+    @BeforeEach()
+    public void initUser() {
+        user1 = Users.builder().email("skc@test.com").password("123").nickname("skc").activated(true).phoneNumber("01000000000").build();
+        user2 = Users.builder().email("jsh@test.com").password("123").nickname("jsh").activated(true).phoneNumber("01011111111").build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+    }
 
     @Test
     @DisplayName("친구관계를 생성한다.")
