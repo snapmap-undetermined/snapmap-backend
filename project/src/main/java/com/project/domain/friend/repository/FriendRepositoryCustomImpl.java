@@ -18,14 +18,6 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<Friend> findAllByUserId(Long userId) {
-        return query
-                .selectFrom(friend)
-                .where(friend.me.id.eq(userId))
-                .stream().toList();
-    }
-
-    @Override
     public boolean existsByUserIds(Long myId, Long friendId) {
 
         Integer fetchFirst = query
