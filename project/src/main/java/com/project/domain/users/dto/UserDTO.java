@@ -6,10 +6,13 @@ import com.project.common.message.Message;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
+
 
 public class UserDTO {
     @Data
+    @Builder
     public static class SignUpRequest {
         @NotBlank(message = "이메일을 입력해주세요.")
         private String email;
@@ -20,6 +23,7 @@ public class UserDTO {
         @NotBlank(message = Message.SIGN_UP_NICKNAME_MESSAGE)
         private String nickname;
 
+        @Builder.Default
         private Role role = Role.USER;
 
         public Users toEntity(){
@@ -38,19 +42,16 @@ public class UserDTO {
         private Long userId;
         private String email;
         private String nickname;
-        private String accessToken;
-        private String refreshToken;
 
-        public SignUpResponse(Users user, String accessToken, String refreshToken) {
+        public SignUpResponse(Users user) {
             this.userId = user.getId();
             this.email = user.getEmail();
             this.nickname = user.getNickname();
-            this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
         }
     }
 
     @Data
+    @Builder
     public static class LoginRequest {
         @NotBlank(message = "이메일을 입력해주세요.")
         private String email;
@@ -90,6 +91,7 @@ public class UserDTO {
     }
 
     @Data
+    @Builder
     public static class UpdateUserRequest{
         @NotBlank(message = "닉네임을 입력해주세요.")
         private String nickname;
@@ -97,6 +99,7 @@ public class UserDTO {
     }
 
     @Data
+    @Builder
     public static class EmailRequest {
 
         @Email
@@ -105,6 +108,7 @@ public class UserDTO {
     }
 
     @Data
+    @Builder
     public static class EmailValidateCodeRequest {
 
         @NotBlank(message = "인증번호를 입력해주세요")

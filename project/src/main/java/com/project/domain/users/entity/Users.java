@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@Where(clause = "activated = 1")
+@Where(clause = "activated = true")
 @SQLDelete(sql = "UPDATE user SET activated = 0 where id = ?")
 public class Users extends BaseTimeEntity {
 

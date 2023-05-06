@@ -9,7 +9,6 @@ import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.dto.TokenDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -44,12 +43,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+
         Users user = userRepository.save(signUpRequest.toEntity());
 
-        // 토큰 발급
-        TokenDTO tokenDTO = tokenService.generateAccessTokenAndRefreshToken(signUpRequest.getEmail(), user);
-
-        return new UserDTO.SignUpResponse(user, tokenDTO.getAccessToken(), tokenDTO.getRefreshToken());
+        return new UserDTO.SignUpResponse(user);
     }
 
     @Override
