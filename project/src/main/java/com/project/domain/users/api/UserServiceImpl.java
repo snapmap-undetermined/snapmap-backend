@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO.UserSimpleInfoResponse getUserByNickname(String nickname) {
 
-        Users user = userRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
+        Users user = userRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException("User does not exists."));
 
         return new UserDTO.UserSimpleInfoResponse(user);
     }
@@ -41,6 +41,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private Users getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User does not exists."));
     }
 }

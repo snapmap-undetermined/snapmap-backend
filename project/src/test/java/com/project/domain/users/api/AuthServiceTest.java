@@ -53,8 +53,8 @@ class AuthServiceTest {
     @DisplayName("유효한 요청에 대한 회원가입이 성공한다.")
     public void signUp_working_test() {
         SignUpRequest signUpRequest = TestObjectFactory.createSingUpRequest("TEST_EAMIL@EXAMPLE.COM", "TEST_NICKNAME", "PASSWORD");
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(userRepository.findByNickname(anyString())).thenReturn(Optional.empty());
+        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByNickname(anyString())).thenReturn(false);
         when(userRepository.save(any(Users.class))).then(AdditionalAnswers.returnsFirstArg());
 
         UserDTO.SignUpResponse signUpResponse = authService.signUp(signUpRequest);
@@ -66,7 +66,7 @@ class AuthServiceTest {
     @DisplayName("중복 이메일에 대한 회원가입이 실패한다.")
     public void email_duplicated_signUp_fail() {
         SignUpRequest signUpRequest = TestObjectFactory.createSingUpRequest("TEST_EAMIL@EXAMPLE.COM", "TEST_NICKNAME", "PASSWORD");
-        when(userRepository.findByEmail(signUpRequest.getEmail())).thenReturn(Optional.of(Users.builder().build()));
+        when(userRepository.existsByEmail(signUpRequest.getEmail())).thenReturn(true);
 
         InvalidValueException exception = Assertions.assertThrows(InvalidValueException.class, () -> authService.signUp(signUpRequest));
 
@@ -77,8 +77,8 @@ class AuthServiceTest {
     @DisplayName("중복 닉네임에 대한 회원가입이 실패한다.")
     public void nickName_duplicated_signUp_fail() {
         SignUpRequest signUpRequest = TestObjectFactory.createSingUpRequest("TEST@EXAMPLE.COM", "TEST_NICKNAME", "PASSWORD");
-        when(userRepository.findByEmail(signUpRequest.getEmail())).thenReturn(Optional.empty());
-        when(userRepository.findByNickname(signUpRequest.getNickname())).thenReturn(Optional.of(Users.builder().build()));
+        when(userRepository.existsByEmail(signUpRequest.getEmail())).thenReturn(false);
+        when(userRepository.existsByNickname(signUpRequest.getNickname())).thenReturn(true);
 
         InvalidValueException exception = Assertions.assertThrows(InvalidValueException.class, () -> authService.signUp(signUpRequest));
 

@@ -3,7 +3,6 @@ package com.project.domain.friend.repository;
 import com.project.domain.friend.dto.FriendDTO;
 import com.project.domain.friend.dto.QFriendDTO_FriendResponse;
 import com.project.domain.friend.entity.Friend;
-import com.project.domain.users.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

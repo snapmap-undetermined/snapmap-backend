@@ -34,11 +34,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest) {
-        if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new InvalidValueException("Already registered email.", ErrorCode.EMAIL_DUPLICATION);
         }
 
-        if (userRepository.findByNickname(signUpRequest.getNickname()).isPresent()) {
+        if (userRepository.existsByNickname(signUpRequest.getNickname())) {
             throw new InvalidValueException("Already existing nickname.", ErrorCode.NICKNAME_DUPLICATION);
         }
 
@@ -90,7 +90,7 @@ public class AuthServiceImpl implements AuthService {
     private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {
 
         String emailTitle = "[Pinnit] 회원가입을 위한 인증번호 안내";
-        String text = "Pinnit 에 오신 걸 환영합니다! 회원 가입을 위한 인증번호는 " + authEmailKey + "입니다. <br/>";
+        String text = "Pinnit에 오신 걸 환영합니다! 회원 가입을 위한 인증번호는 " + authEmailKey + "입니다. <br/>";
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
         helper.setTo(email);
         helper.setSubject(emailTitle);

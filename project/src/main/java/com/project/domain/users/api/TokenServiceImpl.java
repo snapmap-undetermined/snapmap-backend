@@ -66,18 +66,14 @@ public class TokenServiceImpl implements TokenService {
     public Long getUserId(String authToken) {
         String email = parse(authToken).getBody().getSubject();
 
-        return userRepository.findByEmail(email).orElseThrow(
-                IllegalArgumentException::new
-        ).getId();
+        return userRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new).getId();
     }
 
     @Override
     public Role getUserRole(String authToken) {
         String email = parse(authToken).getBody().getSubject();
 
-        return userRepository.findByEmail(email).orElseThrow(
-                IllegalArgumentException::new
-        ).getRole();
+        return userRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new).getRole();
     }
 
     @Override

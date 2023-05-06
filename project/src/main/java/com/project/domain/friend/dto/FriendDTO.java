@@ -1,6 +1,7 @@
 package com.project.domain.friend.dto;
 
 import com.project.domain.friend.entity.Friend;
+import com.project.domain.users.entity.Users;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -15,16 +16,18 @@ public class FriendDTO {
     @Data
     public static class FriendResponse {
         private Long id;
+        private Long meId;
         private Long mateId;
         private String mateNickname;
         private String mateProfileImage;
 
         @QueryProjection
-        public FriendResponse(Friend mate) {
-            this.id = mate.getId();
-            this.mateId = mate.getMate().getId();
-            this.mateNickname = mate.getFriendName();
-            this.mateProfileImage = mate.getMate().getProfileImage();
+        public FriendResponse(Friend friend) {
+            this.id = friend.getId();
+            this.meId = friend.getMe().getId();
+            this.mateId = friend.getMate().getId();
+            this.mateNickname = friend.getFriendName();
+            this.mateProfileImage = friend.getMate().getProfileImage();
         }
     }
 

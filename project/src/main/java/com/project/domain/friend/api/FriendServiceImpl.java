@@ -10,6 +10,7 @@ import com.project.domain.friend.repository.FriendRepository;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FriendServiceImpl implements FriendService {
@@ -26,27 +28,27 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDTO.FriendListResponse getAllFriends(Long userId) {
-
         List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(userId);
         return new FriendDTO.FriendListResponse(friendList);
     }
 
     @Override
     @Transactional
-    public FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
+    public FriendDTO.FriendResponse createFriend(Users me, FriendDTO.CreateFriendRequest createFriendRequest) {
         Users mate = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
-            throw new EntityNotFoundException("User does not exists.");
+            throw new EntityNotFoundException("User does not exists.", ErrorCode.ENTITY_NOT_FOUND);
         });
 
-        if (Objects.equals(user.getId(), mate.getId())) {
+        if (Objects.equals(me.getId(), mate.getId())) {
+            log.error("Mate Id : {}", mate.getId());
             throw new InvalidValueException("Cannot make friends with yourself.", ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        if (friendRepository.existsByUserIds(user.getId(), mate.getId())) {
+        if (friendRepository.existsByUserIds(me.getId(), mate.getId())) {
             throw new BusinessLogicException("Already exists friendship.",ErrorCode.FRIEND_DUPLICATION);
         }
 
-        Friend friend = Friend.builder().me(user).mate(mate).friendName(mate.getNickname()).build();
+        Friend friend = Friend.builder().me(me).mate(mate).friendName(mate.getNickname()).build();
         friendRepository.save(friend);
         return new FriendDTO.FriendResponse(friend);
     }
