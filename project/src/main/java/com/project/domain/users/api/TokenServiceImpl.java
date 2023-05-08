@@ -64,6 +64,9 @@ public class TokenServiceImpl implements TokenService {
             String email = user.getEmail();
 
             String savedRefreshToken = redisHandler.getValues(email);
+            if (savedRefreshToken == null) {
+                throw new AuthenticationException("No RTK in redis.");
+            }
             if (!savedRefreshToken.equals(refreshToken)) {
                 redisHandler.deleteValues(email);
             }
