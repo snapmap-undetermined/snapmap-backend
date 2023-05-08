@@ -57,9 +57,6 @@ public class Users extends BaseTimeEntity {
     @Builder.Default
     private List<UserPocket> userPocketList = new ArrayList<>();
 
-    @OneToOne
-    private RefreshToken refreshToken;
-
     private Boolean activated;
 
     public void addPin(Pin pin) {
