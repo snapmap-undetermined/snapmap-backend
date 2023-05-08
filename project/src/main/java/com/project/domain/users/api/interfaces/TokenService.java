@@ -13,7 +13,7 @@ public interface TokenService {
 
     JwtBuilder generateTokenBuilderByEmailAndExpiration(String email, Long expiredAt);
     TokenDTO generateAccessTokenAndRefreshToken(String email, Users user);
-    void verifyToken(String authToken, Boolean isRefreshToken) throws AuthenticationException;
+    void verifyToken(String authToken) throws AuthenticationException;
     Long getUserId(String authToken);
 
     Role getUserRole(String authToken);
