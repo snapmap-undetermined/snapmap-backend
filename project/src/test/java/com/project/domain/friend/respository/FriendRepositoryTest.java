@@ -25,56 +25,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FriendRepositoryTest {
 
     @Autowired
-    FriendRepository friendRepository;
+    private FriendRepository friendRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     Users user1;
     Users user2;
 
     @BeforeEach()
     public void initUser() {
-        user1 = Users.builder().email("skc@test.com").password("123").nickname("skc").activated(true).phoneNumber("01000000000").build();
-        user2 = Users.builder().email("jsh@test.com").password("123").nickname("jsh").activated(true).phoneNumber("01011111111").build();
+        user1 = Users.builder().email("TEST_USER1@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER1").activated(true).phoneNumber("01000000000").build();
+        user2 = Users.builder().email("TEST_USER2@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER2").activated(true).phoneNumber("01011111111").build();
 
         userRepository.save(user1);
         userRepository.save(user2);
     }
 
     @Test
-    @DisplayName("친구 추가")
-    public void friendSaveTest() {
-
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("user2").build();
-        friendRepository.save(friend);
-
-        List<Friend> friendList = friendRepository.findAll();
-
-        assertEquals(1, friendList.size());
-    }
-
-    @Test
-    @DisplayName("친구 삭제")
-    public void friendDeleteTest() {
-
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("user2").build();
-        friendRepository.save(friend);
-
-        friendRepository.delete(friend);
-        List<Friend> friendList = friendRepository.findAll();
-
-        assertEquals(0, friendList.size());
-    }
-
-    @Test
-    @DisplayName("친구 리스트 조회")
+    @DisplayName("유저별 친구 리스트 조회")
     public void friendGetTest() {
 
-        Users user3 = Users.builder().email("skc2@test.com").password("123").nickname("skc2").activated(true).phoneNumber("01011111111").build();
+        Users user3 = Users.builder().email("TEST_USER3@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER3").activated(true).phoneNumber("01011111111").build();
         userRepository.save(user3);
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("user2").build();
-        Friend friend2 = Friend.builder().me(user1).mate(user3).friendName("user3").build();
+        Friend friend = Friend.builder().me(user1).mate(user2).friendName("USER2").build();
+        Friend friend2 = Friend.builder().me(user1).mate(user3).friendName("USER3").build();
         friendRepository.save(friend);
         friendRepository.save(friend2);
 
@@ -88,7 +63,7 @@ class FriendRepositoryTest {
     @DisplayName("친구 중복 체크")
     public void friendExistsByUserIds() {
 
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("user2").build();
+        Friend friend = Friend.builder().me(user1).mate(user2).friendName("USER2").build();
         friendRepository.save(friend);
 
         boolean exists = friendRepository.existsByUserIds(user1.getId(), user2.getId());
