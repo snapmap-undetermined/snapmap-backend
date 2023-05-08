@@ -1,5 +1,6 @@
 package com.project.domain.users.api;
 
+import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.exception.InvalidValueException;
 import com.project.common.handler.RedisHandler;
@@ -17,6 +18,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.util.Random;
 
 @Service
@@ -66,6 +68,16 @@ public class AuthServiceImpl implements AuthService {
 
         return new UserDTO.LoginResponse(user, tokenDTO.getAccessToken(), tokenDTO.getRefreshToken());
     }
+
+    @Override
+    public TokenDTO reissue(String refreshToken) throws AuthenticationException {
+        tokenService.verifyToken(refreshToken, true);
+        String email = tokenService.getUserEmail(refreshToken);
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User does not exist."));
+        return tokenService.generateAccessTokenAndRefreshToken(email, user);
+    }
+
+
 
     @Override
     public void sendAuthEmail(UserDTO.EmailRequest emailRequest) throws Exception {

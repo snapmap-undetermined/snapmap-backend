@@ -1,6 +1,7 @@
 package com.project.domain.users.api;
 
 import com.project.auth.JwtConfigurer;
+import com.project.common.exception.InvalidValueException;
 import com.project.domain.users.api.interfaces.TokenService;
 import com.project.domain.users.dto.TokenDTO;
 import com.project.domain.users.entity.RefreshToken;
@@ -8,18 +9,18 @@ import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.RefreshTokenRepository;
 import com.project.domain.users.repository.UserRepository;
 import com.project.common.entity.Role;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import javax.naming.AuthenticationException;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,8 +59,23 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void verifyToken(String authToken, Boolean isRefreshToken) {
-
+    public void verifyToken(String authToken, Boolean isRefreshToken) throws AuthenticationException {
+        try {
+            Claims body = parse(authToken).getBody();
+            if (isRefreshToken) {
+                Users user = userRepository.findByEmail(body.getSubject()).orElseThrow(() -> new EntityNotFoundException("User Does not exist."));
+                String refreshToken = user.getRefreshToken().getToken();
+                if (refreshToken == null || !refreshToken.equals(authToken)) {
+                    throw new AccessDeniedException("Access Denied.");
+                }
+            } else {
+                if (body.get("type") != "access") {
+                    throw new InvalidValueException("Token Type invalid.");
+                }
+            }
+        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new AuthenticationException(e.getMessage());
+        }
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.project.domain.users.api.interfaces;
 
+import com.project.domain.users.dto.TokenDTO;
 import com.project.domain.users.dto.UserDTO;
+
+import javax.naming.AuthenticationException;
 
 public interface AuthService {
 
@@ -11,4 +14,6 @@ public interface AuthService {
     void sendAuthEmail(UserDTO.EmailRequest emailRequest) throws Exception;
 
     Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest);
+
+    TokenDTO reissue(String refreshToken) throws AuthenticationException;
 }
