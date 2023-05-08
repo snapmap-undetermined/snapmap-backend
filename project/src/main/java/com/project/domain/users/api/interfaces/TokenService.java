@@ -7,11 +7,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 
+import javax.naming.AuthenticationException;
+
 public interface TokenService {
 
     JwtBuilder generateTokenBuilderByEmailAndExpiration(String email, Long expiredAt);
     TokenDTO generateAccessTokenAndRefreshToken(String email, Users user);
-    void verifyToken(String authToken, Boolean isRefreshToken);
+    void verifyToken(String authToken, Boolean isRefreshToken) throws AuthenticationException;
     Long getUserId(String authToken);
 
     Role getUserRole(String authToken);
