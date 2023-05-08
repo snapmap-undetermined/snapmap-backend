@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -71,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDTO reissue(String refreshToken) throws AuthenticationException {
-        tokenService.verifyToken(refreshToken, true);
+        tokenService.verifyToken(refreshToken);
         String email = tokenService.getUserEmail(refreshToken);
         Users user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User does not exist."));
         return tokenService.generateAccessTokenAndRefreshToken(email, user);
@@ -90,13 +91,13 @@ public class AuthServiceImpl implements AuthService {
         MimeMessage message = messageHelper(mimeMessage, email, authEmailKey);
 
         javaMailSender.send(message);
-        redisHandler.setDataExpire(authEmailKey, email, expireTime);
+        redisHandler.setValuesWithTimeout(authEmailKey, email, expireTime);
     }
 
     @Override
     public Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest) {
 
-        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getData(validateEmailRequest.getAuthEmailKey()));
+        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getValues(validateEmailRequest.getAuthEmailKey()));
     }
 
     private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {

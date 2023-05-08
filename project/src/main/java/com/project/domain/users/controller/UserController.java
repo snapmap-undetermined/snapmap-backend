@@ -52,8 +52,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = TokenDTO.class)))})
     @Operation(summary = "토큰 재발급", description = "Refresh 토큰을 통해 Access 토큰을 재발급한다.")
     @PostMapping("/reissue")
-    private ResponseEntity<TokenDTO> reissue(TokenDTO request) throws AuthenticationException {
-        String refreshToken = request.getRefreshToken();
+    private ResponseEntity<TokenDTO> reissue(@RequestHeader("Authorization") String refreshToken) throws AuthenticationException {
         TokenDTO reissued = authService.reissue(refreshToken);
         return new ResponseEntity<>(reissued, HttpStatus.OK);
     }
