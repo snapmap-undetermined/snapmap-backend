@@ -4,6 +4,7 @@ import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.handler.S3Uploader;
+import com.project.domain.picture.entity.Picture;
 import com.project.domain.pocket.dto.PocketDTO;
 import com.project.domain.pocket.entity.Pocket;
 import com.project.domain.pocket.repository.PocketRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -184,8 +186,8 @@ public class PocketServiceImpl implements PocketService {
             pocket.setName(request.getPocketName());
             pocket.setDescription(request.getDescription());
             if (picture != null && !picture.isEmpty()) {
-                String imageUrl = s3Uploader.uploadAndSaveImage(picture);
-                pocket.setImageUrl(imageUrl);
+                List<Picture> pictureList = s3Uploader.uploadAndSavePictures(Collections.singletonList(picture));
+                pocket.setImageUrl(pictureList.get(0).getUrl());
             }
         } else {
             throw new BusinessLogicException("Only the manager can modify group settings.", ErrorCode.POCKET_MANAGER_ERROR);
