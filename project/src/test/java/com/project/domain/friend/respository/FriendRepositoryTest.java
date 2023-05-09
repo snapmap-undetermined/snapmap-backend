@@ -44,7 +44,7 @@ class FriendRepositoryTest {
 
     @Test
     @DisplayName("유저별 친구 리스트 조회")
-    public void friendGetTest() {
+    public void find_all_friends_by_user_id() {
 
         Users user3 = Users.builder().email("TEST_USER3@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER3").activated(true).phoneNumber("01011111111").build();
         userRepository.save(user3);
@@ -61,8 +61,7 @@ class FriendRepositoryTest {
 
     @Test
     @DisplayName("친구 중복 체크")
-    public void friendExistsByUserIds() {
-
+    public void friend_exists_by_user_ids() {
         Friend friend = Friend.builder().me(user1).mate(user2).friendName("USER2").build();
         friendRepository.save(friend);
 
