@@ -22,26 +22,13 @@ public class PocketRepositoryCustomImpl implements PocketRepositoryCustom {
     public List<Pocket> findAllPocketByUserId(Long userId) {
         return query
                 .selectFrom(pocket)
-                .innerJoin(pocket.userPocketList,userPocket )
+                .innerJoin(pocket.userPocketList, userPocket)
                 .fetchJoin()
                 .where(userPocket.user.id.eq(userId))
                 .where(userPocket.activated.eq(true))
                 .distinct()
                 .fetch();
 
-    }
-
-    @Override
-    public List<Users> findAllUserByPocketId(Long pocketId) {
-
-        return query
-                .selectFrom(users)
-                .innerJoin(users.userPocketList, userPocket)
-                .fetchJoin()
-                .where(userPocket.pocket.id.eq(pocketId))
-                .where(userPocket.activated.eq(true))
-                .distinct()
-                .fetch();
     }
 
     @Override

@@ -10,8 +10,6 @@ public interface PocketRepositoryCustom {
 
     List<Pocket> findAllPocketByUserId(Long userId);
 
-    List<Users> findAllUserByPocketId(Long pocket);
-
     Pocket findPocketByKey(String key);
 
 }
