@@ -3,6 +3,7 @@ package com.project.domain.users.controller;
 import com.project.common.annotation.AuthUser;
 import com.project.common.annotation.Permission;
 import com.project.domain.users.api.interfaces.UserService;
+import com.project.domain.users.dto.TokenDTO;
 import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.entity.Users;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.naming.AuthenticationException;
 
 
 @Tag(name = "유저 API", description = "User Controller")
@@ -44,6 +47,14 @@ public class UserController {
     private ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest loginRequest) throws Exception {
         UserDTO.LoginResponse response = authService.login(loginRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = TokenDTO.class)))})
+    @Operation(summary = "토큰 재발급", description = "Refresh 토큰을 통해 Access 토큰을 재발급한다.")
+    @PostMapping("/reissue")
+    private ResponseEntity<TokenDTO> reissue(@RequestHeader("Authorization") String refreshToken) throws AuthenticationException {
+        TokenDTO reissued = authService.reissue(refreshToken);
+        return new ResponseEntity<>(reissued, HttpStatus.OK);
     }
 
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.UserSimpleInfoResponse.class)))})

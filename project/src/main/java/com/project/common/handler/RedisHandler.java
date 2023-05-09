@@ -1,38 +1,35 @@
 package com.project.common.handler;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class RedisHandler {
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    // key 를 통해 value 리턴
-    public String getData(String key) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        return valueOperations.get(key);
+    @Transactional
+    public void setValues(String key, String value){
+        redisTemplate.opsForValue().set(key, value);
     }
 
-    public void setData(String key, String value) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(key, value);
+    // 만료시간 설정 -> 자동 삭제
+    @Transactional
+    public void setValuesWithTimeout(String key, String value, long timeout){
+        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
     }
 
-    // 유효 시간 동안 (key, value) 저장
-    public void setDataExpire(String key, String value, long duration) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        Duration expireDuration = Duration.ofSeconds(duration);
-        valueOperations.set(key, value, expireDuration);
+    public String getValues(String key){
+        return redisTemplate.opsForValue().get(key);
     }
 
-    // 삭제
-    public void deleteData(String key) {
+    @Transactional
+    public void deleteValues(String key) {
         redisTemplate.delete(key);
     }
 }

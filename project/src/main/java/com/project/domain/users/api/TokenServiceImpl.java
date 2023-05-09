@@ -1,24 +1,23 @@
 package com.project.domain.users.api;
 
 import com.project.auth.JwtConfigurer;
+import com.project.common.exception.InvalidValueException;
+import com.project.common.handler.RedisHandler;
 import com.project.domain.users.api.interfaces.TokenService;
 import com.project.domain.users.dto.TokenDTO;
-import com.project.domain.users.entity.RefreshToken;
 import com.project.domain.users.entity.Users;
-import com.project.domain.users.repository.RefreshTokenRepository;
 import com.project.domain.users.repository.UserRepository;
 import com.project.common.entity.Role;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import javax.naming.AuthenticationException;
 import java.util.Date;
 
 @Service
@@ -26,8 +25,8 @@ import java.util.Date;
 public class TokenServiceImpl implements TokenService {
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtConfigurer jwtConfigurer;
+    private final RedisHandler redisHandler;
 
 
     @Override
@@ -53,13 +52,27 @@ public class TokenServiceImpl implements TokenService {
         String accessToken = accessTokenBuilder.setAudience(user.getEmail()).claim("type", "access").compact();
         String refreshToken = refreshTokenBuilder.setAudience(user.getEmail()).claim("type", "refresh").compact();
 
-        refreshTokenRepository.save(RefreshToken.builder().token(refreshToken).build());
+        redisHandler.setValuesWithTimeout(user.getEmail(), refreshToken, jwtConfigurer.getRefreshTokenExp());
         return new TokenDTO(accessToken, refreshToken);
     }
 
     @Override
-    public void verifyToken(String authToken, Boolean isRefreshToken) {
+    public void verifyToken(String refreshToken) throws AuthenticationException {
+        try {
+            Claims body = parse(refreshToken).getBody();
+            Users user = userRepository.findByEmail(body.getSubject()).orElseThrow(() -> new EntityNotFoundException("User Does not exist."));
+            String email = user.getEmail();
 
+            String savedRefreshToken = redisHandler.getValues(email);
+            if (savedRefreshToken == null) {
+                throw new AuthenticationException("No RTK in redis.");
+            }
+            if (!savedRefreshToken.equals(refreshToken)) {
+                redisHandler.deleteValues(email);
+            }
+        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new AuthenticationException(e.getMessage());
+        }
     }
 
     @Override

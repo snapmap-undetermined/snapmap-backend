@@ -1,5 +1,6 @@
 package com.project.domain.users.api;
 
+import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.exception.InvalidValueException;
 import com.project.common.handler.RedisHandler;
@@ -9,7 +10,6 @@ import com.project.domain.users.api.interfaces.AuthService;
 import com.project.domain.users.dto.TokenDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -71,6 +73,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public TokenDTO reissue(String refreshToken) throws AuthenticationException {
+        tokenService.verifyToken(refreshToken);
+        String email = tokenService.getUserEmail(refreshToken);
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User does not exist."));
+        return tokenService.generateAccessTokenAndRefreshToken(email, user);
+    }
+
+
+
+    @Override
     public void sendAuthEmail(UserDTO.EmailRequest emailRequest) throws Exception {
 
         Random random = new Random();
@@ -81,13 +93,13 @@ public class AuthServiceImpl implements AuthService {
         MimeMessage message = messageHelper(mimeMessage, email, authEmailKey);
 
         javaMailSender.send(message);
-        redisHandler.setDataExpire(authEmailKey, email, expireTime);
+        redisHandler.setValuesWithTimeout(authEmailKey, email, expireTime);
     }
 
     @Override
     public Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest) {
 
-        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getData(validateEmailRequest.getAuthEmailKey()));
+        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getValues(validateEmailRequest.getAuthEmailKey()));
     }
 
     private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {
