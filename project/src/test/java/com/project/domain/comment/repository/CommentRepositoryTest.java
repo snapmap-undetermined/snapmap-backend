@@ -65,8 +65,8 @@ public class CommentRepositoryTest {
     @DisplayName("해당 핀이 가지고 있는 가장 마지막 댓글 순서 번호를 조회 한다.")
     public void get_last_pin_comment_order() {
 
-        PinComment testPinComment = createTestPinComment(testPin,testUser, 1L);
-        PinComment testPinComment2 = createTestPinComment(testPin,testUser, 2L);
+        createTestPinComment(testPin,testUser, 1L);
+        createTestPinComment(testPin,testUser, 2L);
 
         Long lastPinCommentOrder = pinCommentRepository.getLastPinCommentOrder(testPin.getId());
 
@@ -74,8 +74,8 @@ public class CommentRepositoryTest {
 
     }
 
-    private PinComment createTestPinComment(Pin testPin, Users testUser, Long commentOrder) {
-        return pinCommentRepository.save(PinComment.builder().commentOrder(commentOrder).text("TEST_COMMENT_TEXT").pin(testPin).writer(testUser).isDeleted(false).build());
+    private void createTestPinComment(Pin testPin, Users testUser, Long commentOrder) {
+        pinCommentRepository.save(PinComment.builder().commentOrder(commentOrder).text("TEST_COMMENT_TEXT").pin(testPin).writer(testUser).isDeleted(false).build());
     }
 
 }
