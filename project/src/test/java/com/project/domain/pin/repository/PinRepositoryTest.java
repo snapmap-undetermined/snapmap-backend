@@ -1,11 +1,9 @@
-package com.project.domain.pin;
+package com.project.domain.pin.repository;
 
 import com.project.config.TestConfig;
 import com.project.domain.pin.entity.Pin;
-import com.project.domain.pin.repository.PinRepository;
 import com.project.domain.pocket.entity.Pocket;
 import com.project.domain.pocket.repository.PocketRepository;
-import com.project.domain.userpocket.entity.UserPocket;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import(TestConfig.class)
@@ -52,17 +49,18 @@ public class PinRepositoryTest {
 
         Pocket pocket = Pocket.builder().master(testUser).pocketKey("POCKET1_KEY").description("TEST_POCKET1_DESC").name("TEST_POCKET1").imageUrl("IMAGE_URL").build();
         pocketRepository.save(pocket);
-        Pin testPin1 = Pin.builder().user(testUser).pocket(pocket).build();
-        Pin testPin2 = Pin.builder().user(testUser).pocket(pocket).build();
-        Pin testPin3 = Pin.builder().user(testUser).pocket(pocket).build();
-        pinRepository.save(testPin1);
-        pinRepository.save(testPin2);
-        pinRepository.save(testPin3);
+        Pin testPin1 = createTestPin(testUser, pocket);
+        Pin testPin2 = createTestPin(testUser, pocket);
+        Pin testPin3 = createTestPin(testUser, pocket);
 
         Pageable pageable = PageRequest.of(0, 3);
         Page<Pin> allPins = pinRepository.findAllByPocketId(pocket.getId(), pageable);
         List<Pin> pinList = allPins.getContent();
 
         assertEquals(3, pinList.size());
+    }
+
+    private Pin createTestPin(Users testUser, Pocket pocket) {
+        return pinRepository.save(Pin.builder().user(testUser).pocket(pocket).build());
     }
 }
