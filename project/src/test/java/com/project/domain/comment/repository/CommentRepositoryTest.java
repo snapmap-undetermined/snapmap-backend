@@ -35,42 +35,44 @@ public class CommentRepositoryTest {
     @Autowired
     private PocketRepository pocketRepository;
 
-    Users testUser;
+    private Users testUser;
 
-    Pin testPin;
+    private Pin testPin;
 
     @BeforeEach
-    public void initData() {
+    public void init() {
+
         testUser = Users.builder().email("TEST@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_NICKNAME").activated(true).phoneNumber("01000000000").build();
         userRepository.save(testUser);
+        // 핀 생성을 위한 testPocket 생성
         Pocket testPocket = Pocket.builder().master(testUser).pocketKey("POCKET1_KEY").description("TEST_POCKET1_DESC").name("TEST_POCKET1").imageUrl("IMAGE_URL").build();
         pocketRepository.save(testPocket);
-        testPin = Pin.builder().user(testUser).pocket(testPocket).build();
-        pinRepository.save(testPin);
+
+        pinRepository.save(Pin.builder().user(testUser).pocket(testPocket).build());
     }
 
     @Test
-    @DisplayName("댓글 순서 번호로 댓글을 조회 한다.")
+    @DisplayName("댓글 순서 번호로 댓글을 조회한다.")
     public void find_comment_by_comment_order() {
 
         PinComment testPinComment = PinComment.builder().commentOrder(1L).text("TEST_COMMENT_TEXT").pin(testPin).writer(testUser).isDeleted(false).build();
         pinCommentRepository.save(testPinComment);
 
-        PinComment pinComment = pinCommentRepository.findByCommentOrder(1L);
+        PinComment result = pinCommentRepository.findByCommentOrder(1L);
 
-        assertEquals("TEST_COMMENT_TEXT", pinComment.getText());
+        assertEquals(testPinComment, result);
     }
 
     @Test
-    @DisplayName("해당 핀이 가지고 있는 가장 마지막 댓글 순서 번호를 조회 한다.")
+    @DisplayName("해당 핀이 가지고 있는 가장 마지막 댓글 순서 번호를 조회한다.")
     public void get_last_pin_comment_order() {
 
-        createTestPinComment(testPin,testUser, 1L);
-        createTestPinComment(testPin,testUser, 2L);
+        createTestPinComment(testPin, testUser, 1L);
+        createTestPinComment(testPin, testUser, 2L);
 
-        Long lastPinCommentOrder = pinCommentRepository.getLastPinCommentOrder(testPin.getId());
+        Long result = pinCommentRepository.getLastPinCommentOrder(testPin.getId());
 
-        assertEquals(2L,lastPinCommentOrder);
+        assertEquals(2L, result);
 
     }
 

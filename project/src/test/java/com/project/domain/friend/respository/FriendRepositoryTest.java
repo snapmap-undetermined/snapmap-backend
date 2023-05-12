@@ -30,11 +30,12 @@ class FriendRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    Users user1;
-    Users user2;
+    private Users user1;
+    private Users user2;
 
     @BeforeEach()
-    public void initUser() {
+    public void init() {
+
         user1 = Users.builder().email("TEST_USER1@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER1").activated(true).phoneNumber("01000000000").build();
         user2 = Users.builder().email("TEST_USER2@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER2").activated(true).phoneNumber("01011111111").build();
 
@@ -43,14 +44,15 @@ class FriendRepositoryTest {
     }
 
     @Test
-    @DisplayName("유저별 친구 리스트 조회")
+    @DisplayName("유저의 모든 친구를 조회한다.")
     public void find_all_friends_by_user_id() {
 
-        Users user3 = Users.builder().email("TEST_USER3@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER3").activated(true).phoneNumber("01011111111").build();
-        userRepository.save(user3);
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("USER2").build();
-        Friend friend2 = Friend.builder().me(user1).mate(user3).friendName("USER3").build();
-        friendRepository.save(friend);
+        Users user = Users.builder().email("TEST_USER3@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_USER3").activated(true).phoneNumber("01011111111").build();
+        userRepository.save(user);
+
+        Friend friend1 = Friend.builder().me(user1).mate(user2).friendName("FRIEND2").build();
+        Friend friend2 = Friend.builder().me(user1).mate(user).friendName("FRIEND").build();
+        friendRepository.save(friend1);
         friendRepository.save(friend2);
 
         List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(user1.getId());
@@ -60,9 +62,9 @@ class FriendRepositoryTest {
     }
 
     @Test
-    @DisplayName("친구 중복 체크")
+    @DisplayName("친구 관계를 맺을 때 중복 체크를 한다.")
     public void friend_exists_by_user_ids() {
-        Friend friend = Friend.builder().me(user1).mate(user2).friendName("USER2").build();
+        Friend friend = Friend.builder().me(user1).mate(user2).friendName("FRIEND2").build();
         friendRepository.save(friend);
 
         boolean exists = friendRepository.existsByUserIds(user1.getId(), user2.getId());

@@ -35,32 +35,36 @@ public class PinRepositoryTest {
     @Autowired
     private PocketRepository pocketRepository;
 
-    Users testUser;
+    private Users testUser;
 
     @BeforeEach
-    void initData() {
+    void init() {
         testUser = Users.builder().email("TEST@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_NICKNAME").activated(true).phoneNumber("01000000000").build();
         userRepository.save(testUser);
     }
 
     @Test
-    @DisplayName("포켓에 들어있는 모든 핀들을 조회 한다.")
+    @DisplayName("포켓에 들어있는 모든 핀들을 조회한다.")
     public void find_all_pin_by_pocket_id() {
 
         Pocket pocket = Pocket.builder().master(testUser).pocketKey("POCKET1_KEY").description("TEST_POCKET1_DESC").name("TEST_POCKET1").imageUrl("IMAGE_URL").build();
         pocketRepository.save(pocket);
-        Pin testPin1 = createTestPin(testUser, pocket);
-        Pin testPin2 = createTestPin(testUser, pocket);
-        Pin testPin3 = createTestPin(testUser, pocket);
 
-        Pageable pageable = PageRequest.of(0, 3);
-        Page<Pin> allPins = pinRepository.findAllByPocketId(pocket.getId(), pageable);
-        List<Pin> pinList = allPins.getContent();
+        for (int i = 0; i < 15; i++) {
+            createTestPin(testUser, pocket);
+        }
+        Pageable firstPage = PageRequest.of(0, 10);
+        Pageable secondPage = PageRequest.of(1, 10);
 
-        assertEquals(3, pinList.size());
+        Page<Pin> firstPagePins = pinRepository.findAllByPocketId(pocket.getId(), firstPage);
+        Page<Pin> secondPagePins = pinRepository.findAllByPocketId(pocket.getId(), secondPage);
+        
+        int totalPinsSize = firstPagePins.getContent().size() + secondPagePins.getContent().size();
+
+        assertEquals(15, totalPinsSize);
     }
 
-    private Pin createTestPin(Users testUser, Pocket pocket) {
-        return pinRepository.save(Pin.builder().user(testUser).pocket(pocket).build());
+    private void createTestPin(Users testUser, Pocket pocket) {
+        pinRepository.save(Pin.builder().user(testUser).pocket(pocket).build());
     }
 }

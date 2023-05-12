@@ -32,10 +32,10 @@ public class PocketRepositoryTest {
     @Autowired
     private UserPocketRepository userPocketRepository;
 
-    Users testUser;
+    private Users testUser;
 
     @BeforeEach
-    void initData() {
+    void init() {
         testUser = Users.builder().email("TEST@EMAIL.COM").password("TEST_PASSWORD").nickname("TEST_NICKNAME").activated(true).phoneNumber("01000000000").build();
         userRepository.save(testUser);
     }
@@ -57,7 +57,7 @@ public class PocketRepositoryTest {
     }
 
     @Test
-    @DisplayName("특정 유저가 속한 포켓 리스트를 조회 한다.")
+    @DisplayName("특정 유저가 속한 포켓 리스트를 조회한다.")
     public void find_all_pocket_by_user_id() {
 
         Pocket pocket = Pocket.builder().master(testUser).pocketKey("POCKET1_KEY").description("TEST_POCKET1_DESC").name("TEST_POCKET1").imageUrl("IMAGE_URL").build();
