@@ -65,7 +65,6 @@ public class PinServiceImpl implements PinService {
             PinTag pinTag = PinTag.builder().pin(pin).tag(tag).build();
             pin.addPinTag(pinTag);
         }
-
         List<Picture> pictureList = s3Uploader.uploadAndSavePictures(pictures);
         pictureList.forEach(pin::addPicture);
         pinRepository.save(pin);

@@ -1,10 +1,14 @@
 package com.project.common.handler;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.project.common.exception.BusinessLogicException;
 import com.project.common.exception.ErrorCode;
+import com.project.common.utils.FileUtils;
+import com.project.domain.picture.dto.PictureDetail;
 import com.project.domain.picture.entity.Picture;
 import com.project.domain.picture.repository.PictureRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +28,7 @@ import java.util.*;
 public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${cloud.aws.pinnit-cloud-front-domain}")
+    @Value("${cloud.aws.cloud-front-domain}")
     private String cloudFrontDomain;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -32,39 +36,32 @@ public class S3Uploader {
 
     private final PictureRepository pictureRepository;
 
-    public Map<String, String> upload(MultipartFile multipartFile, String dirName) {
-        File uploadFile = convert(multipartFile).orElseThrow(() ->
-                new BusinessLogicException("Convert MultipartFile to File Failed.", ErrorCode.IMAGE_PROCESSING_ERROR));
-        return upload(uploadFile, dirName);
-    }
+    public void upload(MultipartFile multipartFile, String path) {
+        File uploadFile = convert(multipartFile, path).orElseThrow(() ->
+                new BusinessLogicException("Convert multipartFile to File failed.", ErrorCode.IMAGE_PROCESSING_ERROR));
 
-    private Map<String, String> upload(File uploadFile, String dirName) {
-        Map<String, String> result = new HashMap<>();
-        String fileName = uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        result.put("originalName", uploadFile.getName());
-        result.put("uploadUrl", "https://" + cloudFrontDomain + "/" + uploadImageUrl);
-        return result;
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return fileName;
-    }
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("targetFile : {} is deleted.", targetFile.getName());
-        } else {
-            log.error("targetFile : {} is not deleted.", targetFile.getName());
+        try {
+            multipartFile.transferTo(uploadFile);
+            putS3(uploadFile, path);
+        } catch (IOException e) {
+            throw new BusinessLogicException("MultipartFile transfer failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
+        } catch (SdkClientException e) {
+            throw new BusinessLogicException("Upload to S3 failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
+        } finally {
+            if (uploadFile.delete()) {
+                log.info("targetFile : {} is deleted.", uploadFile.getName());
+            } else {
+                log.error("targetFile : {} is not deleted.", uploadFile.getName());
+            }
         }
     }
 
-    private Optional<File> convert(MultipartFile file) {
-        File convertFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        log.info("MultipartFile -> File converted : {} -> {}", file.getOriginalFilename(), convertFile.getName());
+    private void putS3(File uploadFile, String path) {
+        amazonS3Client.putObject(new PutObjectRequest(bucket, path, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    }
 
+    private Optional<File> convert(MultipartFile file, String fullPath) {
+        File convertFile = new File(FileUtils.getLocalHomeDirectory(), fullPath);
         try {
             if (convertFile.createNewFile()) {
                 try (FileOutputStream fos = new FileOutputStream(convertFile)) {
@@ -79,19 +76,13 @@ public class S3Uploader {
     }
 
     public List<Picture> uploadAndSavePictures(List<MultipartFile> pictureList) {
-        return pictureList.stream().map((p) -> {
+        return pictureList.stream().map((picture) -> {
+            PictureDetail pictureDetail = PictureDetail.multipartOf(picture);
             // S3에 사진 업로드
-            Map<String, String> result = upload(p, "static");
-            String pictureName = result.get("originalName");
-            String uploadUrl = result.get("uploadUrl");
+            String path = pictureDetail.getPath();
+            upload(picture, path);
             // Picture 생성
-            return pictureRepository.save(Picture.builder().originalName(pictureName).url(uploadUrl).build());
+            return pictureRepository.save(Picture.builder().originalName(pictureDetail.getName()).url("https://" + cloudFrontDomain + "/" + path).build());
         }).toList();
-    }
-
-    public String uploadAndSaveImage(MultipartFile picture) {
-        // S3에 사진 업로드
-        Map<String, String> result = upload(picture, "static");
-        return result.get("uploadUrl");
     }
 }
