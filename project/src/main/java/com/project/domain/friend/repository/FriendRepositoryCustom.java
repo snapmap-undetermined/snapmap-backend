@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface FriendRepositoryCustom {
 
-    List<Friend> findAllByUserId(Long userId);
-
     boolean existsByUserIds(Long myId, Long friendId);
 
     List<FriendDTO.FriendResponse> findAllFriendsOfUser(Long userId);
