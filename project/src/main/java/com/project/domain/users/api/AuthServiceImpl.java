@@ -81,7 +81,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-
     @Override
     public void sendAuthEmail(UserDTO.EmailRequest emailRequest) throws Exception {
 
@@ -93,13 +92,13 @@ public class AuthServiceImpl implements AuthService {
         MimeMessage message = messageHelper(mimeMessage, email, authEmailKey);
 
         javaMailSender.send(message);
-        redisHandler.setValuesWithTimeout(authEmailKey, email, expireTime);
+        redisHandler.setValuesWithTimeout(email, authEmailKey, expireTime);
     }
 
     @Override
     public Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest) {
 
-        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getValues(validateEmailRequest.getAuthEmailKey()));
+        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getValues(validateEmailRequest.getEmail()));
     }
 
     private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {
