@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JavaMailSender javaMailSender;
     private final RedisHandler redisHandler;
 
-    private static final Long expireTime = 60 * 5L;
+    private static final Long expireTime = 6000 * 5L;
 
     @Override
     @Transactional
