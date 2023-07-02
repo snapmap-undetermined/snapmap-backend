@@ -6,41 +6,53 @@ import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public UserDTO.UserSimpleInfoResponse getUserByNickname(String nickname) {
-
-        Users user = userRepository.findByNickname(nickname).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
-
+        Users user = userRepository.findByNickname(nickname).orElse(null);
+        if (user == null) {
+            log.info("user nickname : {} does not exist", nickname);
+            throw new EntityNotFoundException("User does not exist.");
+        }
         return new UserDTO.UserSimpleInfoResponse(user);
     }
 
     @Override
     @Transactional
     public UserDTO.UserSimpleInfoResponse updateUser(Long userId, UserDTO.UpdateUserRequest request) {
-        Users user = getUser(userId);
-        user.setNickname(request.getNickname());
-        user.setProfileImage(request.getProfileImage());
+        Users user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            log.info("userId : {} does not exist", userId);
+            throw new EntityNotFoundException("User does not exist.");
+        }
+        if (request.getNickname() != null) {
+            log.info("user nickname updated {} -> {}", user.getNickname(), request.getNickname());
+            user.updateNickname(request.getNickname());
+        }
+        if (request.getProfileImage() != null) {
+            user.updateProfileImage(request.getProfileImage());
+        }
         return new UserDTO.UserSimpleInfoResponse(user);
     }
 
     @Override
-    public void deleteUser(Users users) {
-        Users user = getUser(users.getId());
+    public void deleteUser(Users user) {
+        Users targetUser = userRepository.findById(user.getId()).orElse(null);
+        if (targetUser == null) {
+            log.info("userId : {} does not exist", user.getId());
+            throw new EntityNotFoundException("User does not exist.");
+        }
         userRepository.delete(user);
-    }
-
-    private Users getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 입니다."));
     }
 }

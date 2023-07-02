@@ -4,26 +4,28 @@ import com.project.common.exception.EntityNotFoundException;
 import com.project.common.exception.ErrorCode;
 import com.project.common.exception.InvalidValueException;
 import com.project.common.handler.RedisHandler;
-import com.project.domain.users.api.interfaces.TokenService;
-import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.api.interfaces.AuthService;
+import com.project.domain.users.api.interfaces.TokenService;
 import com.project.domain.users.dto.TokenDTO;
+import com.project.domain.users.dto.UserDTO;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
-import java.util.Objects;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -38,10 +40,12 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public UserDTO.SignUpResponse signUp(UserDTO.SignUpRequest signUpRequest) {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+            log.info("Already registered email, email : {}", signUpRequest.getEmail());
             throw new InvalidValueException("Already registered email.", ErrorCode.EMAIL_DUPLICATION);
         }
 
         if (userRepository.findByNickname(signUpRequest.getNickname()).isPresent()) {
+            log.info("Already registered nickname, nickname : {}", signUpRequest.getNickname());
             throw new InvalidValueException("Already existing nickname.", ErrorCode.NICKNAME_DUPLICATION);
         }
 
@@ -50,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 토큰 발급
         TokenDTO tokenDTO = tokenService.generateAccessTokenAndRefreshToken(signUpRequest.getEmail(), user);
+        log.info("token for userId {} generated, token : {}", user.getId(), tokenDTO.getAccessToken());
 
         return new UserDTO.SignUpResponse(user, tokenDTO.getAccessToken(), tokenDTO.getRefreshToken());
     }
@@ -59,15 +64,20 @@ public class AuthServiceImpl implements AuthService {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
 
-        Users user = userRepository.findByEmail(email).orElseThrow(() ->
-                new InvalidValueException("Email or password is invalid.", ErrorCode.LOGIN_INPUT_INVALID));
+        Users user = userRepository.findByEmail(email).orElseThrow(() -> {
+            log.info("Login email : {} is invalid", email);
+            throw new InvalidValueException("Email or password is invalid.", ErrorCode.LOGIN_INPUT_INVALID);
+
+        });
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.info("Login password : {} is invalid", password);
             throw new InvalidValueException("Email or password is invalid.", ErrorCode.LOGIN_INPUT_INVALID);
         }
 
         // 토큰 발급
         TokenDTO tokenDTO = tokenService.generateAccessTokenAndRefreshToken(email, user);
+        log.info("token for userId {} re-generated, token : {}", user.getId(), tokenDTO.getAccessToken());
 
         return new UserDTO.LoginResponse(user, tokenDTO.getAccessToken(), tokenDTO.getRefreshToken());
     }
@@ -90,15 +100,21 @@ public class AuthServiceImpl implements AuthService {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessage message = messageHelper(mimeMessage, email, authEmailKey);
+        log.info("Auth email message : {}", message.getSubject());
 
-        javaMailSender.send(message);
+        try {
+            javaMailSender.send(message);
+        } catch (MailException e) {
+            log.error("Send Auth Email failed, {}", e.getMessage());
+        }
         redisHandler.setValuesWithTimeout(email, authEmailKey, expireTime);
     }
 
     @Override
     public Boolean validateAuthEmail(UserDTO.EmailValidateCodeRequest validateEmailRequest) {
-
-        return validateEmailRequest.getAuthEmailKey().equals(redisHandler.getValues(validateEmailRequest.getEmail()));
+        String savedAuthEmailKey = redisHandler.getValues(validateEmailRequest.getEmail());
+        log.info("validated AuthEmail, authEmailKey : {}, savedEmailKey : {}", validateEmailRequest.getAuthEmailKey(), savedAuthEmailKey);
+        return validateEmailRequest.getAuthEmailKey().equals(savedAuthEmailKey);
     }
 
     private MimeMessage messageHelper(MimeMessage mimeMessage, String email, String authEmailKey) throws Exception {

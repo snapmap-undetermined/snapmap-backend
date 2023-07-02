@@ -35,7 +35,6 @@ public class PictureCommentController {
     @PostMapping("/picture/{pictureId}")
     @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentDetailResponse> createPictureComment(@AuthUser Users user, @Parameter(description = "사진의 ID") @PathVariable Long pictureId, @RequestBody PictureCommentDTO.CreatePictureCommentRequest request) {
-
         PictureCommentDTO.PictureCommentDetailResponse response = pictureCommentService.createPictureComment(user, pictureId, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -46,7 +45,6 @@ public class PictureCommentController {
     @GetMapping("/picture/{pictureId}/all")
     @Permission
     public ResponseEntity<PictureCommentDTO.PictureCommentListResponse> getPictureCommentByPictureId(@AuthUser Users user, @Parameter(description = "사진의 ID") @PathVariable Long pictureId) {
-
         List<PictureCommentDTO.PictureCommentDetailResponse> pictureCommentDetailResponseList = pictureCommentService.getPictureCommentByPictureId(pictureId);
         PictureCommentDTO.PictureCommentListResponse response = new PictureCommentDTO.PictureCommentListResponse(pictureCommentDetailResponseList);
 

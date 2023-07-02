@@ -1,6 +1,5 @@
 package com.project.common.handler;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -21,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
@@ -36,26 +36,28 @@ public class S3Uploader {
 
     private final PictureRepository pictureRepository;
 
-    public void upload(MultipartFile multipartFile, String path) {
-        File uploadFile = convert(multipartFile, path).orElseThrow(() ->
-                new BusinessLogicException("Convert multipartFile to File failed.", ErrorCode.IMAGE_PROCESSING_ERROR));
-
-        try {
-            multipartFile.transferTo(uploadFile);
-            putS3(uploadFile, path);
-        } catch (IOException e) {
-            throw new BusinessLogicException("MultipartFile transfer failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
-        } catch (SdkClientException e) {
-            throw new BusinessLogicException("Upload to S3 failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
-        } finally {
-            if (uploadFile.delete()) {
-                log.info("targetFile : {} is deleted.", uploadFile.getName());
-            } else {
-                log.error("targetFile : {} is not deleted.", uploadFile.getName());
-            }
-        }
+    public void uploadAsync(MultipartFile multipartFile, String path) {
+        CompletableFuture.supplyAsync(() -> convert(multipartFile, path))
+                .thenAccept(convertedFile -> {
+                    try {
+                        multipartFile.transferTo(convertedFile.orElseThrow(() -> new BusinessLogicException("Convert multipartFile to File failed.", ErrorCode.IMAGE_PROCESSING_ERROR)));
+                        putS3(convertedFile.get(), path);
+                    } catch (IOException e) {
+                        throw new BusinessLogicException("MultipartFile transfer failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
+                    } catch (SdkClientException e) {
+                        throw new BusinessLogicException("Upload to S3 failed.", ErrorCode.IMAGE_PROCESSING_ERROR);
+                    } finally {
+                        if (convertedFile.isPresent()) {
+                            File uploadFile = convertedFile.get();
+                            if (uploadFile.delete()) {
+                                log.info("targetFile : {} is deleted.", uploadFile.getName());
+                            } else {
+                                log.error("targetFile : {} is not deleted.", uploadFile.getName());
+                            }
+                        }
+                    }
+                });
     }
-
     private void putS3(File uploadFile, String path) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, path, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
     }
@@ -80,7 +82,7 @@ public class S3Uploader {
             PictureDetail pictureDetail = PictureDetail.multipartOf(picture);
             // S3에 사진 업로드
             String path = pictureDetail.getPath();
-            upload(picture, path);
+            uploadAsync(picture, path);
             // Picture 생성
             return pictureRepository.save(Picture.builder().originalName(pictureDetail.getName()).url("https://" + cloudFrontDomain + "/" + path).build());
         }).toList();

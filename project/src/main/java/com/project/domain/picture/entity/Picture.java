@@ -5,6 +5,8 @@ import com.project.domain.comment.entity.PictureComment;
 import com.project.domain.pin.entity.Pin;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,5 +38,10 @@ public class Picture extends BaseTimeEntity {
 
     public void setPin(Pin pin) {
         this.pin = pin;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }
