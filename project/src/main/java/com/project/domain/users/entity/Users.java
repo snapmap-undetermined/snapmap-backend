@@ -71,11 +71,11 @@ public class Users extends BaseTimeEntity {
         pin.setUser(null);
     }
 
-    public void setNickname(String nickname) {
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void setProfileImage(String profileImage) {
+    public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 }
