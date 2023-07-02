@@ -10,6 +10,7 @@ import com.project.domain.friend.repository.FriendRepository;
 import com.project.domain.users.entity.Users;
 import com.project.domain.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class FriendServiceImpl implements FriendService {
 
@@ -26,8 +28,8 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDTO.FriendListResponse getAllFriends(Long userId) {
-
         List<FriendDTO.FriendResponse> friendList = friendRepository.findAllFriendsOfUser(userId);
+        log.info("Get All friends by userId : {}, {}", userId, friendList);
         return new FriendDTO.FriendListResponse(friendList);
     }
 
@@ -35,19 +37,23 @@ public class FriendServiceImpl implements FriendService {
     @Transactional
     public FriendDTO.FriendResponse createFriend(Users user, FriendDTO.CreateFriendRequest createFriendRequest) {
         Users mate = userRepository.findById(createFriendRequest.getFriendUserId()).orElseThrow(() -> {
+            log.error("Target friend does not exist. userId : {}", createFriendRequest.getFriendUserId());
             throw new EntityNotFoundException("User does not exists.");
         });
 
         if (Objects.equals(user.getId(), mate.getId())) {
+            log.error("Cannot make friends with yourself. myId : {}, mateId: {}", user.getId(), mate.getId());
             throw new InvalidValueException("Cannot make friends with yourself.", ErrorCode.INVALID_INPUT_VALUE);
         }
 
         if (friendRepository.existsByUserIds(user.getId(), mate.getId())) {
+            log.error("Already exists friendship. myId : {}, mateId: {}", user.getId(), mate.getId());
             throw new BusinessLogicException("Already exists friendship.",ErrorCode.FRIEND_DUPLICATION);
         }
 
         Friend friend = Friend.builder().me(user).mate(mate).friendName(mate.getNickname()).build();
         friendRepository.save(friend);
+        log.info("Created friend : {}", friend);
         return new FriendDTO.FriendResponse(friend);
     }
 
@@ -56,7 +62,9 @@ public class FriendServiceImpl implements FriendService {
     public FriendDTO.FriendResponse deleteFriend(Users me, Long mateId) {
         Long myId = me.getId();
         Friend friend = getFriend(myId, mateId);
+
         friendRepository.delete(friend);
+        log.info("Delete friend, myId : {}, mateId : {}", me.getId(), mateId);
         return new FriendDTO.FriendResponse(friend);
     }
 
@@ -65,16 +73,24 @@ public class FriendServiceImpl implements FriendService {
     public FriendDTO.FriendResponse updateFriendName(Users me, Long mateId, FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) {
         Long myId = me.getId();
         Friend friend = getFriend(myId, mateId);
+
         String updateFriendName = updateFriendNameRequest.getFriendName();
-        friend.setFriendName(updateFriendName);
+        if (updateFriendName != null) {
+            log.info("Update friend name : {} -> {}", friend.getFriendName(), updateFriendName);
+            friend.setFriendName(updateFriendName);
+        }
 
         return new FriendDTO.FriendResponse(friend);
     }
 
     @Transactional
     public Friend getFriend(Long myId, Long mateId) {
-        return friendRepository.findByMeIdAndMateId(myId, mateId).orElseThrow(() -> {
-            throw new EntityNotFoundException("Friend does not exists.");
-        });
+        Friend friend = friendRepository.findByMeIdAndMateId(myId, mateId).orElse(null);
+        if (friend == null) {
+            log.error("Friend does not exist. myId : {}, friendId : {}", myId, mateId);
+            throw new EntityNotFoundException("Friend does not exist.");
+        }
+
+        return friend;
     }
 }
