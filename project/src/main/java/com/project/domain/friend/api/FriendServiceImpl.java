@@ -53,7 +53,7 @@ public class FriendServiceImpl implements FriendService {
 
         Friend friend = Friend.builder().me(user).mate(mate).friendName(mate.getNickname()).build();
         friendRepository.save(friend);
-        log.info("Created friend : {}", friend);
+        log.info("Created friend. myId : {}, mateId : {}", user.getId(), friend.getId());
         return new FriendDTO.FriendResponse(friend);
     }
 

@@ -46,7 +46,7 @@ public class PictureCommentServiceImpl implements PictureCommentService {
             parentComm.plusChildCommentCount();
         }
         PictureComment created = pictureCommentRepository.save(pictureComment);
-        log.info("Picture comment created : {}", created);
+        log.info("Picture comment created. commentId : {}, text : {}", created.getId(), created.getText());
 
         return new PictureCommentDTO.PictureCommentDetailResponse(pictureComment);
     }
@@ -79,12 +79,12 @@ public class PictureCommentServiceImpl implements PictureCommentService {
             parentPictureComment.minusChildCommentCount();
             // 자식 댓글이 없고, isDeleted = true인 부모 댓글은 삭제시킨다.
             if (parentPictureComment.getChildCommentCount() == 0 && parentPictureComment.getIsDeleted()){
-                log.info("Parent picture comment deleted. parentPictureComment : {}", parentPictureComment);
+                log.info("Parent picture comment deleted. parentPictureCommentId : {}", parentPictureComment.getId());
                 pictureCommentRepository.delete(parentPictureComment);
             }
         }
         pictureCommentRepository.delete(pictureComment);
-        log.info("Picture comment deleted. pictureComment : {}", pictureComment);
+        log.info("Picture comment deleted. pictureCommentId : {}", pictureCommentId);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class PinCommentServiceImpl implements PinCommentService {
 
         }
         PinComment created = pinCommentRepository.save(pinComment);
-        log.info("Pin comment created : {}", created);
+        log.info("Pin comment created. commentId : {}, text : {}", created.getId(), created.getText());
         return new PinCommentDTO.PinCommentDetailResponse(pinComment);
     }
 
@@ -83,12 +83,12 @@ public class PinCommentServiceImpl implements PinCommentService {
             parentPinComment.minusChildCommentCount();
             // 자식 댓글이 없고, isDeleted = true인 부모 댓글은 삭제시킨다.
             if (parentPinComment.getChildCommentCount() == 0 && parentPinComment.getIsDeleted()) {
-                log.info("Parent pin comment deleted. parentPinComment : {}", parentPinComment);
+                log.info("Parent pin comment deleted. parentPinCommentId : {}", parentPinComment.getId());
                 pinCommentRepository.delete(parentPinComment);
             }
         }
         pinCommentRepository.delete(pinComment);
-        log.info("Pin comment deleted. PinComment : {}", pinComment);
+        log.info("Pin comment deleted. PinCommentId : {}", pinCommentId);
     }
 
     @Override

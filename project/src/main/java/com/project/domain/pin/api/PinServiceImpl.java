@@ -79,7 +79,7 @@ public class PinServiceImpl implements PinService {
         pictureList.forEach(pin::addPicture);
 
         Pin createdPin = pinRepository.save(pin);
-        log.info("Pin created : {}", createdPin);
+        log.info("Pin created. pinId : {}", createdPin.getId());
 
         return new PinDTO.PinDetailResponse(pin);
     }
@@ -159,7 +159,7 @@ public class PinServiceImpl implements PinService {
     }
 
     private void validatePictureInput(List<MultipartFile> pictures) {
-        log.info("Validate pictures input : {}", pictures);
+        log.info("Validate pictures input size: {}", pictures.size());
         if (pictures == null || pictures.isEmpty()) {
             throw new BusinessLogicException("No available pictures for creating pin.", ErrorCode.INVALID_INPUT_VALUE);
         }
