@@ -36,7 +36,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.SignUpResponse.class)))})
     @Operation(summary = "회원가입", description = "이메일을 통해 회원가입을 한다.")
     @PostMapping("/signUp")
-    private ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<UserDTO.SignUpResponse> signUp(@Valid @RequestBody UserDTO.SignUpRequest signUpRequest) throws Exception {
         UserDTO.SignUpResponse response = authService.signUp(signUpRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -44,7 +44,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserDTO.LoginResponse.class)))})
     @Operation(summary = "로그인", description = "이메일, 비밀번호 기반으로 로그인을 한다.")
     @PostMapping("/login")
-    private ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest loginRequest) throws Exception {
         UserDTO.LoginResponse response = authService.login(loginRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = TokenDTO.class)))})
     @Operation(summary = "토큰 재발급", description = "Refresh 토큰을 통해 Access 토큰을 재발급한다.")
     @PostMapping("/reissue")
-    private ResponseEntity<TokenDTO> reissue(@RequestHeader("Authorization") String refreshToken) throws AuthenticationException {
+    public ResponseEntity<TokenDTO> reissue(@RequestHeader("Authorization") String refreshToken) throws AuthenticationException {
         TokenDTO reissued = authService.reissue(refreshToken);
         return new ResponseEntity<>(reissued, HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class UserController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
     @Permission
-    private ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@Parameter(description = "유저의 nickname") @RequestParam String userNickname) {
+    public ResponseEntity<UserDTO.UserSimpleInfoResponse> getUserByNickname(@Parameter(description = "유저의 nickname") @RequestParam String userNickname) {
 
         UserDTO.UserSimpleInfoResponse response = userService.getUserByNickname(userNickname);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -73,7 +73,7 @@ public class UserController {
     @Operation(summary = "유저 수정", description = "유저의 닉네임, 프로필 이미지 등을 수정한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission
-    private ResponseEntity<UserDTO.UserSimpleInfoResponse> updateUser(@AuthUser Users user, @RequestBody UserDTO.UpdateUserRequest request) {
+    public ResponseEntity<UserDTO.UserSimpleInfoResponse> updateUser(@AuthUser Users user, @RequestBody UserDTO.UpdateUserRequest request) {
         UserDTO.UserSimpleInfoResponse response = userService.updateUser(user.getId(), request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -83,9 +83,11 @@ public class UserController {
     @Operation(summary = "회원 탈퇴", description = "서비스에서 영구적으로 탈퇴한다.")
     @SecurityRequirement(name = "Bearer Authentication")
     @Permission
-    private void deleteUser(@AuthUser Users user) {
+    public ResponseEntity<Void> deleteUser(@AuthUser Users user) {
         userService.deleteUser(user);
+        return ResponseEntity.ok().build();
     }
+
 
     @PostMapping("/email")
     public ResponseEntity<Void> sendAuthEmail(@RequestBody @Valid UserDTO.EmailRequest request) throws Exception {

@@ -38,7 +38,6 @@ public class PinController {
     @PostMapping("/pocket/{pocketId}")
     @Permission
     public ResponseEntity<PinDTO.PinDetailResponse> createPin(@AuthUser Users user, @Parameter(description = "포켓의 ID") @PathVariable Long pocketId, @RequestPart PinDTO.PinCreateRequest request, @RequestPart List<MultipartFile> pictures) {
-
         PinDTO.PinDetailResponse pin = pinService.createPin(user, pocketId, request, pictures);
         return new ResponseEntity<>(pin, HttpStatus.OK);
     }
@@ -57,7 +56,7 @@ public class PinController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "특정 핀 상세 정보 조회", description = "특정 핀의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/{pinId}")
+    @GetMapping("/{pinId}/detail")
     @Permission
     public ResponseEntity<?> getPin(@AuthUser Users user, @Parameter(description = "핀의 ID") @PathVariable Long pinId) {
         PinDTO.PinDetailResponse pin = pinService.getPinDetail(user, pinId);
@@ -67,7 +66,7 @@ public class PinController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = PinDTO.PinDetailResponse.class)))})
     @Operation(summary = "자신이 생성한 핀 조회", description = "자신이 생성한 모든 핀의 상세 정보를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/me/all")
+    @GetMapping("/my")
     @Permission
     public ResponseEntity<PinDTO.PinDetailListResponse> getAllPinByMe(@AuthUser Users user) {
         PinDTO.PinDetailListResponse pinList = pinService.getAllPinByMe(user);

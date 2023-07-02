@@ -29,10 +29,9 @@ public class FriendController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = FriendDTO.FriendListResponse.class)))})
     @Operation(summary = "친구 리스트 조회", description = "자신의 친구 리스트를 조회한다.")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/all")
+    @GetMapping("/my")
     @Permission
-    private ResponseEntity<FriendDTO.FriendListResponse> getFriendListByUser(@AuthUser Users user) throws Exception {
-
+    public ResponseEntity<FriendDTO.FriendListResponse> getFriendListByUser(@AuthUser Users user) throws Exception {
         FriendDTO.FriendListResponse response = friendService.getAllFriends(user.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -42,7 +41,7 @@ public class FriendController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
     @Permission
-    private ResponseEntity<FriendDTO.FriendResponse> createFriend(@AuthUser Users user, @RequestBody FriendDTO.CreateFriendRequest request) throws Exception {
+    public ResponseEntity<FriendDTO.FriendResponse> createFriend(@AuthUser Users user, @RequestBody FriendDTO.CreateFriendRequest request) throws Exception {
         FriendDTO.FriendResponse response = friendService.createFriend(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -52,7 +51,7 @@ public class FriendController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{mateId}")
     @Permission
-    private ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@AuthUser Users user, @Parameter(description = "친구의 ID") @PathVariable Long mateId) throws Exception {
+    public ResponseEntity<FriendDTO.FriendResponse> deleteFriend(@AuthUser Users user, @Parameter(description = "친구의 ID") @PathVariable Long mateId) throws Exception {
         FriendDTO.FriendResponse response = friendService.deleteFriend(user, mateId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -62,7 +61,7 @@ public class FriendController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PatchMapping("/{mateId}/name")
     @Permission
-    private ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@AuthUser Users user, @Parameter(description = "친구의 ID") @PathVariable Long mateId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
+    public ResponseEntity<FriendDTO.FriendResponse> updateFriendName(@AuthUser Users user, @Parameter(description = "친구의 ID") @PathVariable Long mateId, @RequestBody FriendDTO.UpdateFriendNameRequest updateFriendNameRequest) throws Exception {
         FriendDTO.FriendResponse response = friendService.updateFriendName(user, mateId, updateFriendNameRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
