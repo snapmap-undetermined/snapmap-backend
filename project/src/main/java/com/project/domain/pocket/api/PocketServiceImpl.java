@@ -45,26 +45,34 @@ public class PocketServiceImpl implements PocketService {
         userPocket.addUserPocketToUserAndPocket(user, pocket);
 
         // 포켓 생성 시, 친구를 같이 초대하는 경우 처리
-        if (request.getInvitedUserList() != null && !request.getInvitedUserList().isEmpty()) {
+        if (request.getInvitedUserList() != null) {
             request.getInvitedUserList().forEach((userId) -> {
-                Users u = userRepository.findById(userId).orElseThrow();
+                Users u = userRepository.findById(userId).orElse(null);
+                if (u == null) {
+                    log.error("create pocket with friend, no userId : {}", userId);
+                }
                 UserPocket uc = UserPocket.builder().pocket(pocket).activated(false).user(u).build();
                 uc.addUserPocketToUserAndPocket(u, pocket);
+                log.info("create pocket with friend, userId : {}", userId);
                 userPocketRepository.save(uc);
             });
         }
-        pocketRepository.save(pocket);
+        Pocket saved = pocketRepository.save(pocket);
+        log.info("Pocket created, pocket : {}", pocket);
 
         return new PocketDTO.PocketSimpleInfoResponse(pocket);
     }
 
     @Override
     public PocketDTO.PocketSimpleInfoListResponse getAllPocketByUser(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Users user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            log.error("getAllPocketByUser error. No user by userId : {}", userId);
             throw new EntityNotFoundException("User does not exist.");
         }
 
         List<Pocket> pocketList = pocketRepository.findAllPocketByUserId(userId);
+        log.info("pocketList by userId({}) : {}", userId, pocketList);
         List<PocketDTO.PocketSimpleInfoResponse> response = pocketList.stream().map(PocketDTO.PocketSimpleInfoResponse::new).collect(Collectors.toList());
 
         return new PocketDTO.PocketSimpleInfoListResponse(response);
@@ -73,13 +81,21 @@ public class PocketServiceImpl implements PocketService {
 
     @Override
     public PocketDTO.PocketDetailInfoResponse getPocketDetail(Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Group does not exists.");
+        }
         return new PocketDTO.PocketDetailInfoResponse(pocket);
     }
 
     @Override
     public PocketDTO.PocketWithJoinUserResponse getJoinedUserOfPocket(Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Group does not exists.");
+        }
         return new PocketDTO.PocketWithJoinUserResponse(pocket);
     }
 
@@ -87,7 +103,12 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.PocketSimpleInfoResponse leavePocket(Users user, Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         if (isMasterUser(pocket, user.getId()) && pocket.getUserPocketList().size() > 1) {
             throw new BusinessLogicException("Manager cannot leave group", ErrorCode.POCKET_MANAGER_ERROR);
         }
@@ -123,11 +144,20 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.InviteUserResponse inviteUser(Users user, Long pocketId, PocketDTO.InviteUserRequest request) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         List<Long> invitedUserList = request.getInvitedUserList();
 
         for (Long userId : invitedUserList) {
-            Users u = getUser(userId);
+            Users u = userRepository.findById(userId).orElse(null);
+            if (u == null) {
+                log.error("No user by userId : {}", userId);
+                throw new EntityNotFoundException("User does not exist.");
+            }
             Optional<UserPocket> userPocket = userPocketRepository.findByUserIdAndPocketId(u.getId(), pocketId);
             if (userPocket.isPresent()) {
                 continue;
@@ -153,7 +183,12 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.acceptPocketInvitationResponse acceptPocketInvitation(Users user, Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         UserPocket userPocket = userPocketRepository.findByUserIdAndPocketId(user.getId(), pocketId).orElseThrow();
         userPocket.setActivated(userPocket.getActivated());
         userPocket.addUserPocketToUserAndPocket(user, pocket);
@@ -164,9 +199,14 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.cancelInvitePocketResponse cancelPocketInvitation(Users user, Long pocketId, Long cancelUserId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         UserPocket userPocket = userPocketRepository.findByUserIdAndPocketId(cancelUserId, pocketId).orElseThrow(() -> {
-            throw new EntityNotFoundException("User does not exists.");
+            throw new EntityNotFoundException("User does not exist.");
         });
         // 요청을 보내는 유저가 해당 포켓에 속해있어야 초대 취소가 가능하다.
         if (pocket.getUserPocketList().stream()
@@ -181,7 +221,12 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.PocketSimpleInfoResponse updatePocket(Users user, Long pocketId, PocketDTO.UpdatePocketRequest request, MultipartFile picture) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         if (isMasterUser(pocket, user.getId())) {
             pocket.setName(request.getPocketName());
             pocket.setDescription(request.getDescription());
@@ -199,21 +244,35 @@ public class PocketServiceImpl implements PocketService {
     @Override
     @Transactional
     public PocketDTO.PocketWithJoinUserResponse updatePocketMaster(Users user, Long pocketId, Long userId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         if (isMasterUser(pocket, user.getId())) {
-            Users u = userRepository.findById(userId).orElseThrow();
-            // 위임하려는 유저가 해당 포켓에 속해 있어야 한다.
-            if (!isUserInPocket(u, pocketId)) {
-                throw new EntityNotFoundException("User manager delegated does not exists", ErrorCode.POCKET_MANAGER_ERROR);
+            Users targetUser = userRepository.findById(userId).orElse(null);
+            if (targetUser == null) {
+                log.error("No user by userId : {}", userId);
+                throw new EntityNotFoundException("User does not exist.");
             }
-            pocket.setMaster(u);
+            log.info("Delegate manager target userId : {}", targetUser.getId());
+            // 위임하려는 유저가 해당 포켓에 속해 있어야 한다.
+            if (!isUserInPocket(targetUser, pocketId)) {
+                throw new EntityNotFoundException("Delegate target user does not exist", ErrorCode.POCKET_MANAGER_ERROR);
+            }
+            pocket.setMaster(targetUser);
         }
         return new PocketDTO.PocketWithJoinUserResponse(pocket);
     }
 
     @Override
     public PocketDTO.NotAcceptPocketInviteUserResponse getAllNotAcceptPocketInviteUser(Users user, Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
         return new PocketDTO.NotAcceptPocketInviteUserResponse(pocket);
     }
 
@@ -221,20 +280,13 @@ public class PocketServiceImpl implements PocketService {
         return pocket.getMaster().getId().equals(userId);
     }
 
-    private Pocket getPocket(Long pocketId) {
-        return pocketRepository.findById(pocketId).orElseThrow(() -> {
-            throw new EntityNotFoundException("Group does not exists.");
-        });
-    }
-
-    private Users getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> {
-            throw new EntityNotFoundException("User does not exists.");
-        });
-    }
-
     private boolean isUserInPocket(Users user, Long pocketId) {
-        Pocket pocket = getPocket(pocketId);
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("No pocket, pocketId : {}", pocketId);
+            throw new EntityNotFoundException("Pocket does not exists");
+        }
+
         return pocket.getUserPocketList().stream()
                 .map(UserPocket::getUser).toList().contains(user);
     }
