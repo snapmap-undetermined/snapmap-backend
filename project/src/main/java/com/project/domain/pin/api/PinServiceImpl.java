@@ -29,6 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static java.lang.Runtime.getRuntime;
 
 @Service
 @Slf4j
@@ -42,6 +47,9 @@ public class PinServiceImpl implements PinService {
     private final LocationRepository locationRepository;
     private final TagRepository tagRepository;
     private final PictureRepository pictureRepository;
+
+    private final int THREAD_COUNT = getRuntime().availableProcessors() * 2 + 1;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
 
     @Override
     @Transactional
@@ -66,6 +74,7 @@ public class PinServiceImpl implements PinService {
             PinTag pinTag = PinTag.builder().pin(pin).tag(tag).build();
             pin.addPinTag(pinTag);
         }
+
         List<Picture> pictureList = s3Uploader.uploadAndSavePictures(pictures);
         pictureList.forEach(pin::addPicture);
 
