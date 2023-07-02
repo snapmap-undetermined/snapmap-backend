@@ -43,10 +43,11 @@ public class PinServiceImpl implements PinService {
     private final TagRepository tagRepository;
     private final PictureRepository pictureRepository;
 
-
     @Override
     @Transactional
     public PinDTO.PinDetailResponse createPin(Users user, Long pocketId, PinDTO.PinCreateRequest request, List<MultipartFile> pictures) {
+        log.info("Pin create request : {}", request);
+
         Pocket pocket = getPocket(pocketId);
         validatePictureInput(pictures);
         validateUserMembershipOnPocket(user, pocket);
@@ -67,15 +68,17 @@ public class PinServiceImpl implements PinService {
         }
         List<Picture> pictureList = s3Uploader.uploadAndSavePictures(pictures);
         pictureList.forEach(pin::addPicture);
-        pinRepository.save(pin);
+
+        Pin createdPin = pinRepository.save(pin);
+        log.info("Pin created : {}", createdPin);
+
         return new PinDTO.PinDetailResponse(pin);
     }
 
     @Override
     public PinDTO.PinDetailResponse getPinDetail(Users user, Long pinId) {
         Pin pin = getPin(pinId);
-
-        checkPinAccessibility(user, pin);
+        log.info("GetPinDetail : {} userId : {}", pin, user.getId());
         return new PinDTO.PinDetailResponse(pin);
     }
 
@@ -84,7 +87,6 @@ public class PinServiceImpl implements PinService {
         // Pin을 모두 조회하고, 각 Pin에 존재하는 사진을 가져온다.
         Page<Pin> allPins = pinRepository.findAllByPocketId(pocketId, pageable);
         List<PinDTO.PinDetailResponse> pinDetailResponseList = allPins.getContent().stream().map(PinDTO.PinDetailResponse::new).toList();
-
         return new PageImpl<>(pinDetailResponseList, pageable, allPins.getTotalElements());
     }
 
@@ -101,7 +103,8 @@ public class PinServiceImpl implements PinService {
         Pin pin = getPin(pinId);
 
         // Title, Location 정보의 변화가 있는가?
-        if (request != null) {
+        if (request != null && request.getLocation() != null) {
+            log.info("Update pin location : {} -> {}", pin.getLocation(), request.getLocation());
             Location updatedLocation = request.getLocation().toEntity();
             locationRepository.save(updatedLocation);
             pin.setLocation(updatedLocation);
@@ -124,35 +127,32 @@ public class PinServiceImpl implements PinService {
         if (isPinCreatedByUser(user, pin)) {
             pin.getPocket().removePin(pin); // 써클에서 해당 핀 삭제
             user.removePin(pin); // 유저에서 해당 핀 삭제
+            log.info("User({}) deleted pin({})", user.getId(), pinId);
         } else {
-            throw new BusinessLogicException("Pin access failed..", ErrorCode.ACCESS_DENIED);
+            log.warn("Pin access failed, userId : {} pinId : {}", user.getId(), pin.getId());
+            throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
         }
     }
 
     @Override
     public PinDTO.PinWithDistinctPictureResponse getPictureDetail(Users user, Long pictureId) {
-
-        Picture picture = pictureRepository.findById(pictureId).orElseThrow(() -> {
-            throw new EntityNotFoundException("Picture does not exists.");
-        });
+        Picture picture = pictureRepository.findById(pictureId).orElse(null);
+        if (picture == null) {
+            log.error("Picture does not exist, pictureId : {}", pictureId);
+            throw new EntityNotFoundException("Picture does not exist.");
+        }
 
         return new PinDTO.PinWithDistinctPictureResponse(picture);
     }
 
     private boolean isPinCreatedByUser(Users user, Pin pin) {
-        List<Pin> myPins = pinRepository.findByUserId(user.getId());
-        return myPins.contains(pin);
-    }
-
-    private void checkPinAccessibility(Users user, Pin pin) {
-        if (!isPinCreatedByUser(user, pin)) {
-            throw new BusinessLogicException("Pin access failed.", ErrorCode.ACCESS_DENIED);
-        }
+        return pinRepository.findByUserId(user.getId()).contains(pin);
     }
 
     private void validatePictureInput(List<MultipartFile> pictures) {
+        log.info("Validate pictures input : {}", pictures);
         if (pictures == null || pictures.isEmpty()) {
-            throw new BusinessLogicException("No available pictures for creating pin.",ErrorCode.INVALID_INPUT_VALUE);
+            throw new BusinessLogicException("No available pictures for creating pin.", ErrorCode.INVALID_INPUT_VALUE);
         }
     }
 
@@ -163,12 +163,20 @@ public class PinServiceImpl implements PinService {
     }
 
     private Pocket getPocket(Long pocketId) {
-        return pocketRepository.findById(pocketId).orElseThrow(
-                () -> new EntityNotFoundException("Group does not exists."));
+        Pocket pocket = pocketRepository.findById(pocketId).orElse(null);
+        if (pocket == null) {
+            log.info("pocket does not exist. pocket : {}", pocketId);
+            throw new EntityNotFoundException("pocket does not exist.");
+        }
+        return pocket;
     }
 
     private Pin getPin(Long pinId) {
-        return pinRepository.findById(pinId).orElseThrow(
-                () -> new EntityNotFoundException("Pin does not exists."));
+        Pin pin = pinRepository.findById(pinId).orElse(null);
+        if (pin == null) {
+            log.info("pin does not exist. pinId : {}", pinId);
+            throw new EntityNotFoundException("Pin does not exist.");
+        }
+        return pin;
     }
 }
